@@ -666,6 +666,48 @@ parameter
   cm_biolc_tech_phaseout = 0;        !! def = 0
 *'
 parameter
+  cm_feedstockMatchingBiomass    "feedstock matching of purpose grown biomass vs residues, see teBioPebiolcPurposeGrown and teBioPebiolcResidues"
+*** (0): off
+*** (1): tech in teBioPebiolcPurposeGrown cannot demand more pebiolc than available purpose grown biomass and no residues; 
+***      i.e., vm_fuExtr(t,regi,"pebiolc","1") +/- trade
+*** (2): (1) and tech in teBioPebiolcResidues cannot demand more pebiolc than available biomass residues (i.e. no purpose grown);
+***      i.e., vm_fuExtr(t,regi,"pebiolc","2"); 
+;
+  cm_feedstockMatchingBiomass = 0; !! def = 0
+*'
+parameter 
+  cm_biocharRegionalMatching     "do not allow OECD countries to use low tech biochar"
+*** (0): off
+*** (1): on
+;
+  cm_biocharRegionalMatching = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharLowTech_cf           "capacity factor of low tech biochar production. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biocharLowTech_cf = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharMedBCTech_cf           "capacity factor of medium tech biochar production that optizes C in biochar. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+cm_biocharMedBCTech_cf = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharMedGasTech_cf           "capacity factor of medium tech biochar production that optizes gas yield. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+cm_biocharMedGasTech_cf = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharHighTech_cf          "capacity factor of high tech biochar production. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+cm_biocharHighTech_cf = 0; !! def = 0
+*'
+
+parameter
   cm_startyear              "first optimized modelling time step [year]"
 ;
   cm_startyear      = 2005;      !! def = 2005 for a baseline
