@@ -262,6 +262,23 @@ fm_dataglob("incolearn",te)          = sm_DpKW_2_TDpTW       * fm_dataglob("inco
 fm_dataglob("omv",te)                = s_DpKWa_2_TDpTWa      * fm_dataglob("omv",te);
 p_inco0(ttot,regi,te)               = sm_DpKW_2_TDpTW       * p_inco0(ttot,regi,te);
 
+*TD* adjust learning factor for biochar technologies if biochar is learning or not
+$IFTHEN.cm_BCLearning %cm_BCLearning% == "0"
+fm_dataglob("incolearn","biocharHighTech") = 0;
+fm_dataglob("learn","biocharHighTech") = 0;
+fm_dataglob("incolearn","biocharMedGasTech") = 0;
+fm_dataglob("learn","biocharMedGasTech") = 0;
+fm_dataglob("incolearn","biocharMedBCTech") = 0;
+fm_dataglob("learn","biocharMedBCTech") = 0;
+$ENDIF.cm_BCLearning
+
+*TD* adjust operating cost of biochar Technologies if selling price beyond CO2 certificate is assumed
+$IFTHEN.cm_biocharRevenue %cm_biocharRevenue% == 1
+fm_dataglob("omv","biocharMedGasTech") = fm_dataglob("omv","biocharMedGasTech")- cm_biocharRevenueValue;
+fm_dataglob("omv","biocharMedBCTech") = fm_dataglob("omv","biocharMedBCTech")- cm_biocharRevenueValue;
+fm_dataglob("omv","biocharLowTech") = fm_dataglob("omv","biocharLowTech")- cm_biocharRevenueValue;
+$ENDIF.cm_biocharRevenue
+
 
 table fm_dataemiglob(all_enty,all_enty,all_te,all_enty)  "read-in of emissions factors co2,cco2"
 $include "./core/input/generisdata_emi.prn"
@@ -528,6 +545,17 @@ loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te),
 );
 $ENDIF.tech_earlyreti
 
+*TD* Set capacity factors for biochar technologies to switch values. Set switches to 0 to deactivate biochar (default).
+pm_cf(t,regi,"biocharLowTech" ) = cm_biocharLowTech_cf;
+pm_cf(t,regi,"biocharMedGasTech" ) = cm_biocharMedGasTech_cf;
+pm_cf(t,regi,"biocharMedBCTech" ) = cm_biocharMedBCTech_cf;
+pm_cf(t,regi,"biocharHighTech") = cm_biocharHighTech_cf;
+pm_cf(t,regi,"biochar4soil"   ) = 1.0;
+
+*TD* regional matching: OECD regions are not allowed to use low tech biochar
+if (cm_biocharRegionalMatching EQ 1, 
+  pm_cf(t,regiOECD,"biocharLowTech") = 0;
+);
 
 
 *SB* Time-dependent early retirement rates in Baseline scenarios

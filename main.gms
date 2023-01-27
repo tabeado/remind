@@ -655,6 +655,12 @@ parameter
 ***       capacities are allowed, is 2025 or cm_startyear if larger.
 *'
 parameter
+  cm_phaseoutBECCS          "Switch that allows for a full phaseout of all BECCS technologies globally"
+;
+  cm_phaseoutBECCS    = 0;  !! def = 0 
+*** preliminary implementation, set to 1 for 
+
+parameter
   cm_feedstockMatchingBiomass    "feedstock matching of purpose grown biomass vs residues, see teBioPebiolcPurposeGrown and teBioPebiolcResidues"
 *** (0): off
 *** (1): tech in teBioPebiolcPurposeGrown cannot demand more pebiolc than available purpose grown biomass and no residues; 
@@ -694,6 +700,18 @@ parameter
  cm_biocharHighTech_cf          "capacity factor of high tech biochar production. Set to 0 to turn off; e.g., 0.9 to turn on"
 ;
 cm_biocharHighTech_cf = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharRevenue          "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+ cm_biocharRevenue = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharRevenueValue        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+ cm_biocharRevenueValue = 0; !! def = 0
 *'
 
 parameter
@@ -1560,6 +1578,10 @@ $setGLobal c_agricult_base_shift off !! def off
 *** cm_wind_offshore  1, wind energy is represented by "wind" and "windoff", where "wind" means wind onshore. Later this will be the default and the name "wind" will be made to change to windon
 *** cm_wind_offshore  0, means wind energy is only represented by "wind", which is a mixture of both wind onshore and wind offshore
 $setglobal cm_wind_offshore  1      !! def = 1
+*** Biochar learning switch
+*** cm_BCLearning  1, biochar med and high tech technologies are learning
+*** cm_BCLearning  0, biochar med and high tech technologies are not learning
+$setglobal cm_BCLearning  1      !! def = 0
 ***  cm_INCONV_PENALTY  on     !! def = on
 *** *RP* 2012-03-06 Flag to turn on inconvenience penalties, e.g. for air pollution
 $setglobal cm_INCONV_PENALTY  on         !! def = on

@@ -117,6 +117,24 @@ if (cm_phaseoutBiolc eq 1,
     );
 );
 
+*** -------------------------------------------------------------
+*** Phase out capacities of BECCS technologies
+*** -------------------------------------------------------------
+if (cm_phaseoutBECCS eq 1,
+    loop(t$(t.val ge max(2025, cm_startyear)),
+        loop(regi,
+            loop(te(teBECCS),
+                loop(rlf,
+                    if(vm_deltaCap.up(t,regi,te,rlf) eq INF,
+                       vm_deltaCap.up(t,regi,te,rlf) = 1e-8;
+                    );
+                );
+            );
+        );
+    );
+);
+
+
 
 *** FS: limit biomass domestic production from 2035 onwards to regional upper value defined by cm_bioprod_regi_lim
 $IFTHEN.bioprod_regi_lim not "%cm_bioprod_regi_lim%" == "off"

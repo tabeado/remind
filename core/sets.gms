@@ -1336,9 +1336,12 @@ $IFTHEN.WindOff %cm_wind_offshore% == "1"
 $ENDIF.WindOff
         storcsp     "storage technology for csp"
         elh2        "hydrogen elecrolysis"
-        biocharMedGasTech  "biomass to biochar; large, centralized facilities; maximizing biochar quality & quantity"
-        biocharMedBCTech  "biomass to biochar; large, centralized facilities; maximizing gas co-product"
-        biocharHighTech "biomass to biochar; high-tech, uses electrical heating"
+$IFTHEN.cm_BCLearning %cm_BCLearning% == "1"
+                biocharMedGasTech  "biomass to biochar large, centralized facilities; maximizing biochar quality & quantity"
+                biocharMedBCTech  "biomass to biochar; large, centralized facilities; maximizing gas co-product"
+                biocharHighTech "biomass to biochar; high-tech, uses electrical heating"
+$ENDIF.cm_BCLearning
+
 /
 
 teNoLearn(all_te)   "Technologies without learning effect"
@@ -1546,6 +1549,14 @@ teBioPebiolc(all_te)    "biomass technologies using pebiolc"
 /      
         set.teBioPebiolcPurposeGrown       
         set.teBioPebiolcResidues
+/
+
+teBECCS(all_te)         "all BECCS technologies"
+/
+        bioigccc
+        biogasc
+        bioftcrec
+        bioh2c
 /
 
 teNoTransform(all_te) "all technologies that do not transform energy but still have investment and O&M costs (like storage or grid)"
@@ -2773,7 +2784,9 @@ emiBECCS2te(all_enty,all_enty,all_te,all_enty) "mapping of BECCS PE,SE,technolog
         pebiolc.seliqbio.bioftcrec.cco2
         pebiolc.seel.bioigccc.cco2
         pebiolc.seh2.bioh2c.cco2
-/
+        pebiolc.segabio.biogasc.cco2
+        /
+
 
 *NB*111125 emissions from fossil fuel extraction by grade that is on top of combustion
 emi2fuelMine(all_enty,all_enty,rlf)   "missions from fossil fuel extraction"
