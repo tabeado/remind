@@ -54,6 +54,17 @@ omf                            0.03        0.04        0.04        0.04        0
 omv                                       30.11       25.00       31.50       50.50       10.90      12.80     10.60       10.60       97.27       38.99        5.05                   10.60
 lifetime              35         35          40          40          40          40          40         40        35          35          35          35          35          35          35
 
++               biocharMedBCTech   biocharMedGasTech  biocharLowTech   biocharHighTech
+tech_stat                      1                 1                 0                 3
+inco0                       1403               3261                0              6522
+incolearn                    409               1075                               2151
+ccap0                   0.000015           0.000015                           0.000009
+learn                      0.018              0.021                              0.020
+constrTme                      3                  3                0                 3
+eta                         0.45               0.32             0.36              0.36
+omf                            0                  0                0                 0
+omv                           70                164               78               327
+lifetime                      20                 20                1                20
 
 +                geohdr       geohe       hydro        wind         windoff     spv       solhe         csp
 tech_stat            1
