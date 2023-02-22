@@ -268,6 +268,7 @@ $ENDIF.WindOff
 
         weathering      "enhanced weathering"
         dac             "direct air capture"
+        oae             "ocean alkalinity enhancement"
         x_gas2elec
         d_bio2elec      "d_* transmission and distribution losses"
         d_coal2elec
