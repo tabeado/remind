@@ -655,6 +655,60 @@ parameter
 ***       targets in p40_ElecBioBound are removed. The first year, in which no new
 ***       capacities are allowed, is 2025 or cm_startyear if larger.
 *'
+
+parameter
+  cm_feedstockMatchingBiomass    "feedstock matching of purpose grown biomass vs residues, see teBioPebiolcPurposeGrown and teBioPebiolcResidues"
+*** (0): off
+*** (1): tech in teBioPebiolcPurposeGrown cannot demand more pebiolc than available purpose grown biomass and no residues; 
+***      i.e., vm_fuExtr(t,regi,"pebiolc","1") +/- trade
+*** (2): (1) and tech in teBioPebiolcResidues cannot demand more pebiolc than available biomass residues (i.e. no purpose grown);
+***      i.e., vm_fuExtr(t,regi,"pebiolc","2"); 
+;
+  cm_feedstockMatchingBiomass = 0; !! def = 0
+*'
+parameter 
+  cm_biocharRegionalMatching     "do not allow OECD countries to use low tech biochar"
+*** (0): off
+*** (1): on
+;
+  cm_biocharRegionalMatching = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharLowTech          "capacity factor of low tech biochar production. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biocharLowTech = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharMedBCTech           "capacity factor of medium tech biochar production that optizes C in biochar. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+cm_biocharMedBCTech = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharMedGasTech           "capacity factor of medium tech biochar production that optizes gas yield. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+cm_biocharMedGasTech = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharHighTech          "capacity factor of high tech biochar production. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+cm_biocharHighTech = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharRevenue          "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+ cm_biocharRevenue = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharRevenueValue        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+ cm_biocharRevenueValue = 0; !! def = 0
+*'
 parameter
   cm_startyear              "first optimized modelling time step [year]"
 ;
@@ -1531,6 +1585,10 @@ $setGLobal c_agricult_base_shift off !! def off
 *** cm_wind_offshore  1, wind energy is represented by "wind" and "windoff", where "wind" means wind onshore. Later this will be the default and the name "wind" will be made to change to windon
 *** cm_wind_offshore  0, means wind energy is only represented by "wind", which is a mixture of both wind onshore and wind offshore
 $setglobal cm_wind_offshore  1      !! def = 1
+*** Biochar learning switch
+*** cm_BCLearning  1, biochar med and high tech technologies are learning
+*** cm_BCLearning  0, biochar med and high tech technologies are not learning
+$setglobal cm_BCLearning  1      !! def = 0
 ***  cm_INCONV_PENALTY  on     !! def = on
 *** *RP* 2012-03-06 Flag to turn on inconvenience penalties, e.g. for air pollution
 $setglobal cm_INCONV_PENALTY  on         !! def = on
