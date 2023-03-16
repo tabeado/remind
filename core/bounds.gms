@@ -149,6 +149,23 @@ if (c_bioh2scen eq 0, !! no bioh2 technologies
 *  vm_cap.fx(t,regi,"bioh2",rlf)       = 0;
 );
 
+*TD* switching biochar technologies on 
+if (cm_biocharLowTech eq 0,             !! no biocharLowTech (default)
+  vm_deltaCap.up(t,regi,"biocharLowTech",rlf)$(t.val gt 2005) = 1.0e-6;
+);
+
+if (cm_biocharMedGasTech eq 0,             !! no biocharMedGasTech (default)
+  vm_deltaCap.up(t,regi,"biocharMedGasTech",rlf)$(t.val gt 2005)       = 1.0e-6;
+);
+
+if (cm_biocharMedBCTech eq 0,             !! no biocharMedBCTech (default)
+  vm_deltaCap.up(t,regi,"biocharMedBCTech",rlf)$(t.val gt 2005)       = 1.0e-6;
+);
+
+if (cm_biocharHighTech eq 0,             !! no biocharHighTech (default)
+  vm_deltaCap.up(t,regi,"biocharHighTech",rlf)$(t.val gt 2005)       = 1.0e-6;
+);
+
 ***--------------------------------------------------------------------
 *RP no CCS should be used in a BAU run, and no CCS at all in 2010
 ***--------------------------------------------------------------------
@@ -282,7 +299,7 @@ loop(te$(sameas(te,"ngcc") OR sameas(te,"ngt")),
 *** RP: turned off in March 2018, as it produces substantial negative side-effects (requiring strong early retirement in 2010, which influences the future investments even in Reference scenarios)
 *** vm_emiTe.up("2010",regi,"co2") = p_boundEmi("2010",regi) ;
 
-*** lower bound on stored CO2
+*** lower bound on captured CO2
 vm_emiTe.lo(ttot,regi,"cco2") = 0;
 
 *** -------------------------------------------------------
