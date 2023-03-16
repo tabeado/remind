@@ -68,6 +68,8 @@ q30_pebiolc_costs(ttot,all_regi)   "MAgPIE emulator: calculates the costs of peb
 q30_priceshift                     "Calculates shift factor by minimizing least squares of price differences between MAgPIE output and MAgPIE emulator"
 q30_limitXpBio(ttot,all_regi)      "Only purpose grown bioenergy may be exported, no residues"
 q30_costAdj(ttot,all_regi)         "Improve convergence penalizing deviations from last coupling iteration"
+q30_feedstockMatchingPurposeGrownBiomass(ttot,all_regi) "Use only purpose grown biomass (not residues) in every technology in teBioPebiolcPurposeGrown"
+q30_feedstockMatchingResidueBiomass(ttot,all_regi) "Use only residues (not purpose grown biomass) in every technology in teBioPebiolcResidues"
 q30_limitTeBio(ttot,all_regi)      "Limit BECCS in policy runs relative to reference scenario"
 q30_BioPEProdTotal(ttot,all_regi)  "Calculate total domestic PE biomass production"
 ;
