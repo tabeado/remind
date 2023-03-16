@@ -223,6 +223,8 @@ fm_dataglob("incolearn",te)          = sm_D2015_2_D2005 * fm_dataglob("incolearn
 fm_dataglob("omv",te)                = sm_D2015_2_D2005 * fm_dataglob("omv",te);
 p_inco0(ttot,regi,te)               = sm_D2015_2_D2005 * p_inco0(ttot,regi,te);
 
+
+
 *RP* rescale the global CSP investment costs in REMIND: Originally we assume a SM3/12h setup, while the cost data from IEA for the short term seems rather based on a SM2/6h setup (with 40% average CF)
 *** Accordingly, also decrease long-term costs in REMIND to 0.7 of the current values
 fm_dataglob("inco0","csp")              = 0.7 * fm_dataglob("inco0","csp");
@@ -261,6 +263,23 @@ fm_dataglob("inco0",te)              = sm_DpKW_2_TDpTW       * fm_dataglob("inco
 fm_dataglob("incolearn",te)          = sm_DpKW_2_TDpTW       * fm_dataglob("incolearn",te);
 fm_dataglob("omv",te)                = s_DpKWa_2_TDpTWa      * fm_dataglob("omv",te);
 p_inco0(ttot,regi,te)               = sm_DpKW_2_TDpTW       * p_inco0(ttot,regi,te);
+
+*TD* adjust learning factor for biochar technologies if biochar is learning or not
+$IFTHEN.cm_BCLearning %cm_BCLearning% == "0"
+fm_dataglob("incolearn","biocharHighTech") = 0;
+fm_dataglob("learn","biocharHighTech") = 0;
+fm_dataglob("incolearn","biocharMedGasTech") = 0;
+fm_dataglob("learn","biocharMedGasTech") = 0;
+fm_dataglob("incolearn","biocharMedBCTech") = 0;
+fm_dataglob("learn","biocharMedBCTech") = 0;
+$ENDIF.cm_BCLearning
+
+*TD* adjust operating cost of biochar Technologies if selling price beyond CO2 certificate is assumed
+$IFTHEN.cm_biocharRevenue %cm_biocharRevenue% == 1
+fm_dataglob("omv","biocharMedGasTech") = fm_dataglob("omv","biocharMedGasTech")- cm_biocharRevenueValue;
+fm_dataglob("omv","biocharMedBCTech") = fm_dataglob("omv","biocharMedBCTech")- cm_biocharRevenueValue;
+fm_dataglob("omv","biocharLowTech") = fm_dataglob("omv","biocharLowTech")- cm_biocharRevenueValue;
+$ENDIF.cm_biocharRevenue
 
 
 table fm_dataemiglob(all_enty,all_enty,all_te,all_enty)  "read-in of emissions factors co2,cco2"
@@ -528,6 +547,17 @@ loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te),
 );
 $ENDIF.tech_earlyreti
 
+*TD* Set capacity factors for biochar technologies. THIS NEEDS TO BE CHECKED & ADJUSTED.
+pm_cf(t,regi,"biocharLowTech" ) = 0.9;
+pm_cf(t,regi,"biocharMedGasTech" ) = 0.9;
+pm_cf(t,regi,"biocharMedBCTech" ) = 0.9;
+pm_cf(t,regi,"biocharHighTech") = 0.9;
+pm_cf(t,regi,"biochar4soil"   ) = 1.0;
+
+*TD* regional matching: OECD regions are not allowed to use low tech biochar
+if (cm_biocharRegionalMatching EQ 1, 
+  pm_cf(t,regiOECD,"biocharLowTech") = 0;
+);
 
 
 *SB* Time-dependent early retirement rates in Baseline scenarios
