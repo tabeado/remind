@@ -694,7 +694,8 @@ q_emiCdrAll(t,regi)..
   !! net negative emissions from co2luc
   -  p_macBaseMagpieNegCo2(t,regi)
        !! negative emissions from the cdr module that are not stored geologically
-       -       (vm_emiCdr(t,regi,"co2") + sum(teCCS2rlf(te,rlf), vm_ccs_cdr(t,regi,"cco2","ico2","ccsinje",rlf)))
+  !! negative emissions from biochar
+  -   sum(emiBiochar2te(enty,enty2,te,enty3),vm_emiTeDetail(t,regi,enty,enty2,te,enty3)) 
 ;
 
 
