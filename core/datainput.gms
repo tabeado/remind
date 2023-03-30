@@ -279,6 +279,7 @@ $IFTHEN.cm_biocharRevenue %cm_biocharRevenue% == 1
 fm_dataglob("omv","biocharMedGasTech") = fm_dataglob("omv","biocharMedGasTech")- cm_biocharRevenueValue;
 fm_dataglob("omv","biocharMedBCTech") = fm_dataglob("omv","biocharMedBCTech")- cm_biocharRevenueValue;
 fm_dataglob("omv","biocharLowTech") = fm_dataglob("omv","biocharLowTech")- cm_biocharRevenueValue;
+fm_dataglob("omv","biocharHighTech") = fm_dataglob("omv","biocharHighTech")- cm_biocharRevenueValue;
 $ENDIF.cm_biocharRevenue
 
 
