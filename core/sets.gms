@@ -1522,11 +1522,7 @@ teFosNoCCS(all_te)  "fossil technologies without CCS"
 
 teBioPebiolcPurposegrown(all_te)      "biomass technologies using purpose grown pebiolc"
 /
-        biochp
-        biohp
-        bioigcc
         bioigccc
-        biogas
         biogasc
         bioftrec
         bioftcrec
@@ -1536,9 +1532,13 @@ teBioPebiolcPurposegrown(all_te)      "biomass technologies using purpose grown 
 /
 
 teBioPebiolcResidues(all_te)      "biomass technologies using pebiolc from residues"
-/
+/    
         biotr
         biotrmod
+        biochp
+        biohp
+        bioigcc
+        biogas
         biocharLowTech
         biocharMedBCTech
         biocharMedGasTech
@@ -1549,6 +1549,14 @@ teBioPebiolc(all_te)    "biomass technologies using pebiolc"
 /      
         set.teBioPebiolcPurposeGrown       
         set.teBioPebiolcResidues
+/
+
+teBECCS(all_te)
+/
+        bioigccc
+        biogasc
+        bioftcrec
+        bioh2c
 /
 
 teNoTransform(all_te) "all technologies that do not transform energy but still have investment and O&M costs (like storage or grid)"

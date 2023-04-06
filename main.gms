@@ -659,9 +659,10 @@ parameter
 parameter
   cm_feedstockMatchingBiomass    "feedstock matching of purpose grown biomass vs residues, see teBioPebiolcPurposeGrown and teBioPebiolcResidues"
 *** (0): off
-*** (1): tech in teBioPebiolcPurposeGrown cannot demand more pebiolc than available purpose grown biomass and no residues; 
+*** (1): "only BECCS" tech in teBECCS cannot demand more pebiolc than available purpose grown biomass (i.e. cannot demand residues)
+*** (2): "full for BE+CCS" tech in teBioPebiolcPurposeGrown cannot demand more pebiolc than available purpose grown biomass (i.e. cannot demand residues); 
 ***      i.e., vm_fuExtr(t,regi,"pebiolc","1") +/- trade
-*** (2): (1) and tech in teBioPebiolcResidues cannot demand more pebiolc than available biomass residues (i.e. no purpose grown);
+*** (3): (2) and tech in teBioPebiolcResidues cannot demand more pebiolc than available biomass residues (i.e. no purpose grown);
 ***      i.e., vm_fuExtr(t,regi,"pebiolc","2"); 
 ;
   cm_feedstockMatchingBiomass = 0; !! def = 0
@@ -699,7 +700,7 @@ cm_biocharHighTech = 0; !! def = 0
 *'
 
 parameter
- cm_biocharRevenue          "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+ cm_biocharRevenue            	"switch whether biochar revenue is modelled or not"
 ;
  cm_biocharRevenue = 0; !! def = 0
 *'
