@@ -150,20 +150,37 @@ if (c_bioh2scen eq 0, !! no bioh2 technologies
 );
 
 *TD* switching biochar technologies on 
-if (cm_biocharLowTech eq 0,             !! no biocharLowTech (default)
+if (cm_biocharLowTech eq 0,             !! 0 = no biocharLowTech (default)
   vm_deltaCap.up(t,regi,"biocharLowTech",rlf)$(t.val gt 2005) = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharLowTech",rlf)$(t.val le 2020) =  1.0e-4*1.2;  
 );
 
-if (cm_biocharMedGasTech eq 0,             !! no biocharMedGasTech (default)
+if (cm_biocharMedGasTech eq 0,             !! 0 = no biocharMedGasTech (default)
   vm_deltaCap.up(t,regi,"biocharMedGasTech",rlf)$(t.val gt 2005)       = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharMedGasTech",rlf)$(t.val le 2020) = 1.0e-4*1.2;  
+   vm_cap.lo("2020","EUR","biocharMedGasTech",rlf) = 2.0e-5;
+   vm_cap.lo("2020","USA","biocharMedGasTech",rlf) = 2.0e-5; 
+   vm_cap.up("2020","CAZ","biocharMedGasTech",rlf) = 2.0e-5;
+   vm_cap.lo("2020","CHA","biocharMedGasTech",rlf) = 1.0e-4; 
 );
 
-if (cm_biocharMedBCTech eq 0,             !! no biocharMedBCTech (default)
+*TD* If turned on, the current upper limit for all but CAZ due to overproduction there is set at 120% 
+* of the actual highest level observed in CHA in 2020
+if (cm_biocharMedBCTech eq 0,             !! 0 = no biocharMedBCTech (default). 
   vm_deltaCap.up(t,regi,"biocharMedBCTech",rlf)$(t.val gt 2005)       = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharMedBCTech",rlf)$(t.val le 2020) = 1.0e-4*1.2;
+   vm_cap.lo("2020","EUR","biocharMedBCTech",rlf) = 2.0e-5;
+   vm_cap.lo("2020","USA","biocharMedBCTech",rlf) = 2.0e-5; 
+   vm_cap.up("2020","CAZ","biocharMedBCTech",rlf) = 2.0e-5;
+   vm_cap.lo("2020","CHA","biocharMedBCTech",rlf) = 1.0e-4;
+    
 );
 
 if (cm_biocharHighTech eq 0,             !! no biocharHighTech (default)
-  vm_deltaCap.up(t,regi,"biocharHighTech",rlf)$(t.val gt 2005)       = 1.0e-6;
+  vm_deltaCap.up(t,regi,"biocharHighTech",rlf)$(t.val gt 2005)       = 1.0e-6; 
 );
 
 ***--------------------------------------------------------------------
