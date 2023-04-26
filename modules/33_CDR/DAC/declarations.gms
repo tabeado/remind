@@ -8,7 +8,7 @@
 parameters
 *AnM* kWh/tCO2 = 1/278 * GJ/tCO2 = 1/278 * EJ/Gt CO2 = 1/278 * 44/12 EJ/Gt C. Numbers from Beutler et al. 2019 (Climeworks)
 p33_dac_fedem_el(all_enty)           "specific electricity demand for direct air capture [EJ per Gt of C captured] - ventilation"
-p33_dac_fedem_heat(all_enty)         "specific heat demand for direct air capture [EJ per Gt of C captured] - absorption material recovery"
+p33_dac_fedem_heat(all_regi,all_enty)         "specific heat demand for direct air capture [EJ per Gt of C captured] - absorption material recovery"
 ;
 
 variables
@@ -22,7 +22,7 @@ v33_DacFEdemand_heat(ttot,all_regi,all_enty)        "DAC FE heat demand [TWa]"
 ;
 
 equations
-q33_DacFEdemand_heat(ttot,all_regi,all_enty)        "calculates DAC FE demand for heat"
+q33_DacFEdemand_heat(ttot,all_regi)        "calculates DAC FE demand for heat"
 q33_DacFEdemand_el(ttot,all_regi,all_enty)          "calculates DAC FE demand for electricity"
 q33_otherFEdemand(ttot,all_regi,all_enty)           "calculates final energy demand from no transformation technologies (e.g. enhanced weathering)"
 q33_capconst_dac(ttot,all_regi)                     "calculates amount of carbon captured"

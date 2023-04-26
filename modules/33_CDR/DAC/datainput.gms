@@ -10,10 +10,23 @@
 !!fe demand electricity for ventilation
 p33_dac_fedem_el("feels") = 5.28;
 !!fe demand heat for material recovery
-p33_dac_fedem_heat("fehes") = 21.12;
-p33_dac_fedem_heat("fegas") = 21.12;
-p33_dac_fedem_heat("feh2s") = 21.12;
-p33_dac_fedem_heat("feels") = 21.12;
+p33_dac_fedem_heat(regi,"fehes") = 21.12;
+p33_dac_fedem_heat(regi,"fegas") = 21.12;
+p33_dac_fedem_heat(regi,"feh2s") = 21.12;
+p33_dac_fedem_heat(regi,"feels") = 21.12;
+!!p33_dac_fedem_heat("MEA","feels") = 13.82;
+!!p33_dac_fedem_heat("SSA","feels") = 15.01;
+!!p33_dac_fedem_heat("IND","feels") = 15.86;
+!!p33_dac_fedem_heat("LAM","feels") = 16.70;
+!!p33_dac_fedem_heat("OAS","feels") = 16.91;
+!!p33_dac_fedem_heat("CHA","feels") = 17.30;
+!!p33_dac_fedem_heat("USA","feels") = 18.62;
+!!p33_dac_fedem_heat("JPN","feels") = 18.63;
+!!p33_dac_fedem_heat("EUR","feels") = 18.82;
+!!p33_dac_fedem_heat("CAZ","feels") = 20.20;
+!!p33_dac_fedem_heat("REF","feels") = 21.18;
+!!p33_dac_fedem_heat("NEU","feels") = 23.08;
+
 *** FS: sensitivity on DAC efficiency
 $if not "%cm_DAC_eff%" == "off" parameter p33_dac_fedem_fac(entyFeStat) / %cm_DAC_eff% /;
 $if not "%cm_DAC_eff%" == "off" p33_dac_fedem(entyFeStat) = p33_dac_fedem(entyFeStat) * p33_dac_fedem_fac(entyFeStat);
