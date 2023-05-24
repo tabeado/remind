@@ -6,13 +6,9 @@
 # |  Contact: remind@pik-potsdam.de
 
 require(data.table)
-require(iamc)
-require(rmndt)
 library(dplyr, warn.conflicts = FALSE)
 library(quitte)
 library(lucode2)
-library(magclass)
-library(magpie4)
 library(piamInterfaces)
 library(stringr) # str_sub, str_split
 library(tibble)
@@ -20,7 +16,7 @@ library(tidyr)
 
 options(warn = 1)
 
-model <- "REMIND 3.0"                            # modelname in final file
+model <- "REMIND 3.2"                          # modelname in final file
 removeFromScen <- ""                           # you can use regex such as: "_diff|_expoLinear"
 addToScen <- NULL                              # is added at the beginning
 
@@ -37,10 +33,10 @@ if (! exists("project")) {
 } else {
   message("# Overwrite settings with project settings for '", project, "'.")
   if ("TESTTHAT" %in% project) {
-    model <- "REMIND 3.1"
+    model <- "REMIND 3.2"
     mapping <- "AR6"
   } else if ("NGFS_v4" %in% project) {
-    model <- "REMIND-MAgPIE 3.1-4.6"
+    model <- "REMIND-MAgPIE 3.2-4.6"
     mapping <- c("AR6", "AR6_NGFS")
     iiasatemplate <- "../ngfs-phase-4-internal-workflow/definitions/variable/variables.yaml"
     removeFromScen <- "C_|_bIT|_bit|_bIt"
@@ -61,6 +57,17 @@ lucode2::readArgs("outputdirs", "filename_prefix", "outputFilename", "model",
 # variables to be deleted although part of the template
 temporarydelete <- NULL # example: c("GDP|MER", "GDP|PPP")
 
+### select mapping
+
+mappingFile <- NULL
+if (length(mapping) == 1 && file.exists(mapping)) {
+  mappingFile <- mapping
+  mapping <- NULL
+} else if (! all(mapping %in% names(templateNames())) || length(mapping) == 0) {
+  message("# Mapping = '", paste(mapping, collapse = ","), "' exists neither as file nor mapping name.")
+  mapping <- gms::chooseFromList(names(piamInterfaces::templateNames()), type = "mapping template")
+}
+
 ### define filenames
 
 outputFolder <- file.path("output", "export")
@@ -78,22 +85,6 @@ if (! exists("logFile")) logFile <- paste0(outputFilename, ".log")
 
 message("### Find various logs in ", logFile)
 withCallingHandlers({ # piping messages to logFile
-
-  if (length(mapping) == 1 && file.exists(mapping)) {
-    mappingFile <- mapping
-    mapping <- NULL
-  } else {
-    if (all(mapping %in% names(templateNames())) && length(mapping) > 0) {
-      mappingFile <- file.path(outputFolder, paste0(paste0(c("mapping", if (is.null(project)) mapping else project), collapse = "_"), ".csv"))
-    } else {
-      message("# Mapping = '", paste(mapping, collapse = ","), "' exists neither as file nor mapping name.")
-      mapping <- gms::chooseFromList(names(piamInterfaces::templateNames()))
-      mappingFile <- file.path(outputFolder, paste0(paste0(c("mapping", mapping), collapse = "_"), ".csv"))
-    }
-    generateMappingfile(templates = mapping, outputDirectory = NULL,
-                        fileName = mappingFile, model = model, logFile = logFile,
-                        iiasatemplate = if (file.exists(iiasatemplate)) iiasatemplate else NULL)
-  }
 
   message("\n### Generating ", OUTPUT_xlsx, ".")
   ### define filenames
@@ -135,7 +126,7 @@ withCallingHandlers({ # piping messages to logFile
   # message("\n### Generate joint mif, remind2 format: ", filename_remind2_mif)
   # write.mif(mifdata, filename_remind2_mif)
 
-  generateIIASASubmission(mifdata, mapping = NULL, model = model, mappingFile = mappingFile,
+  generateIIASASubmission(mifdata, mapping = mapping, model = model, mappingFile = mappingFile,
                           removeFromScen = removeFromScen, addToScen = addToScen,
                           outputDirectory = outputFolder,
                           logFile = logFile, outputFilename = basename(OUTPUT_xlsx),
