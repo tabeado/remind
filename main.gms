@@ -706,10 +706,17 @@ parameter
 *'
 
 parameter
- cm_biocharRevenueValue        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+ cm_biocharpriceMax        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
 ;
- cm_biocharRevenueValue = 0; !! def = 0
+ cm_biocharpriceMax = 0; !! def = 0
 *'
+
+parameter
+ cm_biocharpriceCoefficient        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+ cm_biocharpriceCoefficient = 0; !! def = 0
+*'
+
 parameter
   cm_startyear              "first optimized modelling time step [year]"
 ;

@@ -276,12 +276,9 @@ $ENDIF.cm_BCLearning
 
 *TD* adjust operating cost of biochar Technologies if selling price beyond CO2 certificate is assumed
 $IFTHEN.cm_biocharRevenue %cm_biocharRevenue% == 1
-fm_dataglob("omv","biocharMedGasTech") = fm_dataglob("omv","biocharMedGasTech")- cm_biocharRevenueValue;
-fm_dataglob("omv","biocharMedBCTech") = fm_dataglob("omv","biocharMedBCTech")- cm_biocharRevenueValue;
-fm_dataglob("omv","biocharLowTech") = fm_dataglob("omv","biocharLowTech")- cm_biocharRevenueValue;
-fm_dataglob("omv","biocharHighTech") = fm_dataglob("omv","biocharHighTech")- cm_biocharRevenueValue;
+fm_dataglob("priceMax","biochar4soil") = cm_biocharpriceMax;
+fm_dataglob("priceCoefficient","biochar4soil") = cm_biocharpriceCoefficient;
 $ENDIF.cm_biocharRevenue
-
 
 table fm_dataemiglob(all_enty,all_enty,all_te,all_enty)  "read-in of emissions factors co2,cco2"
 $include "./core/input/generisdata_emi.prn"

@@ -1855,6 +1855,16 @@ entyFeTrans(all_enty) "final energy types from transport sector"
 
 feForCes(all_enty)   "limit q_balFeForCes to entyFe in fe2ppfEn"
 
+teSpecificRevenue(all_te) "artificial demand technologies for products  that are not yet demanded elsewhere in the model"
+/       
+        biochar4soil          "use biochar for soil amendment, demands TWa of biochar"
+/
+
+entySpecificRevenue(all_enty)
+/
+        sebiochar
+/
+
 emi(all_enty)      "types of emissions, these emissions are given to the climate module"
 
 emiTe(all_enty)   "types of climate-relevant energy emissions for climate coupling and reporting"
@@ -2094,6 +2104,11 @@ entyFeSec2entyFeDetail(all_enty,emi_sectors,all_enty) "final energy (stationary)
 ***  feh2s.indst.feh2i
 /
 
+SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue)
+/
+        sebiochar.biochar4soil
+/
+
 all_emiMkt      "emission markets"
 /	ETS     "ETS emission market"
 	ES      "Effort sharing emission market"
@@ -2288,6 +2303,8 @@ char            "characteristics of technologies"
   elh2VREcapRatio    "ratio of elh2VRE capacity to storage technology capacity"
   h2turbVREcapRatio  "ratio of h2turbVRE capacity to storage technology capacity"
   batteryVREcapRatio  "ratio of battery capacity to storage technology capacity"
+  priceMax            "prohibitive price of specific Revenue goods, at which there is no demand, in 2015trilUSD"
+  priceCoefficient    "slope of the demand curve, currently only linear price development"
 /
 
 ***-----------------------------------------------------------------------------
