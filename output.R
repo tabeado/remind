@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# |  (C) 2006-2022 Potsdam Institute for Climate Impact Research (PIK)
+# |  (C) 2006-2023 Potsdam Institute for Climate Impact Research (PIK)
 # |  authors, and contributors see CITATION.cff file. This file is part
 # |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 # |  AGPL-3.0, you are granted additional permissions described in the
@@ -278,7 +278,7 @@ if (comp %in% c("comparison", "export")) {
               # send the output script to slurm
               logfile <- paste0(outputdir, "/log_", rout, ".txt")
               slurmcmd <- paste0("sbatch ", slurmConfig, " --job-name=", logfile, " --output=", logfile,
-                                 " --mail-type=END --comment=REMIND --wrap=\"Rscript scripts/output/single/", rout,
+                                 " --mail-type=END --comment=", rout, " --wrap=\"Rscript scripts/output/single/", rout,
                                  ".R  outputdir=", outputdir, "\"")
               message("Sending to slurm: ", name, ". Find log in ", logfile)
               system(slurmcmd)
