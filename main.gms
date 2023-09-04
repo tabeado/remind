@@ -669,6 +669,62 @@ parameter
 ***       capacities are allowed, is 2025 or cm_startyear if larger.
 *'
 parameter
+  cm_feedstockMatchingBiomass    "feedstock matching of purpose grown biomass vs residues, see teBioPebiolcPurposeGrown and teBioPebiolcResidues"
+*** (0): off
+*** (1): "only BECCS" tech in teBECCS cannot demand more pebiolc than available purpose grown biomass (i.e. cannot demand residues)
+*** (2): "full for BE+CCS" tech in teBioPebiolcPurposeGrown cannot demand more pebiolc than available purpose grown biomass (i.e. cannot demand residues); 
+***      i.e., vm_fuExtr(t,regi,"pebiolc","1") +/- trade
+*** (3): (2) and tech in teBioPebiolcResidues cannot demand more pebiolc than available biomass residues (i.e. no purpose grown);
+***      i.e., vm_fuExtr(t,regi,"pebiolc","2"); 
+;
+  cm_feedstockMatchingBiomass = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharKonTiki          "capacity factor of low tech biochar production. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biocharKonTiki = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharElec           "capacity factor of medium tech biochar production that optizes C in biochar and produces electricity. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+cm_biocharElec = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharHeat           "capacity factor of medium tech biochar production that optizes C in biochar and produces heat.  Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+cm_biocharHeat = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharOnly          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+cm_biocharOnly = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharRevenue            	"switch whether biochar revenue is modelled or not"
+;
+ cm_biocharRevenue = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharpriceMax        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+ cm_biocharpriceMax = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharpriceCoefficient        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+ cm_biocharpriceCoefficient = 0; !! def = 0
+*'
+
+
+
+parameter
   cm_startyear              "first optimized modelling time step [year]"
 ;
   cm_startyear        = 2005;      !! def = 2005 for a baseline  !! regexp = 20[0-9](0|5)
