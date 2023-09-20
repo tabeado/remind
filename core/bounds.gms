@@ -149,6 +149,45 @@ if (c_bioh2scen eq 0, !! no bioh2 technologies
 *  vm_cap.fx(t,regi,"bioh2",rlf)       = 0;
 );
 
+*TD* switch biochar technologies off/on
+if (cm_biocharKonTiki eq 0,             !! 0 = no biocharKonTiki (default)
+  vm_deltaCap.up(t,regi,"biocharKonTiki",rlf)$(t.val gt 2005) = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharKonTiki",rlf)$(t.val le 2020) =  1.0e-4*1.2;  
+);
+
+if (cm_biocharElec eq 0,             !! 0 = no biocharElec (default)
+  vm_deltaCap.up(t,regi,"biocharElec",rlf)$(t.val gt 2005)       = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharElec",rlf)$(t.val le 2020) = 1.0e-4*1.2;  
+   vm_cap.lo("2020","EUR","biocharElec",rlf) = 2.0e-5;
+   vm_cap.lo("2020","USA","biocharElec",rlf) = 2.0e-5; 
+   vm_cap.up("2020","CAZ","biocharElec",rlf) = 2.0e-5;
+   vm_cap.lo("2020","CHA","biocharElec",rlf) = 1.0e-4; 
+);
+
+*TD* If turned on, the current upper limit for all but CAZ due to overproduction there is set at 120% 
+* of the actual highest level observed in CHA in 2020
+if (cm_biocharHeat eq 0,             !! 0 = no biocharHeat (default). 
+  vm_deltaCap.up(t,regi,"biocharHeat",rlf)$(t.val gt 2005)       = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharHeat",rlf)$(t.val le 2020) = 1.0e-4*1.2;
+   vm_cap.lo("2020","EUR","biocharHeat",rlf) = 2.0e-5;
+   vm_cap.lo("2020","USA","biocharHeat",rlf) = 2.0e-5; 
+   vm_cap.up("2020","CAZ","biocharHeat",rlf) = 2.0e-5;
+   vm_cap.lo("2020","CHA","biocharHeat",rlf) = 1.0e-4;
+);
+
+if (cm_biocharOnly eq 0,             !! 0 = no biocharOnly (default). 
+  vm_deltaCap.up(t,regi,"biocharOnly",rlf)$(t.val gt 2005)       = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharOnly",rlf)$(t.val le 2020) = 1.0e-4*1.2;
+   vm_cap.lo("2020","EUR","biocharOnly",rlf) = 2.0e-5;
+   vm_cap.lo("2020","USA","biocharOnly",rlf) = 2.0e-5; 
+   vm_cap.up("2020","CAZ","biocharOnly",rlf) = 2.0e-5;
+   vm_cap.lo("2020","CHA","biocharOnly",rlf) = 1.0e-4;
+);
+
 ***--------------------------------------------------------------------
 *RP no CCS should be used in a BAU run, and no CCS at all in 2010
 ***--------------------------------------------------------------------
@@ -285,7 +324,7 @@ loop(te$(sameas(te,"ngcc") OR sameas(te,"ngt") OR sameas(te,"gaschp")),
 *** RP: turned off in March 2018, as it produces substantial negative side-effects (requiring strong early retirement in 2010, which influences the future investments even in Reference scenarios)
 *** vm_emiTe.up("2010",regi,"co2") = p_boundEmi("2010",regi) ;
 
-*** lower bound on stored CO2
+*** lower bound on captured CO2
 vm_emiTe.lo(ttot,regi,"cco2") = 0;
 
 *** -------------------------------------------------------
