@@ -258,6 +258,11 @@ fm_dataglob("incolearn",te)          = sm_DpKW_2_TDpTW       * fm_dataglob("inco
 fm_dataglob("omv",te)                = s_DpKWa_2_TDpTWa      * fm_dataglob("omv",te);
 p_inco0(ttot,regi,te)               = sm_DpKW_2_TDpTW       * p_inco0(ttot,regi,te);
 
+*TD* adjust operating cost of biochar Technologies if selling price beyond CO2 certificate is assumed
+$IFTHEN.cm_biocharRevenue %cm_biocharRevenue% == 1
+fm_dataglob("priceMax","biochar4soil") = cm_biocharpriceMax;
+fm_dataglob("priceCoefficient","biochar4soil") = cm_biocharpriceCoefficient;
+$ENDIF.cm_biocharRevenue
 
 table fm_dataemiglob(all_enty,all_enty,all_te,all_enty)  "read-in of emissions factors co2,cco2"
 $include "./core/input/generisdata_emi.prn"
@@ -535,7 +540,11 @@ loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te),
 );
 $ENDIF.tech_earlyreti
 
-
+*TD* Set capacity factors for biochar technologies. THIS NEEDS TO BE CHECKED & ADJUSTED.
+pm_cf(t,regi,"biocharKonTiki" ) = 0.9;
+pm_cf(t,regi,"biocharElec" ) = 0.9;
+pm_cf(t,regi,"biocharHeat" ) = 0.9;
+pm_cf(t,regi,"biocharOnly") = 0.9;
 
 *SB* Time-dependent early retirement rates in Baseline scenarios
 $ifthen.Base_Cprice %carbonprice% == "none"
