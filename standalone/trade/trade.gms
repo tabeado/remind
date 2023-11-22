@@ -472,8 +472,6 @@ $setglobal c_testOneRegi_region  EUR       !! def = EUR
 $setglobal cm_techcosts  REG       !! def = REG
 $setglobal cm_regNetNegCO2  on       !! def = on
 
-$setglobal cm_calibration_FE  off      !! def = off
-
 $setglobal cm_eni  off!! def = off
 $setglobal cm_enb  off!! def = off
 
@@ -500,8 +498,6 @@ $setglobal cm_renewables_floor_cost  off !! def = off
 $setglobal cm_DAC_eff  off !! def = off 
 
 $setglobal cm_sehe_upper  off !! def = off 
-
-$setglobal cm_fixCO2price  off !! def = off
 
 $setglobal cm_feShareLimits  off  !! def = off
 
