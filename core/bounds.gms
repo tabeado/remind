@@ -149,6 +149,48 @@ if (c_bioh2scen eq 0, !! no bioh2 technologies
 *  vm_cap.fx(t,regi,"bioh2",rlf)       = 0;
 );
 
+*TD* switch biochar technologies off/on
+if (cm_biocharKonTiki eq 0,             !! 0 = no biocharKonTiki (default)
+  vm_deltaCap.up(t,regi,"biocharKonTiki",rlf)$(t.val gt 2005) = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharKonTiki",rlf)$(t.val le 2020) =  1.0e-4*1.2;  
+);
+
+if (cm_biocharElec eq 0,             !! 0 = no biocharElec (default)
+  vm_deltaCap.up(t,regi,"biocharElec",rlf)$(t.val gt 2005)       = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharElec",rlf)$(t.val le 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
+   vm_cap.up(t,"CHA","biocharElec",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biochar in 2022 than EUR
+   vm_cap.up(t,"EUR","biocharElec",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
+   vm_cap.up(t,"USA","biocharElec",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
+);
+
+*TD* If turned on, the current upper limit for all but CAZ due to overproduction there is set at 120% 
+* of the actual highest level observed in CHA in 2020
+if (cm_biocharHeat eq 0,             !! 0 = no biocharHeat (default). 
+  vm_deltaCap.up(t,regi,"biocharHeat",rlf)$(t.val gt 2005)       = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharHeat",rlf)$(t.val le 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
+   vm_cap.up(t,"CHA","biocharHeat",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biochar in 2022 than EUR
+   vm_cap.up(t,"EUR","biocharHeat",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
+   vm_cap.up(t,"USA","biocharHeat",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
+   vm_cap.up("2025",regi,"biocharHeat",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","CHA","biocharHeat",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","EUR","biocharHeat",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","USA","biocharHeat",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+);
+
+if (cm_biocharOnly eq 0,             !! 0 = no biocharOnly (default). 
+  vm_deltaCap.up(t,regi,"biocharOnly",rlf)$(t.val gt 2005)       = 1.0e-6;
+  else
+   vm_cap.up(t,regi,"biocharOnly",rlf)$(t.val le 2020) = 1.0e-4*1.2;
+   vm_cap.lo("2020","EUR","biocharOnly",rlf) = 2.0e-5;
+   vm_cap.lo("2020","USA","biocharOnly",rlf) = 2.0e-5; 
+   vm_cap.up("2020","CAZ","biocharOnly",rlf) = 2.0e-5;
+   vm_cap.lo("2020","CHA","biocharOnly",rlf) = 1.0e-4;
+);
+
+
 ***--------------------------------------------------------------------
 *RP no CCS should be used in a BAU run, and no CCS at all in 2010
 ***--------------------------------------------------------------------

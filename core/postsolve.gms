@@ -154,6 +154,10 @@ display s_actualbudgetco2;
 		);
 		display sm_budgetCO2eqGlob;
 	elseif cm_emiscen eq 9,
+
+  AB HIER MODELLIEREN
+    - sm_global Budget_dev => das regionalisieren
+    - actualbudget + c_budget regionalisieren
 		display pm_taxCO2eq;
 	    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND s_actualbudgetco2 > 0 AND abs(c_budgetCO2from2020 - s_actualbudgetco2) ge 0.5,   !!only for optimal iterations, and not after the last one, and only if budget still possitive, and only if target not yet reached
 *** make sure that iteration converges: 
@@ -161,7 +165,7 @@ display s_actualbudgetco2;
 			if(ord(iteration) lt 3 or c_budgetCO2from2020 > 1200,
 			    !! change in CO2 price through adjustment: new price - old price; needed for adjustment option 2
 				pm_taxCO2eq_iterationdiff(t,regi) = pm_taxCO2eq(t,regi) * min(max((s_actualbudgetco2/c_budgetCO2from2020)** (25/(2 * iteration.val + 23)),0.5+iteration.val/208),2 - iteration.val/102)  - pm_taxCO2eq(t,regi);
-				pm_taxCO2eq(t,regi) = pm_taxCO2eq(t,regi) + pm_taxCO2eq_iterationdiff(t,regi) ;
+				pm_taxCO2eq(t,regi) = pm_taxCO2eq(t,regi) + pm_taxCO2eq_iterationdiff(t,regi) ; Triangulierung: lineare approximation von actualbudget/budget
 *** then switch to triangle-approximation based on last two iteration data points			
 			else
 			    !! change in CO2 price through adjustment: new price - old price; the two instances of "pm_taxCO2eq" cancel out -> only the difference term

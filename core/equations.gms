@@ -105,6 +105,30 @@ q_costOM(t,regi)..
   + vm_omcosts_cdr(t,regi)
 ;
 
+**---------------------------------------------------------------------------
+*' Revenue from specific products which are not demanded elsewhere
+***---------------------------------------------------------------------------
+* Demand may come from different places. To be adjusted once carbonFibre implementation is clear.
+q_demSpecificGoodsCalculation(t,regi,SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+  v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue)
+  =e=
+  vm_demSeOth(t,regi,entySpecificRevenue,teSpecificRevenue)
+;
+
+q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+    v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+    =e=
+    pm_data(regi,"priceMax", teSpecificRevenue) 
+    *exp(-1*pm_data(regi,"priceCoefficient", teSpecificRevenue) * v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue))
+;
+
+qm_revenueOfSpecificGoods(t, regi)..
+    vm_revenueFromSpecificGoods(t, regi)
+    =e= 
+    sum((entySpecificRevenue,teSpecificRevenue)$SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue), 
+     v_priceOfSpecificGoods(t,regi,teSpecificRevenue) * v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue))
+;
+
 ***---------------------------------------------------------------------------
 *' Energy balance equations equate the production of and demand for each primary, secondary and final energy.
 *' The balance equation for primary energy equals supply of primary energy demand on primary energy.
@@ -373,7 +397,7 @@ qm_deltaCapCumNet(ttot,regi,teLearn)$(ord(ttot) lt card(ttot) AND pm_ttot_val(tt
   vm_capCum(ttot+1,regi,teLearn)
   =e=
   sum(te2rlf(teLearn,rlf),
-         (pm_ts(ttot) / 2 * vm_deltaCap(ttot,regi,teLearn,rlf)) + (pm_ts(ttot+1) / 2 * vm_deltaCap(ttot+1,regi,teLearn,rlf))
+           (pm_ts(ttot+1) * vm_deltaCap(ttot+1,regi,teLearn,rlf))
   )
   +
   vm_capCum(ttot,regi,teLearn);
@@ -693,8 +717,10 @@ q_emiCdrAll(t,regi)..
         vm_co2capture(t,regi,"cco2","ico2","ccsinje",rlf))+sm_eps))
   !! net negative emissions from co2luc
   -  p_macBaseMagpieNegCo2(t,regi)
-       !! negative emissions from the cdr module that are not stored geologically
-       -       (vm_emiCdr(t,regi,"co2") + sum(teCCS2rlf(te,rlf), vm_ccs_cdr(t,regi,"cco2","ico2","ccsinje",rlf)))
+  !! negative emissions from the cdr module that are not stored geologically
+  - (vm_emiCdr(t,regi,"co2") + sum(teCCS2rlf(te,rlf), vm_ccs_cdr(t,regi,"cco2","ico2","ccsinje",rlf)))
+  !! negative emissions from biochar
+  -   sum(emiBiochar2te(enty,enty2,te,enty3), vm_emiTeDetail(t,regi,enty,enty2,te,enty3)) 
 ;
 
 

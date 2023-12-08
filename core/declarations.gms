@@ -430,6 +430,10 @@ vm_demFeForEs(ttot,all_regi,all_enty,all_esty,all_teEs)     "Final energy which 
 vm_prodEs(ttot,all_regi,all_enty,all_esty,all_teEs)          "Energy services (unit determined by conversion factor pm_fe2es)."
 vm_transpGDPscale(ttot,all_regi)                            "dampening factor to align edge-t non-energy transportation costs with historical GDP data"  
 
+* revenue calculation
+v_demSpecificGoods(ttot,all_regi,all_enty,all_te)    "test"
+v_priceOfSpecificGoods(ttot, all_regi,all_te)        "Price in in tril$/TWa for products modelled that are not yet demanded elsewhere in the model, e.g. biochar, carbon fibre products"
+vm_revenueFromSpecificGoods(ttot, all_regi)          "Revenue in tril$ from products modelled that are not yet demanded elsewhere in the model, e.g. biochar, carbon fibre products"
 ;
 ***----------------------------------------------------------------------------------------
 ***                                   EQUATIONS
@@ -548,6 +552,10 @@ q_limitCapFeH2BI(ttot,all_regi,emi_sectors)               "capacity limit equati
 $IFTHEN.sehe_upper not "%cm_sehe_upper%" == "off"
 q_heat_limit(ttot,all_regi)  "equation to limit maximum level of secondary energy district heating and heat pumps use"
 $ENDIF.sehe_upper
+
+q_demSpecificGoodsCalculation(ttot,all_regi,all_enty,all_te) "derivation for the demand of specific goods as they might come from different places"
+q_priceOfSpecificGoods(ttot, all_regi, all_enty,all_te)   "e"
+qm_revenueOfSpecificGoods(ttot,all_regi)                      "e"
 
 ***----------------------------------------------------------------------------------------
 ***----------------------------------------------trade module------------------------------

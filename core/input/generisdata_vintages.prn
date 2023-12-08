@@ -72,7 +72,10 @@ $offtext
 26       1.0                                                      
 31       1.0                                                      
 36       1.0                                                      
-41       1.0                                                      
+41       1.0     
+
++      biocharElec  biocharHeat   biocharOnly   biocharKonTiki 
+1            1.0          1.0           1.0              1.0                                                 
 
 +       hydro          wind           spv         solhe           csp          elh2        geohdr         geohe     h2turb   h22ch4   MeOH
 1        5.0          10.0          10.0           4.5           1.0           1.0          10.0          10.0         1       1.0     1.0

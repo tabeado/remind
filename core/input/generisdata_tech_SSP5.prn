@@ -13,6 +13,8 @@ incolearn   Difference from inco0 to floor investment costs, given in $[2015] / 
 ccap0       Cumulated capacity in 2005 given in TW
 learn       Learning rate given in percent cost reduction per doubling of cumulated capacity
 luse        land use factor of solar technologies
+priceMax    prohibitive price of specific Revenue goods, at which there is no demand, in 2005trilUSD
+priceCoefficient    slope of the demand curve, currently only exponential price development
 $offtext
 
                    ngcc       ngccc         ngt       gastr      gaschp       gashp       gash2      gash2c       gasftrec    gasftcrec
@@ -53,6 +55,23 @@ eta                 1.00       0.95        0.35        0.72        0.39        0
 omf                            0.03        0.04        0.04        0.04        0.04        0.04        0.06        0.10        0.10        0.07        0.11        0.05        0.04        0.04
 omv                                       30.11       25.00       31.50       50.50       10.90       12.80       10.60       10.60       97.27       38.99        5.05                   10.60
 lifetime              35         35          40          40          40          40          40          40          35          35          35          20          20          35          35
+
++                  biocharKonTiki       biocharElec       biocharHeat      biocharOnly
+tech_stat                       0               2                  2                2
+inco0                           0            2337               2337             2000
+constrTme                       0               3                  3                3
+eta                          0.36            0.45               0.45             0.45
+omf                             0               0                  0                0
+omv                            20              78                 78               78
+lifetime                        1              20                 20               20
+incolearn                                     742                742              742
+learn                                        0.07               0.07             0.07
+ccap0                                     0.0000001           0.0000001        0.0000001
+
++                   biochar4soil
+lifetime                       1   
+priceMax                       0 
+priceCoefficient               0
 
 +                geohdr       geohe       hydro        wind       windoff        spv       solhe         csp
 tech_stat            1

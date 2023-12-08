@@ -174,6 +174,8 @@ elseif cm_VRE_supply_assumptions eq 3,
   );
 );
 
+fm_dataglob("inco0", "ccsinje") = cm_CCSinjeCAPEX;
+
 parameter p_inco0(ttot,all_regi,all_te)     "regionalized technology costs Unit: USD$/KW"
 /
 $ondelim
@@ -258,6 +260,12 @@ fm_dataglob("inco0",te)              = sm_DpKW_2_TDpTW       * fm_dataglob("inco
 fm_dataglob("incolearn",te)          = sm_DpKW_2_TDpTW       * fm_dataglob("incolearn",te);
 fm_dataglob("omv",te)                = s_DpKWa_2_TDpTWa      * fm_dataglob("omv",te);
 p_inco0(ttot,regi,te)               = sm_DpKW_2_TDpTW       * p_inco0(ttot,regi,te);
+
+*TD* adjust operating cost of biochar Technologies if selling price beyond CO2 certificate is assumed
+$IFTHEN.cm_biocharRevenue %cm_biocharRevenue% == 1
+fm_dataglob("priceMax","biochar4soil") = cm_biocharpriceMax;
+fm_dataglob("priceCoefficient","biochar4soil") = cm_biocharpriceCoefficient;
+$ENDIF.cm_biocharRevenue
 
 
 table fm_dataemiglob(all_enty,all_enty,all_te,all_enty)  "read-in of emissions factors co2,cco2"
@@ -536,7 +544,12 @@ loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te),
 );
 $ENDIF.tech_earlyreti
 
-
+*TD* Set capacity factors for biochar technologies. THIS NEEDS TO BE CHECKED & ADJUSTED.
+pm_cf(t,regi,"biocharKonTiki" ) = 0.9;
+pm_cf(t,regi,"biocharElec" ) = 0.9;
+pm_cf(t,regi,"biocharHeat" ) = 0.9;
+pm_cf(t,regi,"biocharOnly") = 0.9;
+pm_cf(t,regi,"biochar4soil") = 1;
 
 *SB* Time-dependent early retirement rates in Baseline scenarios
 $ifthen.Base_Cprice %carbonprice% == "none"
@@ -992,7 +1005,7 @@ p_adj_seed_reg(t,regi) = pm_gdp(t,regi) * 1e-4;
 
 loop(ttot$(ttot.val ge 2005),
   p_adj_seed_te(ttot,regi,te)                = 1.00;
-  p_adj_seed_te(ttot,regi,teCCS)             = 0.25;
+  p_adj_seed_te(ttot,regi,teCCS)             = 0.25; !!p_adj_seed_te(ttot,regi,"ccsinje")         = 0.25;
   p_adj_seed_te(ttot,regi,"igcc")            = 0.50;
   p_adj_seed_te(ttot,regi,"tnrs")            = 0.25;
   p_adj_seed_te(ttot,regi,"hydro")           = 0.25;
@@ -1007,7 +1020,7 @@ loop(ttot$(ttot.val ge 2005),
   p_adj_seed_te(ttot,regi,'apCarElT')        = 1.00;
   p_adj_seed_te(ttot,regi,'apCarDiEffT')     = 0.50;
   p_adj_seed_te(ttot,regi,'apCarDiEffH2T')   = 0.50;
-  p_adj_seed_te(ttot,regi,'dac')             = 0.25;
+  p_adj_seed_te(ttot,regi,'dac')             = 0.25; !!p_adj_seed_te(ttot,regi,'rockgrind')       = 1.00; !! leave it out for now to mimic biochar AdjC
   p_adj_seed_te(ttot,regi,'geohe')           = 0.33;
 
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
@@ -1026,6 +1039,9 @@ $ENDIF.WindOff
   p_adj_coeff(ttot,regi,"gaschp")          = 0.4;
   p_adj_coeff(ttot,regi,"coalchp")         = 0.5;
   p_adj_coeff(ttot,regi,"biochp")          = 0.55;
+  p_adj_coeff(ttot,regi,"biocharHeat")     = 0.65; !! like bioftrec; middle between teCCS and te
+  p_adj_coeff(ttot,regi,"biocharElec")     = 0.65;
+  p_adj_coeff(ttot,regi,"biocharOnly")     = 0.65;
   p_adj_coeff(ttot,regi,"coaltr")          = 0.1;
   p_adj_coeff(ttot,regi,"tnrs")            = 1.0;
   p_adj_coeff(ttot,regi,"hydro")           = 1.0;
@@ -1047,6 +1063,7 @@ $IFTHEN.WindOff %cm_wind_offshore% == "1"
 $ENDIF.WindOff
 
   p_adj_coeff(ttot,regi,"dac")             = 0.8;
+  p_adj_coeff(ttot,regi,"rockgrind")       = 0.65; !! same value as biochar tech
   p_adj_coeff(ttot,regi,'apCarH2T')        = 1.0;
   p_adj_coeff(ttot,regi,'apCarElT')        = 1.0;
   p_adj_coeff(ttot,regi,'apCarDiT')        = 1.0;
