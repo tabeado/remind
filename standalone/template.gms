@@ -82,7 +82,7 @@ $setGlobal power  IntC               !! def = IntC
 ***---------------------    33_cdr       ----------------------------------------
 $setGlobal CDR  DAC                   !! def = DAC
 ***---------------------    35_transport    -------------------------------------
-$setGlobal transport  complex         !! def = complex
+$setGlobal transport  edge_esm         !! def = edge_esm
 ***---------------------    36_buildings    -------------------------------------
 $setglobal buildings  simple          !! def = simple
 ***---------------------    37_industry    --------------------------------------
@@ -118,6 +118,7 @@ $setGlobal codePerformance  off       !! def = off
 
 ***--------------- declaration of parameters for switches ----------------------
 parameters
+cm_nash_mode          "mode for solving nash problem, (1): debug (2): parallel"
 cm_iteration_max      "number of Negishi iterations (up to 49)"
 cm_solver_try_max      "maximum number of inner iterations within one Negishi iteration (<10)"
 c_keep_iteration_gdxes   "save intermediate iteration gdxes"
@@ -135,7 +136,6 @@ cm_optimisticMAC     "assume optimistic Industry MAC from AR5 Ch. 10?"
 cm_CCS_cement        "CCS for cement sub-sector"
 cm_CCS_chemicals     "CCS for chemicals sub-sector"
 cm_CCS_steel         "CCS for steel sub-sector"
-c_solscen             "solar option choice"
 cm_bioenergy_SustTax    "level of the bioenergy sustainability tax in fraction of bioenergy price"
 cm_bioenergy_EF_for_tax "bioenergy emission factor that is used to derive a bioenergy tax [kgCO2 per GJ]"
 cm_maxProdBiolc         "bound on global pebiolc production including residues but excluding traditionally used biomass [EJ per yr]"
@@ -159,7 +159,6 @@ cm_rentdisccoal2      "[grades2poly] discount factor for the coal rent achieved 
 cm_rentconvcoal       "[grades2poly] number of years required to converge to the 2100 coal rent"
 c_cint_scen           "additional GHG emissions from mining fossil fuels"
 cm_so2tax_scen         "level of SO2 tax"
-cm_solwindenergyscen   "scenario for fluctuating renewables, 1 is reference, 2 is pessimistic with limits to fluctuating SE el share"
 c_techAssumptScen     "scenario for assumptions of energy technologies based on SSP scenarios, 1: SSP2 (default), 2: SSP1, 3: SSP5"
 c_ccsinjecratescen    "CCS injection rate factor, 0.5% by default yielding a 60 Mt per year IR"
 c_ccscapratescen      "CCS capture rate"
@@ -168,7 +167,7 @@ cm_iterative_target_adj "whether or not a tax or a budget target should be itera
 cm_gdximport_target   "whether or not the starting value for iteratively adjusted budgets, tax scenarios, or forcing targets (emiscen 5,6,8,9) should be read in from the input.gdx"
 cm_gs_ew              "grain size (for enhanced weathering, CDR module) [micrometre]"
 cm_LimRock             "limit amount of rock spread each year [Gt]"
-cm_expoLinear_yearStart "time at which carbon price increases lineraly instead of exponentially"
+cm_expoLinear_yearStart "time at which carbon price increases linearly instead of exponentially"
 
 c_budgetCO2FFI        "carbon budget for CO2 emissions from FFI (in GtCO2)"
 c_abtrdy              "first year in which advanced bio-energy technology are ready (unit is year; e.g. 2050)"
@@ -179,17 +178,17 @@ cm_damages_BurkeLike_specification      "empirical specification for Burke-like 
 cm_damages_BurkeLike_persistenceTime    " persistence time in years for Burke-like damage functions"
 cm_damages_SccHorizon               "Horizon for SCC calculation. Damages cm_damagesSccHorizon years into the future are internalized."
 cm_carbonprice_temperatureLimit "not-to-exceed temperature target in degree above pre-industrial"
-cm_frac_CCS          "tax on CCS to reflect risk of leakage, formulated as fraction of carbon price"
-cm_frac_NetNegEmi    "tax on CDR to reflect risk of overshooting, formulated as fraction of carbon price"
+cm_frac_CCS          "tax on carbon transport & storage (ccsinje) to reflect risk of leakage, formulated as fraction of ccsinje O&M costs"
+cm_frac_NetNegEmi    "tax on net negative emissions to reflect risk of overshooting, formulated as fraction of carbon price"
 
 cm_DiscRateScen          "Scenario for the implicit discount rate applied to the energy efficiency capital"
-cm_noReboundEffect      "Switch for allowing a rebound effect when closing the efficiency gap (cm_DiscRateScen)"
 ;
 
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+cm_nash_mode           = 2;     !! def = 2  !! regexp = 1|2
 cm_iteration_max       = 1;     !! def = 1
 cm_solver_try_max       = 2;     !! def = 2
 c_keep_iteration_gdxes = 0;     !! def = 0
@@ -206,7 +205,6 @@ cm_nucscen       = 2;        !! def = 2
 cm_ccapturescen  = 1;        !! def = 1
 c_bioliqscen     = 1;        !! def = 1
 c_bioh2scen      = 1;        !! def = 1
-c_solscen        = 1;        !! def = 1
 
 cm_IndCCSscen          = 1;        !! def = 1
 cm_optimisticMAC       = 0;        !! def = 0
@@ -252,7 +250,6 @@ cm_rentconvcoal     = 50;        !! def 50
 
 cm_so2tax_scen        = 1;         !! def =
 c_cint_scen           = 1;         !! def = 1
-cm_solwindenergyscen  = 1;         !! def = 1
 c_techAssumptScen     = 1;         !! def = 1
 c_ccsinjecratescen    = 1;         !! def = 1
 c_ccscapratescen      = 1;         !! def = 1
@@ -279,13 +276,11 @@ cm_carbonprice_temperatureLimit       = 1.8;   !! def = 1.8
 
 
 cm_DiscRateScen = 0;!! def = 0
-cm_noReboundEffect = 0;
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***                           YOU ARE IN THE WARNING ZONE (DON'T DO CHANGES HERE)
 *** --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *--------------------flags------------------------------------------------------------
 $SETGLOBAL cm_SlowConvergence  off        !! def = off
-$setGlobal cm_nash_mode  parallel   !! def = parallel
 $setglobal cm_INCONV_PENALTY  on         !! def = on
 $setGlobal c_skip_output  off        !! def = off
 $setGlobal cm_MOFEX  off        !! def = off
@@ -298,7 +293,7 @@ $setGlobal cm_magicc_temperatureImpulseResponse  off           !! def = off
 
 $setGlobal cm_damage_DiceLike_specification  HowardNonCatastrophic   !! def = HowardNonCatastrophic
 
-$setglobal cm_CES_configuration  indu_fixed_shares-buil_simple-tran_complex-POP_pop_SSP2-GDP_gdp_SSP2-Kap_perfect-Reg_690d3718e1   !! this will be changed by start_run()
+$setglobal cm_CES_configuration  indu_fixed_shares-buil_simple-tran_edge_esm-POP_pop_SSP2-GDP_gdp_SSP2-Kap_perfect-Reg_690d3718e1   !! this will be changed by start_run()
 
 $setglobal c_CES_calibration_new_structure  0    !! def =  0
 $setglobal c_CES_calibration_iterations  10   !! def = 10

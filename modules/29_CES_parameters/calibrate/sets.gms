@@ -30,7 +30,6 @@ ppf_29(all_in)   "primary production factors to calibrate for"
 in_29(all_in)    "calibration production factors"
 ue_29(all_in) "useful energy variables"
 ue_fe_kap_29(all_in) "useful energy items which are the direct output of one FE and one Kap, and which is calibrated to. The CES efficiencies need specific treatment"
-putty_compute_in(all_in)  "factors inside putty which should be computed from non-putty values"
 in_beyond_calib_29(all_in)  "all factors which are outside of the calibration, including the ones which are ppf_29"
 in_beyond_calib_29_excludeRoot(all_in) "all factors which are outside of the calibration, excluding the ones which are ppf_29"
 root_beyond_calib_29(all_in) "all factors which operate the junction between the calibrated CES and the CES which is not calibrated"
@@ -47,10 +46,7 @@ te_29_report(all_te)  "set of technologies to report on"
   ngcc
   ngt
   pc
-  apCarDit
   dot
-  apCarPet
-  apCarElt
   gaschp
   wind
   tnrs
@@ -93,6 +89,11 @@ eff_scale_par   "parameters for scaling certain efficiencies during calibration"
   CES_tp(all_in)   "CES tree traversal pending nodes"
   CES_ts(all_in)   "CES tree traversal swap node"
   /   /
+
+  in_limit_price_change_29(all_in)   "production factors that have their price changes limited to a factor of two during calibration"
+  /
+    %cm_in_limit_price_change%
+  /
 ;
 
 alias(cesOut2cesIn_below,cesOut2cesIn_below2);

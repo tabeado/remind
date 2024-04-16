@@ -37,6 +37,12 @@ update-renv-all: ## Upgrade all packages (including CRAN packages) in your renv
 		fi \
 	fi
 
+revert-dev-packages: ## All PIK-PIAM packages that are development versions, i.e.
+                     ## that have a non-zero fourth version number component, are
+                     ## reverted to the highest version lower than the
+                     ## development version.
+	@Rscript -e 'piamenv::revertDevelopmentVersions()'
+
 ensure-reqs:     ## Ensure the REMIND library requirements are fulfilled
                  ## by installing updates and new libraries as necessary. Does not
                  ## install updates unless it is required.
@@ -58,17 +64,24 @@ restore-renv:    ## Restore renv to the state described in interactively
 
 check:           ## Check if the GAMS code follows the coding etiquette
                  ## using gms::codeCheck
-	Rscript -e 'invisible(gms::codeCheck(strict = TRUE))'
+	Rscript -e 'options(warn = 1); invisible(gms::codeCheck(strict = TRUE));'
 
 check-fix:       ## Check if the GAMS code follows the coding etiquette
                  ## and offer fixing any problems directly if possible
                  ## using gms::codeCheck
-	Rscript -e 'invisible(gms::codeCheck(strict = TRUE, interactive = TRUE))'
+	Rscript -e 'options(warn = 1); invisible(gms::codeCheck(strict = TRUE, interactive = TRUE));'
 
 test:            ## Test if the model compiles and runs without running a full
-                 ## scenario. Tests take about 10 minutes to run.
-	$(info Tests take about 20 minutes to run, please be patient)
+                 ## scenario. Tests take about 15 minutes to run.
+	$(info Tests take about 15 minutes to run, please be patient)
 	@Rscript -e 'testthat::test_dir("tests/testthat")'
+
+test-fix:        ## First run codeCheck interactively, then test if the model compiles and runs without
+                 ## running a full scenario. Tests take about 15 minutes to run.
+	$(info Tests take about 18 minutes to run, please be patient)
+	@Rscript -e 'rlang::with_options(warn = 1, invisible(gms::codeCheck(strict = TRUE, interactive = TRUE))); testthat::test_dir("tests/testthat");'
+	@echo "Do not forget to commit possible changes done by codeCheck to not_used.txt files"
+	@git add -p modules/*/*/not_used.txt
 
 test-coupled:    ## Test if the coupling with MAgPIE works. Takes significantly
                  ## longer than 60 minutes to run and needs slurm and magpie
@@ -78,12 +91,18 @@ test-coupled:    ## Test if the coupling with MAgPIE works. Takes significantly
 
 test-coupled-slurm: ## test-coupled, but on slurm
 	$(info Coupling tests take around 75 minutes to run. Sent to slurm, find log in test-coupled.log)
+	make ensure-reqs
 	@sbatch --qos=priority --wrap="make test-coupled" --job-name=test-coupled --mail-type=END --output=test-coupled.log --comment="test-coupled.log"
 
 test-full:       ## Run all tests, including coupling tests and a default
-                 ## REMIND scenario. Takes significantly longer than 10 minutes to run.
+                 ## REMIND scenario. Takes several hours to run.
 	$(info Full tests take more than an hour to run, please be patient)
 	@TESTTHAT_RUN_SLOW=TRUE Rscript -e 'testthat::test_dir("tests/testthat")'
+
+test-full-slurm: ##test-full, but on slurm
+	$(info Full tests take more than an hour to run, please be patient)
+	@sbatch --qos=priority --wrap="make test-full" --job-name=test-full --mail-type=END --output=test-full.log --comment="test-full.log"
+
 test-validation: ## Run validation tests, requires a full set of runs in the output folder
 	$(info Run validation tests, requires a full set of runs in the output folder)
 	@TESTTHAT_RUN_SLOW=TRUE Rscript -e 'testthat::test_dir("tests/testthat/validation")'	

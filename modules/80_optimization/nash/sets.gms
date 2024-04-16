@@ -21,8 +21,6 @@ $IFTHEN.WindOff %cm_wind_offshore% == "1"
         storwindoff "storage technology for wind offshore"
 $ENDIF.WindOff
         storcsp     "storage technology for csp"
-        apCarElT
-        apCarH2T
 /,
 
 solveinfo80	"Nash solution stats"
@@ -34,10 +32,6 @@ convMessage80   "contains all convergence criteria"
 /
 infes,surplus,nonopt,taxconv,anticip,target,regiTarget,implicitEnergyTarget,cm_implicitPriceTarget,cm_implicitPePriceTarget,damage,DevPriceAnticip
 /
-nash_sol_itr80  "nash iterations"
-/
-    1*10
-/    
 ;
 
 teLearn(learnte_dyn80)   = YES;

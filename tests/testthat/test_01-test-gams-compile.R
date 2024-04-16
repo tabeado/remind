@@ -4,12 +4,11 @@
 # |  AGPL-3.0, you are granted additional permissions described in the
 # |  REMIND License Exception, version 1.0 (see LICENSE file).
 # |  Contact: remind@pik-potsdam.de
-name,type,reason
-pm_esCapCost,input,questionnaire
-pm_fe2es,input,questionnaire
-pm_shFeCes,input,questionnaire
-vm_demFeForEs,input,questionnaire
-pm_cf,input,questionnaire
-cm_startIter_EDGET,input,questionnaire
-vm_transpGDPscale,input,questionnaire
-vm_prodEs,input,questionnaire
+test_that(
+  'gams -a=c works on stock configuration',
+  {
+    expect_equal(
+      attr(localSystem2('gams', 'main.gms -a=c -errmsg=1 -pw=185 -ps=0'),
+	   'status'),
+      0)
+  })
