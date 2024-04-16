@@ -665,6 +665,23 @@ parameter
   cm_feedstockMatchingBiomass = 0; !! def = 0
 *'
 parameter
+  cm_biocharpriceMax        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+  cm_biocharpriceMax = 0; !! def = 0
+*'
+
+parameter
+ cm_biocharpriceCoefficient        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+ cm_biocharpriceCoefficient = 0; !! def = 0
+*'
+
+parameter
+  cm_biocharpriceMin        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+  cm_biocharpriceMin = 0; !! def = 0
+*'
+parameter
   cm_startyear              "first optimized modelling time step [year]"
 ;
   cm_startyear        = 2005;      !! def = 2005 for a baseline  !! regexp = 20[0-9](0|5)
@@ -1602,6 +1619,8 @@ $setGLobal c_agricult_base_shift off !! def off
 *** cm_wind_offshore  1, wind energy is represented by "wind" and "windoff", where "wind" means wind onshore. Later this will be the default and the name "wind" will be made to change to windon
 *** cm_wind_offshore  0, means wind energy is only represented by "wind", which is a mixture of both wind onshore and wind offshore
 $setglobal cm_wind_offshore  1      !! def = 1
+*** flag whether biochar revenue is modelled or not; 0 = not, 1 = modelled
+$setGLobal cm_biocharRevenue 0 !! Def off    
 ***  cm_INCONV_PENALTY  on     !! def = on
 *** *RP* 2012-03-06 Flag to turn on inconvenience penalties, e.g. for air pollution
 $setglobal cm_INCONV_PENALTY  on         !! def = on  !! regexp = off|on

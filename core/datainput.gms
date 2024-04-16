@@ -231,6 +231,13 @@ fm_dataglob("incolearn",te)          = sm_DpKW_2_TDpTW       * fm_dataglob("inco
 fm_dataglob("omv",te)                = s_DpKWa_2_TDpTWa      * fm_dataglob("omv",te);
 p_inco0(ttot,regi,te)               = sm_DpKW_2_TDpTW       * p_inco0(ttot,regi,te);
 
+*TD* add price assumptions for biochar technologies if assumed
+$IFTHEN.cm_biocharRevenue %cm_biocharRevenue% == 1
+fm_dataglob("priceMax","biochar4soil") = cm_biocharpriceMax;
+fm_dataglob("priceCoefficient","biochar4soil") = cm_biocharpriceCoefficient;
+fm_dataglob("priceMin","biochar4soil") = cm_biocharpriceMin;
+$ENDIF.cm_biocharRevenue
+
 
 table fm_dataemiglob(all_enty,all_enty,all_te,all_enty)  "read-in of emissions factors co2,cco2"
 $include "./core/input/generisdata_emi.prn"
