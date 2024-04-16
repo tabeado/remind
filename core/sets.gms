@@ -1517,15 +1517,42 @@ teFosNoCCS(all_te)  "fossil technologies without CCS"
         coaltr       "transformation of coal"
         refliq
 /
-teBioPebiolc(all_te)      "biomass technologies using pebiolc"
+
+teBioPebiolcPurposegrown(all_te)      "biomass technologies using purpose grown pebiolc"
+/
+        bioigccc
+        biogasc
+        bioftrec
+        bioftcrec
+        bioh2
+        bioh2c
+        bioethl
+/
+
+teBioPebiolcResidues(all_te)      "biomass technologies using pebiolc from residues"
 /    
         biotr
         biotrmod
         biochp
         biohp
         bioigcc
-        bioigccc
         biogas
+        biopyrKonTiki  "biomass to biochar; very basic, decentralized facilities like the KonTiki"
+        biopyrElec     "biomass to biochar; large centralized facilities, maximizing biohcar quality and quality, plus electricity output"
+        biopyrHeat     "biomass to biochar; large centralized facilities, maximizing biohcar quality and quality, plus heat output"
+        biopyrCHP      "biomass to biochar; large centralized facilities, maximizing biochar quality and quality, both Electricity and Heat"
+        biopyrCHP850
+/
+
+teBioPebiolc(all_te)      "biomass technologies using pebiolc"
+/
+        set.teBioPebiolcPurposeGrown       
+        set.teBioPebiolcResidues       
+/
+
+teBECCS(all_te)
+/
+        bioigccc
         biogasc
         bioftcrec
         bioh2c
