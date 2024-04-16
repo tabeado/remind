@@ -662,7 +662,8 @@ vm_emiCO2Sector(t,regi,sector)
 *' pm_macBaseMagpie does not include n2o from biomass but it is added here.
 *' In case of CO2 from landuse (co2luc), emissions can be negative. 
 *' To treat these emissions in the same framework, we subtract the minimal emission level from
-*' baseline emissions. This shift factor is then added again when calculating total emissions.
+*' baseline emissions (in core/presolve, vm_macBase is fixed for co2luc). 
+*' This shift factor is then added again when calculating total emissions.
 *' The endogenous baselines of non-energy emissions are calculated in the following equation:
 ***------------------------------------------------------
 q_macBase(t,regi,enty)$( emiFuEx(enty) OR sameas(enty,"n2ofertin") ) ..
@@ -721,8 +722,10 @@ q_emiCdrAll(t,regi)..
         vm_co2capture(t,regi,"cco2","ico2","ccsinje",rlf))+sm_eps))
   !! net negative emissions from co2luc
   -  p_macBaseMagpieNegCo2(t,regi)
-       !! negative emissions from the cdr module that are not stored geologically
-       -       (vm_emiCdr(t,regi,"co2") + sum(teCCS2rlf(te,rlf), vm_ccs_cdr(t,regi,"cco2","ico2","ccsinje",rlf)))
+    !! negative emissions from the cdr module that are not stored geologically
+  - (vm_emiCdr(t,regi,"co2") + sum(teCCS2rlf(te,rlf), vm_ccs_cdr(t,regi,"cco2","ico2","ccsinje",rlf)))
+  !! negative emissions from biochar
+  - sum(emiBiochar2te(enty,enty2,te,enty3), vm_emiTeDetail(t,regi,enty,enty2,te,enty3)) !! only true as long as biochar does not have carbon capture
 ;
 
 

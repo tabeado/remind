@@ -491,6 +491,13 @@ pm_cf(ttot,regi,"h2turbVRE")$(ttot.val ge 2025) = pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"tdh2b") = pm_cf(ttot,regi,"tdh2s");
 pm_cf(ttot,regi,"tdh2i") = pm_cf(ttot,regi,"tdh2s");
 
+*TD* Set capacity factors for pyrolysis technologies. THIS NEEDS TO BE CHECKED & ADJUSTED.
+pm_cf(t,regi,"biopyrKonTiki" ) = 0.9;
+pm_cf(t,regi,"biopyrElec" ) = 0.9;
+pm_cf(t,regi,"biopyrHeat" ) = 0.9;
+pm_cf(t,regi,"biopyrCHP") = 0.9;
+pm_cf(t,regi,"biopyrCHP850") = 0.9;
+pm_cf(t,regi,"biochar4soil") = 1;
 
 *SB* Region- and tech-specific early retirement rates
 *Regional*
@@ -956,7 +963,7 @@ p_adj_seed_reg(t,regi) = pm_gdp(t,regi) * 1e-4;
 
 loop(ttot$(ttot.val ge 2005),
   p_adj_seed_te(ttot,regi,te)                = 1.00;
-  p_adj_seed_te(ttot,regi,teCCS)             = 0.25;
+  p_adj_seed_te(ttot,regi,teCCS)             = 0.25; !!p_adj_seed_te(ttot,regi,"ccsinje")         = 0.25;
   p_adj_seed_te(ttot,regi,"igcc")            = 0.50;
   p_adj_seed_te(ttot,regi,"tnrs")            = 0.25;
   p_adj_seed_te(ttot,regi,"hydro")           = 0.25;
@@ -971,7 +978,7 @@ loop(ttot$(ttot.val ge 2005),
   p_adj_seed_te(ttot,regi,'apCarElT')        = 1.00;
   p_adj_seed_te(ttot,regi,'apCarDiEffT')     = 0.50;
   p_adj_seed_te(ttot,regi,'apCarDiEffH2T')   = 0.50;
-  p_adj_seed_te(ttot,regi,'dac')             = 0.25;
+  p_adj_seed_te(ttot,regi,'dac')             = 0.25;  !!p_adj_seed_te(ttot,regi,'weathering')       = 1.00; !! leave it out for now to mimic biochar AdjC
   p_adj_seed_te(ttot,regi,'geohe')           = 0.33;
 
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
@@ -990,6 +997,10 @@ $ENDIF.WindOff
   p_adj_coeff(ttot,regi,"gaschp")          = 0.4;
   p_adj_coeff(ttot,regi,"coalchp")         = 0.5;
   p_adj_coeff(ttot,regi,"biochp")          = 0.55;
+  p_adj_coeff(ttot,regi,"biopyrHeat")      = 0.65; !! like bioftrec; middle between teCCS and te
+  p_adj_coeff(ttot,regi,"biopyrElec")      = 0.65;
+  p_adj_coeff(ttot,regi,"biopyrCHP")       = 0.65; 
+  p_adj_coeff(ttot,regi,"biopyrCHP850")    = 0.65;
   p_adj_coeff(ttot,regi,"coaltr")          = 0.1;
   p_adj_coeff(ttot,regi,"tnrs")            = 1.0;
   p_adj_coeff(ttot,regi,"hydro")           = 1.0;
@@ -1006,11 +1017,11 @@ $ENDIF.WindOff
   p_adj_coeff(ttot,regi,"geohe")           = 0.6;
 
 $IFTHEN.WindOff %cm_wind_offshore% == "1"
-
   p_adj_coeff(ttot,regi,"windoff")         = 0.35;
 $ENDIF.WindOff
 
   p_adj_coeff(ttot,regi,"dac")             = 0.8;
+  p_adj_coeff(ttot,regi,"weathering")      = 0.65; !! same value as biochar tech
   p_adj_coeff(ttot,regi,'apCarH2T')        = 1.0;
   p_adj_coeff(ttot,regi,'apCarElT')        = 1.0;
   p_adj_coeff(ttot,regi,'apCarDiT')        = 1.0;

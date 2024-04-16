@@ -166,6 +166,70 @@ if (c_bioh2scen eq 0, !! no bioh2 technologies
 ***  vm_cap.fx(t,regi,"bioh2c",rlf)       = 0;
 ***  vm_cap.fx(t,regi,"bioh2",rlf)       = 0;
 );
+
+*TD* switch pyrolysis technologies off/on
+if (cm_biopyrKonTiki eq 0,             !! 0 = no biopyrKonTiki (default)
+  vm_deltaCap.up(t,regi,"biopyrKonTiki",rlf)$(t.val gt 2005) = 1.0e-6;
+  vm_deltaCap.lo(t,regi,"biopyrKonTiki",rlf)$(t.val gt 2005) = 0;
+  vm_cap.lo(t,regi,"biopyrKonTiki",rlf) = 0;
+  else
+   vm_cap.up(t,regi,"biopyrKonTiki",rlf)$(t.val le 2020) =  1.0e-4*1.2;  
+);
+
+if (cm_biopyrElec eq 0,             !! 0 = no biopyrElec (default)
+  vm_deltaCap.up(t,regi,"biopyrElec",rlf)$(t.val gt 2005)       = 1.0e-6;
+  vm_deltaCap.lo(t,regi,"biopyrElec",rlf)$(t.val gt 2005) = 0;
+  vm_cap.lo(t,regi,"biopyrElec",rlf) = 0;
+  else
+   vm_cap.up(t,regi,"biopyrElec",rlf)$(t.val le 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
+   vm_cap.up(t,"CHA","biopyrElec",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
+   vm_cap.up(t,"EUR","biopyrElec",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
+   vm_cap.up(t,"USA","biopyrElec",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
+);
+
+*TD* If turned on, the current upper limit for all but CAZ due to overproduction there is set at 120% 
+* of the actual highest level observed in CHA in 2020
+if (cm_biopyrHeat eq 0,             !! 0 = no biopyrHeat (default). 
+  vm_deltaCap.up(t,regi,"biopyrHeat",rlf)$(t.val gt 2005)       = 1.0e-6;
+  vm_deltaCap.lo(t,regi,"biopyrHeat",rlf)$(t.val gt 2005) = 0;
+  vm_cap.lo(t,regi,"biopyrHeat",rlf) = 0;
+  else
+   vm_cap.up(t,regi,"biopyrHeat",rlf)$(t.val le 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
+   vm_cap.up(t,"CHA","biopyrHeat",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
+   vm_cap.up(t,"EUR","biopyrHeat",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
+   vm_cap.up(t,"USA","biopyrHeat",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
+   vm_cap.up("2025",regi,"biopyrHeat",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","CHA","biopyrHeat",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","EUR","biopyrHeat",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","USA","biopyrHeat",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+);
+
+if (cm_biopyrCHP eq 0,             !! 0 = no biopyrCHP (default). 
+  vm_deltaCap.up(t,regi,"biopyrCHP",rlf)$(t.val ge 2005) = 1.0e-6;
+  vm_cap.lo(t,regi,"biopyrCHP",rlf) = 0;
+  else
+   vm_cap.up(t,regi,"biopyrCHP",rlf)$(t.val le 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
+   vm_cap.up(t,"CHA","biopyrCHP",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
+   vm_cap.up(t,"EUR","biopyrCHP",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
+   vm_cap.up(t,"USA","biopyrCHP",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
+   vm_cap.up("2025",regi,"biopyrCHP",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","CHA","biopyrCHP",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","EUR","biopyrCHP",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","USA","biopyrCHP",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+);
+
+if (cm_biopyrCHP850 eq 0,             !! 0 = no biopyrCHP (default). 
+  vm_cap.fx(t,regi,"biopyrCHP850",rlf)$(t.val gt 2005)       = 0;
+  elseif cm_biopyrCHP850 eq 1,
+   vm_cap.up(t,regi,"biopyrCHP850",rlf)$(t.val le 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
+   vm_cap.up(t,"CHA","biopyrCHP850",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
+   vm_cap.up(t,"EUR","biopyrCHP850",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
+   vm_cap.up(t,"USA","biopyrCHP850",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
+   vm_cap.up("2025",regi,"biopyrCHP850",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","CHA","biopyrCHP850",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","EUR","biopyrCHP850",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+   vm_cap.up("2025","USA","biopyrCHP850",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+);
 *' @stop
 
 ***--------------------------------------------------------------------

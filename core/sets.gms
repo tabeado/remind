@@ -2457,6 +2457,11 @@ pe2se(all_enty,all_enty,all_te) "map primary energy carriers to secondary"
         pebiolc.sesobio.biotrmod
         pebiolc.segabio.biogas
         pebiolc.segabio.biogasc
+        pebiolc.sebiochar.biopyrKonTiki
+        pebiolc.sebiochar.biopyrElec
+        pebiolc.sebiochar.biopyrHeat
+        pebiolc.sebiochar.biopyrCHP
+        pebiolc.sebiochar.biopyrCHP850
         pegeo.seel.geohdr
         pegeo.sehe.geohe
         pehyd.seel.hydro

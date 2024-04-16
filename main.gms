@@ -664,6 +664,37 @@ parameter
 ;
   cm_feedstockMatchingBiomass = 0; !! def = 0
 *'
+
+parameter
+  cm_biopyrKonTiki          "capacity factor of low tech biochar production. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrKonTiki = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrElec           "capacity factor of medium tech biochar production that optizes C in biochar and produces electricity. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrElec = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrHeat           "capacity factor of medium tech biochar production that optizes C in biochar and produces heat.  Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrHeat = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrCHP          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrCHP = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrCHP850          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrCHP850 = 0; !! def = 0
+*'
+
 parameter
   cm_biocharpriceMax        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
 ;
@@ -681,6 +712,7 @@ parameter
 ;
   cm_biocharpriceMin = 0; !! def = 0
 *'
+
 parameter
   cm_startyear              "first optimized modelling time step [year]"
 ;
