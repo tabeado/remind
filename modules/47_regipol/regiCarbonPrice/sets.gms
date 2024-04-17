@@ -23,7 +23,7 @@ $ifThen.emiMkt not "%cm_emiMktTarget%" == "off"
   regiEmiMktTarget2regi_47(ext_regi,all_regi)  "regions controlled by emiMkt market set to ext_regi" / / 
 $ENDIF.emiMkt
 
-*** Implicit tax/subsidy necessary to achieve quantity target for primary, secondary, final energy and/or CCS
+*** Implicit tax/subsidy necessary to achieve quantity target for primary, secondary, final energy and/or CCS and/or OAE
 $ifthen.cm_implicitQttyTarget not "%cm_implicitQttyTarget%" == "off"
 
 taxType "PE, SE or FE tax type"
@@ -38,7 +38,7 @@ targetType "PE, SE or FE target type"
   s  "relative target (s=share)"
 /
 
-qttyTarget "quantity target for energy carrier level (primary, secondary, final energy) or CCS"
+qttyTarget "quantity target for energy carrier level (primary, secondary, final energy) or CCS or OAE"
 /
   PE              "Primary Energy"
   SE              "Secondary Energy"
@@ -47,6 +47,7 @@ qttyTarget "quantity target for energy carrier level (primary, secondary, final 
   FE_wo_n_e       "Final Energy without non-energy"
   FE_wo_b_wo_n_e  "Final Energy without bunkers and non-energy"
   CCS             "carbon capture and storage"
+  oae             "ocean alkalinity enhancement"
 /
 
 qttyTargetGroup "quantity target aggregated categories"

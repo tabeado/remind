@@ -1298,7 +1298,7 @@ $setGlobal cm_proNucRegiPol   off   !! def = off
 $setGlobal cm_CCSRegiPol     off   !! def = off
 *** cm_vehiclesSubsidies - If "on" applies country specific BEV and FCEV subsidies from 2020 onwards
 $setGlobal cm_vehiclesSubsidies  off !! def = off
-*** cm_implicitQttyTarget - Define quantity target for primary, secondary, final energy or CCS (PE, SE and FE in TWa, or CCS in Mt CO2) per target group (total, biomass, fossil, VRE, renewables, synthetic, ...).
+*** cm_implicitQttyTarget - Define quantity target for primary, secondary, final energy or CCS (PE, SE and FE in TWa, or CCS and OAE in Mt CO2) per target group (total, biomass, fossil, VRE, renewables, synthetic, ...).
 ***   The target is achieved by an endogenous calculated markup in the form or a tax or subsidy in between iterations.
 ***   Example on how to use:
 ***     cm_implicitQttyTarget  "2030.EU27_regi.tax.t.FE.all 1.03263"
