@@ -649,6 +649,18 @@ parameter
 ***       capacities are allowed, is 2025 or cm_startyear if larger.
 *'
 parameter
+  cm_feedstockMatchingBiomass    "feedstock matching of purpose grown biomass vs residues, see teBioPebiolcPurposeGrown and teBioPebiolcResidues"
+*** (0): off
+*** (1): "only BECCS" tech in teBECCS cannot demand more pebiolc than available purpose grown biomass (i.e. cannot demand residues)
+*** (2): "full for BE+CCS" tech in teBioPebiolcPurposeGrown cannot demand more pebiolc than available purpose grown biomass (i.e. cannot demand residues); 
+***      i.e., vm_fuExtr(t,regi,"pebiolc","1") +/- trade
+*** (3): (2) and tech in teBioPebiolcResidues cannot demand more pebiolc than available biomass residues (i.e. no purpose grown);
+***      i.e., vm_fuExtr(t,regi,"pebiolc","2"); 
+;
+  cm_feedstockMatchingBiomass = 0; !! def = 0
+*'
+
+parameter
   cm_biopyrKonTiki          "capacity factor of low tech biochar production. Set to 0 to turn off; e.g., 0.9 to turn on"
 ;
   cm_biopyrKonTiki = 0; !! def = 0
