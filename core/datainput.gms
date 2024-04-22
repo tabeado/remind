@@ -692,6 +692,13 @@ pm_cf(ttot,regi,"h2turbVRE")$(ttot.val ge 2025) = pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"tdh2b") = pm_cf(ttot,regi,"tdh2s");
 pm_cf(ttot,regi,"tdh2i") = pm_cf(ttot,regi,"tdh2s");
 
+*TD* Set capacity factors for pyrolysis technologies. THIS NEEDS TO BE CHECKED & ADJUSTED.
+pm_cf(t,regi,"biopyrKonTiki" ) = 0.9;
+pm_cf(t,regi,"biopyrElec" ) = 0.9;
+pm_cf(t,regi,"biopyrHeat" ) = 0.9;
+pm_cf(t,regi,"biopyrCHP") = 0.9;
+pm_cf(t,regi,"biopyrCHP850") = 0.9;
+pm_cf(t,regi,"biochar4soil") = 1;
 
 *SB* Region- and tech-specific early retirement rates
 *Regional*
@@ -1179,6 +1186,10 @@ $ENDIF.WindOff
   p_adj_coeff(ttot,regi,"gasftrec")        = 0.4;
   p_adj_coeff(ttot,regi,"coalftrec")       = 0.6;
   p_adj_coeff(ttot,regi,"bioftrec")        = 0.65;
+  p_adj_coeff(ttot,regi,"biopyrHeat")     = 0.65; !! like bioftrec; middle between teCCS and te
+  p_adj_coeff(ttot,regi,"biopyrElec")      = 0.65;
+  p_adj_coeff(ttot,regi,"biopyrCHP")       = 0.65; 
+  p_adj_coeff(ttot,regi,"biopyrCHP850")    = 0.65;
   p_adj_coeff(ttot,regi,"gash2")           = 0.35;
   p_adj_coeff(ttot,regi,"coalh2")          = 0.55;
   p_adj_coeff(ttot,regi,"bioh2")           = 0.6;
