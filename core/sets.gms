@@ -1546,7 +1546,7 @@ teBioPebiolcPurposegrown(all_te)      "biomass technologies using purpose grown 
 /
 
 teBioPebiolcResidues(all_te)      "biomass technologies using pebiolc from residues"
-/
+/    
         biotr
         biotrmod
         biochp
@@ -1869,6 +1869,22 @@ entyFeTrans(all_enty) "final energy types from transport sector"
 /
 
 feForCes(all_enty)   "limit q_balFeForCes to entyFe in fe2ppfEn"
+
+teSpecificRevenue(all_te) "artificial demand technologies for products  that are not yet demanded elsewhere in the model"
+/       
+        biochar4soil          "use biochar for soil amendment, demands TWa of biochar"
+/
+
+entySpecificRevenue(all_enty)
+/
+        sebiochar
+/
+
+SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue)
+/
+        sebiochar.biochar4soil
+/
+
 
 emi(all_enty)      "types of emissions, these emissions are given to the climate module"
 
@@ -2314,6 +2330,9 @@ char            "characteristics of technologies"
   elh2VREcapRatio    "ratio of elh2VRE capacity to storage technology capacity"
   h2turbVREcapRatio  "ratio of h2turbVRE capacity to storage technology capacity"
   batteryVREcapRatio  "ratio of battery capacity to storage technology capacity"
+  priceMax          "prohibitive price of specific Revenue goods, at which there is no demand, in 2005trilUSD"
+  priceCoefficient    "slope of the demand curve, currently only exponential price development"
+  priceMin              "price floor"
 /
 
 ***-----------------------------------------------------------------------------
