@@ -121,15 +121,25 @@ q_demSpecificGoodsCalculation(t,regi,SpecificRevenueEntyandTe(entySpecificRevenu
   vm_demSeOth(t,regi,entySpecificRevenue,teSpecificRevenue)
 ;
 
-q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+
+$ifthen.priceBCformConstant not "%cm_biocharPriceForm%" == "constant"
+ q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
     v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
     =e=
-    pm_data(regi,"priceMax", teSpecificRevenue)
-    *exp(-1*pm_data(regi,"priceCoefficient", teSpecificRevenue) * v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue))
-;
-*    smax((pm_data(regi,"priceMax", teSpecificRevenue)*exp(-1*pm_data(regi,"priceCoefficient", teSpecificRevenue) * 
-*                                                            v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue))),
-*         pm_data(regi,"priceMin",teSpecificRevenue)* v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue)/v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue))   
+    cm_biocharpriceConstant
+    ; 
+$endIf.priceBCformConstant
+
+
+$ifthen.priceBCformExponential not "%cm_biocharPriceForm%" == "exponential"
+ q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+        v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+        =e=
+        pm_data(regi,"priceMax", teSpecificRevenue)
+        *exp(-1*pm_data(regi,"priceCoefficient", teSpecificRevenue) * v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue))
+    ;
+$endIf.priceBCformExponential
+
 
 qm_revenueOfSpecificGoods(t, regi)..
     vm_revenueFromSpecificGoods(t, regi)
