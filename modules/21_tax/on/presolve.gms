@@ -56,5 +56,6 @@ p21_taxrevChProdStartYear0(t,regi) = sum(en2en(enty,enty2,te), vm_changeProdStar
 p21_taxrevSE0(t,regi) =     sum(se2se(enty,enty2,te)$(teSeTax(te)), 
                                     v21_tau_SE_tax.l(t,regi,te) 
                                   * vm_demSe.l(t,regi,enty,enty2,te));
+p21_taxrevCDR0(ttot,regi) = pm_taxCDR(ttot,regi) * vm_emiCdrAll.l(ttot,regi);
 
 *** EOF ./modules/21_tax/on/presolve.gms

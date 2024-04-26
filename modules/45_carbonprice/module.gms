@@ -30,5 +30,6 @@ $Ifi "%carbonprice%" == "exponential" $include "./modules/45_carbonprice/exponen
 $Ifi "%carbonprice%" == "linear" $include "./modules/45_carbonprice/linear/realization.gms"
 $Ifi "%carbonprice%" == "none" $include "./modules/45_carbonprice/none/realization.gms"
 $Ifi "%carbonprice%" == "temperatureNotToExceed" $include "./modules/45_carbonprice/temperatureNotToExceed/realization.gms"
+$Ifi "%carbonprice%" == "SeparateMarketsExpo2Const" $include "./modules/45_carbonprice/SeparateMarketsExpo2Const/realization.gms"
 *###################### R SECTION END (MODULETYPES) ############################
 *** EOF ./modules/45_carbonprice/module.gms

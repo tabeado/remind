@@ -33,6 +33,11 @@ p_taxCO2eq_iteration(iteration,ttot,all_regi)       "save CO2eq tax used in iter
 pm_taxCO2eq_iterationdiff(ttot,all_regi)              "help parameter for iterative adjustment of taxes"
 pm_taxCO2eq_iterationdiff_tmp(ttot,all_regi)          "help parameter for iterative adjustment of taxes"
 o_taxCO2eq_iterDiff_Itr(iteration,all_regi) "track p_taxCO2eq_iterationdiff over iterations"
+*ACM* parameters for separate markets on emissions and removals
+pm_taxCDR(ttot,all_regi)                             "CDR tax path in T$/GtC = $/kgC. To get $/tCO2, multiply with 272 [T$/GtC]"
+p_taxcdr_iterationdiff(ttot,all_regi)                "helper parameter for cdr revenue level adjustment"
+o_taxCDR_iterDiff_Itr(iteration,all_regi)            "output parameter for manual checking of CDR revenue development"
+
 pm_taxemiMkt(ttot,all_regi,all_emiMkt)                "CO2 or CO2eq region and emission market specific emission tax"
 pm_taxemiMkt_iteration(iteration,ttot,all_regi,all_emiMkt) "CO2 or CO2eq region and emission market specific emission tax per iteration"
 pm_emissionsForeign(tall,all_regi,all_enty)          "total emissions of other regions (nash relevant)"
@@ -122,6 +127,8 @@ pm_dataeta(tall,all_regi,all_te)                            "regional eta data"
 p_emi_quan_conv_ar4(all_enty)                               "conversion factor for various gases to GtCeq"
 pm_emifac(tall,all_regi,all_enty,all_enty,all_te,all_enty)  "emission factor by technology for all types of emissions in emiTe"
 pm_emifacNonEnergy(ttot,all_regi,all_enty,all_enty,emi_sectors,all_enty)                "emission factor for non-energy fedstocks. For now only for Chemicals Industry [GtC per TWa]"
+*** ACM tail pipe emission factor for industry emissions
+pm_emifac_tailpipe(tall,all_regi,all_enty,all_enty)         "tail pipe emissions in industry fuel combustion, necessary to calculate industry cdr"
 pm_incinerationRate(ttot,all_regi)                          "share of plastic waste that gets incinerated [fraction]"
 pm_omeg (all_regi,opTimeYr,all_te)                          "technical depreciation parameter, gives the share of a capacity that is still usable after tlt. [none/share, value between 0 and 1]"
 p_aux_lifetime(all_regi,all_te)                             "auxiliary parameter for calculating life times, calculated externally in excel sheet"
@@ -434,6 +441,13 @@ v_priceOfSpecificGoods(ttot, all_regi,all_te)        "Price in in tril$/TWa for 
 vm_revenueFromSpecificGoods(ttot, all_regi)          "Revenue in tril$ from products modelled that are not yet demanded elsewhere in the model, e.g. biochar, carbon fibre products"
 
 
+*** Variables needed to calculate Industry CDR
+vm_IndCDR(ttot,all_regi)                             "Industry CDR" 
+vm_IndstShareco2neutrcarbs(ttot,all_regi,entyFE)             "Share of hydrocarbon fuels with atmospheric carbon in Industry FE demand"
+vm_FracCCS(ttot,all_regi)                             "share of geologically stored co2 from captured co2"
+v_shareAtmCO2inSynfuels(ttot,all_regi)               "Share of atmospheric co2 from all captured co2"
+
+
 ;
 ***----------------------------------------------------------------------------------------
 ***                                   EQUATIONS
@@ -558,6 +572,11 @@ q_demSpecificGoodsCalculation(ttot,all_regi,all_enty,all_te) "derivation for the
 q_priceOfSpecificGoods(ttot, all_regi, all_enty,all_te)   "e"
 qm_revenueOfSpecificGoods(ttot,all_regi)                      "e"
 
+* equations needed to calculate Industry CDR
+q_IndstShareco2neutrcarbs(ttot,all_regi,entyFE)             "Share of hydrocarbon fuels with atmospheric carbon in Industry FE demand"
+q_FracCCS(ttot,all_regi)                             "share of geologically stored co2 from captured co2"
+q_shareAtmCO2inSynfuels(ttot,all_regi)               "Share of atmospheric co2 from all captured co2"
+
 ***----------------------------------------------------------------------------------------
 ***----------------------------------------------trade module------------------------------
 
@@ -617,6 +636,11 @@ p_emi_budget1_gdx                                     "budget for global energy-
 
 s_actualbudgetco2                                     "actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
 s_actualbudgetco2_last                                "actual level of 2020-2100 cumulated emissions for previous iteration" /0/
+
+
+s_actual2050co2                                       "current iterations actual global co2 emissions in 2050 needed to adjust co2 tax until 2050"
+s_actual2050cdr                                       "current iterations actual global cdr amount in 2050 needed to adjust cdr revenues until 2050"
+
 
 sm_globalBudget_dev                                   "actual level of global cumulated emissions budget divided by target budget"
 

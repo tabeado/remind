@@ -180,4 +180,7 @@ v21_taxrevChProdStartYear.l(t,regi) = 0;
 *** initialize SE tax rate
 v21_tau_SE_tax.l(t,regi,te)=0;
 
+*AM initialize CDR tax
+v21_taxrevCDR.l(ttot,regi) = 0;
+
 *** EOF ./modules/21_tax/on/preloop.gms
