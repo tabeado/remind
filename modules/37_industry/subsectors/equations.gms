@@ -169,7 +169,7 @@ q37_IndCDR(ttot,regi)$(ttot.val ge cm_startyear)..
       sum(emiMac2mac(emiInd37,macInd37),
         sum(entyFe,
           sum((secInd37_2_emiINd37(secInd37,emiInd37)),
-            vm_macBaseInd(ttot,regi,entyFE,secInd37))$(NOT SAMEAS (emiInd37,"co2cement_process"))            
+                vm_emiIndBase(ttot,regi,entyFE,secInd37))$(NOT SAMEAS (emiInd37,"co2cement_process"))            
             * vm_IndstShareco2neutrcarbs(ttot,regi,entyFE)
       )
     * pm_macSwitch(macInd37)              !! sub-sector CCS available or not

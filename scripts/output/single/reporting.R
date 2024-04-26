@@ -7,7 +7,7 @@
 
 library(magclass)
 # library(remind2)
-devtools::load_all("/p/tmp/katarkow/remind2/rebased-cdr-portfolio-oae")
+devtools::load_all("/p/tmp/tabeado/SynTra_lowRisk/remind2")
 library(lucode2)
 library(gms)
 library(methods)

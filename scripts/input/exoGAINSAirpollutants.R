@@ -22,7 +22,7 @@ for (pkg in c('madrat', 'dplyr', 'luscale', 'gdx')) {
   suppressPackageStartupMessages(require(pkg, character.only = TRUE))
 }
 
-devtools::load_all("/p/tmp/katarkow/remind2/rebased-cdr-portfolio-oae")
+devtools::load_all("/p/tmp/tabeado/SynTra_lowRisk/remind2")
 
 # stop madrat reporting its default settings _every damn time_
 invisible(getConfig(option = NULL, verbose = firstIteration))

@@ -826,8 +826,7 @@ q_emiCdrAll(t,regi)..
   + (1 - s33_OAE_chem_decomposition) * vm_emiCdrTeDetail(t, regi, "oae")
   !! CDR from enhanced weathering
   + vm_emiCdrTeDetail(t, regi, "weathering")
-  !! Biochar
-  + !! negative emissions from biochar
+  !! negative emissions from biochar
   -   sum(emiBiochar2te(enty,enty2,te,enty3), vm_emiTeDetail(t,regi,enty,enty2,te,enty3))
   !! Industry CDR (CCS from carbon neutral fuels)
   + vm_IndCDR(t,regi)

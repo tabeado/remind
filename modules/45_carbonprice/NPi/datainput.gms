@@ -20,6 +20,8 @@ pm_taxCO2eq(ttot,regi)$( (ttot.val ge 2025) AND (ttot.val le 2100)) =
 ;
 pm_taxCO2eq(ttot,regi)$(ttot.val gt 2100) = pm_taxCO2eq("2100",regi);
 
+pm_taxCDR(ttot,regi) = 0;
+
 display pm_taxCO2eq;
 
 *** EOF ./modules/45_carbonprice/NPi/datainput.gms
