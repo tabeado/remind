@@ -27,18 +27,18 @@ loop(regi$(p45_gdppcap2015_PPP(regi) gt 30 AND (not(sameas (regi,"EUR")))),
 
 
 *** linear transition to global price - starting point depends on GDP/cap
-pm_taxCO2eq(t,regi)$(not(sameas (regi,"EUR"))) = p45_regCO2priceFactor(t,regi)(not(sameas (regi,"EUR"))) * p45_CO2priceTrajDeveloped(t);
+pm_taxCO2eq(t,regi)$(not(sameas (regi,"EUR"))) = p45_regCO2priceFactor(t,regi)$(not(sameas (regi,"EUR"))) * p45_CO2priceTrajDeveloped(t);
 if(c_target2050cdrEUR < 0,
   pm_taxCO2eq(t,regi)$(sameas (regi,"EUR")) = p45_regCO2priceFactor(t,regi)$(sameas (regi,"USA")) * p45_CO2priceTrajDeveloped(t);
 )
 
 *** same procedure for CDR subsidy (shamelessly reusing the CO2 price helper parameter for temporary storage)
-loop(regi$(p45_gdppcap2015_PPP(regi) gt 30AND (not(sameas (regi,"EUR")))),
+loop(regi$(p45_gdppcap2015_PPP(regi) gt 30 AND (not(sameas (regi,"EUR")))),
   p45_CO2priceTrajDeveloped(t) = pm_taxCDR(t,regi);
 );
 
 *** linear transition to global price - starting point depends on GDP/cap
-pm_taxCDR(t,regi)$(not(sameas (regi,"EUR"))) = p45_regCO2priceFactor(t,regi)(not(sameas (regi,"EUR"))) * p45_CO2priceTrajDeveloped(t);
+pm_taxCDR(t,regi)$(not(sameas (regi,"EUR"))) = p45_regCO2priceFactor(t,regi)$(not(sameas (regi,"EUR"))) * p45_CO2priceTrajDeveloped(t);
 if(c_target2050cdrEUR < 0,
   pm_taxCDR(t,regi)$(sameas (regi,"EUR")) = p45_regCO2priceFactor(t,regi)$(sameas (regi,"USA")) * p45_CO2priceTrajDeveloped(t);
 )
