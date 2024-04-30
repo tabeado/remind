@@ -705,9 +705,11 @@ parameter
 parameter
   cm_biocharpriceConstant        "Revenue assumed for sale of biochar4soils; REMIND native units, i.e. unit USD $[2005] / (TWa BC)"
 ;
-  cm_biocharpriceConstant = 0.1812; !! def = 0.1812
-*' 0.0906 = 100 USD/tBC
+  cm_biocharpriceConstant = 0.2266; !! def = 0.2266
+*' translation is to USD2015tBC
+*' 0.0906 = 100 USD/tBC 
 *' 0.1812 = 200 USD/tBC
+*' 0.2266 = 250 USD/tBC 
 *' 0.2719 = 300 USD/tBC
 *' 0.3172 = 350 USD/tBC
 *' 0.4531 = 500 USD/tBC
