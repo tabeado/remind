@@ -139,6 +139,13 @@ $ifthen.priceBCformExponential  "%cm_biocharPriceForm%" == "exponential"
     ;
 $endIf.priceBCformExponential
 
+$ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent"
+q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+        v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+        =e=
+        1 * v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+    ;
+$endIf.priceBCformLin
 
 qm_revenueOfSpecificGoods(t, regi)..
     vm_revenueFromSpecificGoods(t, regi)
