@@ -570,7 +570,7 @@ display s_actualbudgetco2;
         !!);
       );	
     !! Target at net-zero CDR (in target year c_peakBudgYr)
-    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND abs(c_target2050cdr - s_actual2050cdr) ge 0.3,   !!only for optimal iterations, and not after the last one, and only if target not yet reached
+    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND abs(c_target2050cdrEUR - s_actual2050cdrEUR) ge 0.05,   !!only for optimal iterations, and not after the last one, and only if target not yet reached
       p_taxcdr_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) * min(max((c_target2050cdrEUR/s_actual2050cdrEUR)** (10/(2 * iteration.val + 23)),0.5+iteration.val/208),2 - iteration.val/102)  - pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR"));
       pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) + p_taxcdr_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) ;
       !!o_taxCDR_iterDiff_Itr(iteration,regi) = p_taxcdr_iterationdiff("2030",regi);
