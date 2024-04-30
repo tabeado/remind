@@ -542,6 +542,44 @@ display s_actualbudgetco2;
     if((c_target2050co2 eq 0 AND c_target2050cdr gt 0),
       pm_taxCO2eq(t,regi) = 0;
     );
+***-----------------------------------------------
+*AM* Additional targets for EUR
+***-----------------------------------------------
+    if(c_target2050cdrEUR > 0,
+    s_actual2050ghgEUR = sum(ttot$(ttot.val eq c_peakBudgYr),sum(regi$sameas(regi,"EUR"),
+        !! Gross CO2 emissions excluding novel CDR in GtCO2 but including land use and managed forests (with Grassi shift)
+        ((vm_emiAll.l(ttot,regi,"co2") + vm_emiCdrAll.l(ttot,regi) - pm_LULUCFEmi_GrassiShift(ttot,regi)) * sm_c_2_co2
+        !! CH4 emissions in GtCO2eq with GWP100
+        +vm_emiAll.l(ttot,regi,"ch4") * s_gwpCH4
+        !! N"O emissions in GtCO2eq with GWP100
+        +vm_emiAll.l(ttot,regi,"n2o") * s_gwpN2O
+        )));
+    s_actual2050cdrEUR = sum(ttot$(ttot.val eq c_peakBudgYr),sum(regi$(sameas(regi,"EUR")), vm_emiCdrAll.l(ttot,regi))) *sm_c_2_co2;  !! CDR     
+    !! Target 2050 GHG in Europe
+    display s_actual2050ghgEUR, s_actual2050cdrEUR;
+    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND abs(c_target2050cdrEUR - s_actual2050ghgEUR) ge 0.05 ,   !!only for optimal iterations, and not after the last one, and only if target not yet reached
+      pm_taxCO2eq_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) * min(max((s_actual2050ghgEUR/(c_target2050cdrEUR))** (10/(2 * iteration.val + 23)),0.5+iteration.val/208),2 - iteration.val/102)  - pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR"));
+      pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) + pm_taxCO2eq_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) ;
+      !!o_taxCO2eq_iterDiff_Itr(iteration,regi) = pm_taxCO2eq_iterationdiff("2030",regi);
+      !!display o_taxCO2eq_iterDiff_Itr;
+      !!else
+        !!!! if model was not optimal, or if target already reached, keep tax constant
+        !!pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr) = pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr);
+        !!if((c_target2050co2 eq 0 AND c_target2050cdr gt 0),
+          !!pm_taxCO2eq(t,regi) = 0;
+        !!);
+      );	
+    !! Target at net-zero CDR (in target year c_peakBudgYr)
+    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND abs(c_target2050cdr - s_actual2050cdr) ge 0.3,   !!only for optimal iterations, and not after the last one, and only if target not yet reached
+      p_taxcdr_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) * min(max((c_target2050cdrEUR/s_actual2050cdrEUR)** (10/(2 * iteration.val + 23)),0.5+iteration.val/208),2 - iteration.val/102)  - pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR"));
+      pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) + p_taxcdr_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) ;
+      !!o_taxCDR_iterDiff_Itr(iteration,regi) = p_taxcdr_iterationdiff("2030",regi);
+      !!display o_taxCDR_iterDiff_Itr;
+      !!else
+        !! if model was not optimal, or if target already reached, keep tax constant
+        !!pm_taxCDR(t,regi)$(t.val le c_peakBudgYr) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr);
+      );	          
+    ); !! end of additional EUR GHG neutrality with limited CDR condition
     pm_taxCDR(t,regi)$(t.val gt c_peakBudgYr) = sum(ttot$(ttot.val eq c_peakBudgYr),pm_taxCDR(ttot,regi)); !! Prices are constant after 2050 (year of net carbon neutrality)
     display pm_taxCDR;
     pm_taxCO2eq(t,regi)$(t.val gt c_peakBudgYr) = sum(ttot$(ttot.val eq c_peakBudgYr),pm_taxCO2eq(ttot,regi)); !! Prices are constant after 2050 (year of net carbon neutrality)
@@ -550,7 +588,6 @@ display s_actualbudgetco2;
 ); !! end if cm_iterative_target_adj eq 13
 
 
-***------ end of "cm_iterative_target_adj" variants-----------------------------------------
 
 
 *** for having it available in next iteration, too:

@@ -6,6 +6,8 @@
 *** |  Contact: remind@pik-potsdam.de
 *** SOF ./core/datainput.gms
 
+
+
 *AJS* technical. initialize parameters so that they are read from gdx
 vm_co2eq.l(ttot,regi) = 0;
 vm_emiAll.l(ttot,regi,enty) = 0;
@@ -1603,6 +1605,33 @@ p_prodAllReference(t,regi,te) =
 
 *' initialize vm_changeProdStartyearCost for tax calculation
 vm_changeProdStartyearCost.l(t,regi,te) = 0;
+
+
+
+*** p_EmiLULUCFCountryAcc contains historic LULUCF emissions from UNFCCC, 
+*** used for rescaling land-use change emissions for emissions targets based on national accounting
+parameter pm_EmiLULUCFCountryAcc(tall,all_regi)                "historic co2 emissions from landuse change based on country accounting [Mt CO2/yr]"
+/
+$ondelim
+$include "./modules/47_regipol/regiCarbonPrice/input/p_EmiLULUCFCountryAcc.cs4r"
+$offdelim
+/
+;
+
+*** difference between 2020 land-use change emissions from Magpie and UNFCCC 2015 and 2020 moving average land-use change emissions
+pm_LULUCFEmi_GrassiShift(t,regi)$(pm_EmiLULUCFCountryAcc("2020",regi)) = 
+  pm_macBaseMagpie("2020",regi,"co2luc") 
+  - 
+  (
+    (
+      ((pm_EmiLULUCFCountryAcc("2013",regi) + pm_EmiLULUCFCountryAcc("2014",regi) + pm_EmiLULUCFCountryAcc("2015",regi) + pm_EmiLULUCFCountryAcc("2016",regi) + pm_EmiLULUCFCountryAcc("2017",regi))/5)
+      +
+      ((pm_EmiLULUCFCountryAcc("2018",regi) + pm_EmiLULUCFCountryAcc("2019",regi) + pm_EmiLULUCFCountryAcc("2020",regi) + pm_EmiLULUCFCountryAcc("2021",regi))/4)
+    )/2
+    * 1e-3/sm_c_2_co2
+  )
+;
+
 
 *** EOF ./core/datainput.gms
 

@@ -101,6 +101,7 @@ p_adj_coeff(ttot,all_regi,all_te)                    "coefficient for adjustment
 p_adj_coeff_glob(all_te)                             "coefficient for adjustment costs - global scale"
 p_switch_cement(ttot,all_regi)                       "describes an s-curve to provide a smooth switching from the short-term behavior (depending on per capita capital investments) to the long-term behavior (constant per capita emissions) of CO2 emissions from cement production"
 p_cint(all_regi,all_enty,all_enty,rlf)               "additional emissions of GHG from mining, on top of emissions from combustion"
+pm_LULUCFEmi_GrassiShift(ttot,all_regi)              "difference between Magpie land-use change emissions and UNFCCC emissions in 2015 to correct for national accounting in emissions targets"
 
 $IFTHEN.agricult_base_shift not "%c_agricult_base_shift%" == "off"
 p_agricult_base_shift(ext_regi)                      "fraction by which to scale agricultural emissions of baseline up or down, positive values increase emissions, negative values decrease emissions" / %c_agricult_base_shift% /
@@ -640,7 +641,8 @@ s_actualbudgetco2_last                                "actual level of 2020-2100
 
 s_actual2050co2                                       "current iterations actual global co2 emissions in 2050 needed to adjust co2 tax until 2050"
 s_actual2050cdr                                       "current iterations actual global cdr amount in 2050 needed to adjust cdr revenues until 2050"
-
+s_actual2050ghgEUR                                    "current iterations actual EUR ghg emissions including land-use cdr in 2050 needed to adjust co2 tax until 2050"
+s_actual2050cdrEUR                                    "current iterations actual EUR novel cdr amount in 2050 needed to adjust cdr revenues until 2050"
 
 sm_globalBudget_dev                                   "actual level of global cumulated emissions budget divided by target budget"
 

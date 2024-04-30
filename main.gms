@@ -1048,6 +1048,14 @@ parameter
   c_target2050cdr      = -1; !! def =-1
 *' -1 indicates no target, otherwise number indicates global cdr emission target for 2050 in GtCO2 per y
 
+
+parameter
+  c_target2050cdrEUR     "Novel cdr target for H12 EUR GHG neutrality in 2050"
+;
+  c_target2050cdrEUR      = -1; !! def =-1
+*' -1 indicates no target, otherwise number indicates novel CDR to be reached for GHG neutrality in 2050 in GtCO2 per y
+
+
 parameter
   cm_DiscRateScen          "Scenario for the implicit discount rate applied to the energy efficiency capital"
 ;
