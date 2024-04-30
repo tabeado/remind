@@ -705,9 +705,11 @@ parameter
 parameter
   cm_biocharpriceConstant        "Revenue assumed for sale of biochar4soils; REMIND native units, i.e. unit USD $[2005] / (TWa BC)"
 ;
-  cm_biocharpriceConstant = 0.1812; !! def = 0.1812
-*' 0.0906 = 100 USD/tBC
+  cm_biocharpriceConstant = 0.2266; !! def = 0.2266
+*' translation is to USD2015tBC
+*' 0.0906 = 100 USD/tBC 
 *' 0.1812 = 200 USD/tBC
+*' 0.2266 = 250 USD/tBC 
 *' 0.2719 = 300 USD/tBC
 *' 0.3172 = 350 USD/tBC
 *' 0.4531 = 500 USD/tBC
@@ -1703,11 +1705,12 @@ $setGLobal c_agricult_base_shift off !! def off
 *** cm_wind_offshore  0, means wind energy is only represented by "wind", which is a mixture of both wind onshore and wind offshore
 $setglobal cm_wind_offshore  1      !! def = 1
 *** flag whether biochar revenue is modelled or not; 0 = not, 1 = modelled
-$setGLobal cm_biocharRevenue 0 !! Def off    
+$setGLobal cm_biocharRevenue 1 !! def on    
 *** flag deermining the form of biochar price-demand function assumed"
 *** exponential: exponential price-demand curve, determined by cm_biocharpriceMax and cm_biocharpriceCoefficient
-*** constant constant price, determined by  cm_biocharpriceConstant
-$setGLobal  cm_biocharPriceForm exponential !! Def exponential    
+*** constant: constant price, determined by  cm_biocharpriceConstant
+*** linearTimeDependent: decreasing price over time, independent of deployment
+$setGLobal  cm_biocharPriceForm linearTimeDependent !! Def linearTimeDependent    
 ***  cm_INCONV_PENALTY  on     !! def = on
 *** *RP* 2012-03-06 Flag to turn on inconvenience penalties, e.g. for air pollution
 $setglobal cm_INCONV_PENALTY  on         !! def = on  !! regexp = off|on
