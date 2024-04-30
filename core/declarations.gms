@@ -555,7 +555,9 @@ $ENDIF.sehe_upper
 
 * revenue calculation
 q_demSpecificGoodsCalculation(ttot,all_regi,all_enty,all_te) "derivation for the demand of specific goods as they might come from different places"
+$ifthen.priceBCformLin "%cm_biocharPriceForm%" != "linearTimeDependent"
 q_priceOfSpecificGoods(ttot, all_regi, all_enty,all_te)   "e"
+$endIf.priceBCformLin 
 qm_revenueOfSpecificGoods(ttot,all_regi)                      "e"
 
 ***----------------------------------------------------------------------------------------

@@ -122,7 +122,7 @@ q_demSpecificGoodsCalculation(t,regi,SpecificRevenueEntyandTe(entySpecificRevenu
 ;
 
 
-$ifthen.priceBCformConstant not "%cm_biocharPriceForm%" == "constant"
+$ifthen.priceBCformConstant "%cm_biocharPriceForm%" == "constant"
  q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
     v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
     =e=
@@ -130,8 +130,7 @@ $ifthen.priceBCformConstant not "%cm_biocharPriceForm%" == "constant"
     ; 
 $endIf.priceBCformConstant
 
-
-$ifthen.priceBCformExponential not "%cm_biocharPriceForm%" == "exponential"
+$ifthen.priceBCformExponential  "%cm_biocharPriceForm%" == "exponential"
  q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
         v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
         =e=
