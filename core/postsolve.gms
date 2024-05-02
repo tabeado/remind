@@ -547,14 +547,15 @@ display s_actualbudgetco2;
 ***-----------------------------------------------
     if(c_target2050cdrEUR > 0,
     s_actual2050ghgEUR = sum(ttot$(ttot.val eq c_peakBudgYr),sum(regi$sameas(regi,"EUR"),
-        !! Gross CO2 emissions excluding novel CDR in GtCO2 but including land use and managed forests (with Grassi shift)
-        ((vm_emiAll.l(ttot,regi,"co2") + vm_emiCdrAll.l(ttot,regi) - pm_LULUCFEmi_GrassiShift(ttot,regi)) * sm_c_2_co2
-        !! CH4 emissions in GtCO2eq with GWP100
-        +vm_emiAll.l(ttot,regi,"ch4") * s_gwpCH4
-        !! N"O emissions in GtCO2eq with GWP100
-        +vm_emiAll.l(ttot,regi,"n2o") * s_gwpN2O
-        )));
-    s_actual2050cdrEUR = sum(ttot$(ttot.val eq c_peakBudgYr),sum(regi$(sameas(regi,"EUR")), vm_emiCdrAll.l(ttot,regi))) *sm_c_2_co2;  !! CDR     
+        !! Gross CO2 emissions excluding novel CDR in GtC but including land use and managed forests (with Grassi shift)
+        ((vm_emiAll.l(ttot,regi,"co2") + vm_emiCdrAll.l(ttot,regi) - pm_LULUCFEmi_GrassiShift(ttot,regi)) 
+        !! CH4 emissions in GtCeq with GWP100
+        +vm_emiAll.l(ttot,regi,"ch4") * sm_tgch4_2_pgc
+        !! N2O emissions in GtCeq with GWP100
+        +vm_emiAll.l(ttot,regi,"n2o") * sm_tgn_2_pgc
+        !! Conversion to GtCO2eq
+        ))) * sm_c_2_co2;
+    s_actual2050cdrEUR = sum(ttot$(ttot.val eq c_peakBudgYr),sum(regi$(sameas(regi,"EUR")), vm_emiCdrAll.l(ttot,regi))) *sm_c_2_co2;  !! CDR in GtCO2    
     !! Target 2050 GHG in Europe
     display s_actual2050ghgEUR, s_actual2050cdrEUR;
     if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND abs(c_target2050cdrEUR - s_actual2050ghgEUR) ge 0.05 ,   !!only for optimal iterations, and not after the last one, and only if target not yet reached
