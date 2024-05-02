@@ -607,4 +607,16 @@ v_changeProdStartyearSlack.up(t,regi,te)$( (t.val gt 2005) AND (t.val eq cm_star
 v_changeProdStartyearSlack.lo(t,regi,te)$( (t.val gt 2005) AND (t.val eq cm_startyear ) ) = - c_SlackMultiplier * p_adj_seed_reg(t,regi) * p_adj_seed_te(t,regi,te) ;
 
 
+***----------------------------------------------------------------------------
+*' if deployment-independent path for biochar over time: fix price by timestep
+***----------------------------------------------------------------------------
+
+$ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent"
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val le 2025) = 0.2266; !! 250 USD/t BC
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2030) = 0.1812; !! 200 USD/t BC
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2035) = 0.1359; !! 150 USD/t BC
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2040) = 0.0906; !! 100 USD/t BC
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val ge 2045) = 0.0634; !!  70 USD/tBC
+$endIf.priceBCformLin
+
 *** EOF ./core/bounds.gms
