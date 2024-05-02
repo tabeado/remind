@@ -702,12 +702,6 @@ pm_cf(t,regi,"biopyrCHP") = 0.9;
 pm_cf(t,regi,"biopyrCHP850") = 0.9;
 pm_cf(t,regi,"biochar4soil") = 1;
 
-v_priceOfSpecificGoods.l(t,regi, teSpecificRevenue)$(t.val le 2025) = 0.2266; !! 250 USD/t BC
-v_priceOfSpecificGoods.l(t,regi, teSpecificRevenue)$(t.val eq 2030) = 0.1812; !! 200 USD/t BC
-v_priceOfSpecificGoods.l(t,regi, teSpecificRevenue)$(t.val eq 2035) = 0.1359; !! 150 USD/t BC
-v_priceOfSpecificGoods.l(t,regi, teSpecificRevenue)$(t.val eq 2040) = 0.0906; !! 100 USD/t BC
-v_priceOfSpecificGoods.l(t,regi, teSpecificRevenue)$(t.val ge 2045) = 0.0634; !!  70 USD/tBC
-
 *SB* Region- and tech-specific early retirement rates
 *Regional*
 loop(ext_regi$pm_extRegiEarlyRetiRate(ext_regi),
