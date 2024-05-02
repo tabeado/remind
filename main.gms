@@ -868,7 +868,7 @@ parameter
 parameter
   cm_iterative_target_adj   "settings on iterative adjustment for CO2 tax based on in-iteration emission or forcing level. Allow iteratively generated endogenous global CO2 tax under peak budget constraint."
 ;
-  cm_iterative_target_adj = 0;      !! def = 0  !! regexp = 0|2|3|4|5|6|7|9
+  cm_iterative_target_adj = 0;      !! def = 0  !! regexp = 0|2|3|4|5|6|7|9|13
 *' * (0): no iterative adjustment of CO2 tax (terminology: CO2 price and CO2 tax in REMIND is used interchangeably)
 *' * (2): iterative adjustment of CO2 tax or cumulative emission based on climate forcing calculated by climate model magicc, for runs with budget or CO2 tax constraints. See ./modules/45_carbonprice/NDC/postsolve.gms for direct algorithm
 *' * (3): [requires 45_carbonprice = NDC and emiscen = 9] iterative adjustment of CO2 tax based on 2025 or 2030 regionally differentiated emissions, for runs with emission budget or CO2 tax constraints. See ./modules/45_carbonprice/NDC/postsolve.gms for direct algorithm
@@ -1035,6 +1035,28 @@ parameter
 *' * (0)   No net negative tax, the full CO2 price always applies.
 *' * (0.5) Halves the effective CO2 price when regional net CO2 emissions turn negative.
 *' * (1)   No effective CO2 tax once regional emissions turn net-negative. Hence regions never become net-negative.
+
+
+parameter
+  c_target2050co2     "global co2 emission year target in 2050"
+;
+  c_target2050co2      = -1; !! def =-1
+*' -1 indicates no target, otherwise number indicates global gross emission target for 2050 in GtCO2 per y
+
+
+parameter
+  c_target2050cdr     "global cdr emission year target in 2050"
+;
+  c_target2050cdr      = -1; !! def =-1
+*' -1 indicates no target, otherwise number indicates global cdr emission target for 2050 in GtCO2 per y
+
+
+parameter
+  c_target2050cdrEUR     "Novel cdr target for H12 EUR GHG neutrality in 2050"
+;
+  c_target2050cdrEUR      = -1; !! def =-1
+*' -1 indicates no target, otherwise number indicates novel CDR to be reached for GHG neutrality in 2050 in GtCO2 per y
+
 
 parameter
   cm_DiscRateScen          "Scenario for the implicit discount rate applied to the energy efficiency capital"

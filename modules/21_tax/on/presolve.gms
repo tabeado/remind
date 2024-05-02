@@ -16,7 +16,7 @@ p21_tau_so2_tax(ttot,regi)$(ttot.val>2100)=p21_tau_so2_tax("2100",regi);
 *JH* !!Warning!! The same allocation block exists in postsolve.gms. 
 ***                Do not forget to update the other file.
 *** save level value of all taxes
-pm_taxrevGHG0(t,regi) = pm_taxCO2eqSum(t,regi) * (vm_co2eq.l(t,regi) - vm_emiMacSector.l(t,regi,"co2luc")$(cm_multigasscen ne 3));
+pm_taxrevGHG0(t,regi) = pm_taxCO2eqSum(t,regi) * (vm_co2eq.l(t,regi) + vm_emiCdrAll.l(t,regi)$(cm_iterative_target_adj eq 13) - vm_emiMacSector.l(t,regi,"co2luc")$(cm_multigasscen ne 3));
 pm_taxrevCO2Sector0(ttot,regi,emi_sectors) = p21_CO2TaxSectorMarkup(ttot,regi,emi_sectors) * pm_taxCO2eqSum(ttot,regi) * vm_emiCO2Sector.l(ttot,regi,emi_sectors);
 pm_taxrevCO2LUC0(t,regi) = pm_taxCO2eqSum(t,regi) * vm_emiMacSector.l(t,regi,"co2luc")$(cm_multigasscen ne 3);
 p21_taxrevCCS0(ttot,regi) = cm_frac_CCS * pm_data(regi,"omf","ccsinje") * pm_inco0_t(ttot,regi,"ccsinje") 
@@ -56,5 +56,6 @@ p21_taxrevChProdStartYear0(t,regi) = sum(en2en(enty,enty2,te), vm_changeProdStar
 p21_taxrevSE0(t,regi) =     sum(se2se(enty,enty2,te)$(teSeTax(te)), 
                                     v21_tau_SE_tax.l(t,regi,te) 
                                   * vm_demSe.l(t,regi,enty,enty2,te));
+p21_taxrevCDR0(ttot,regi) = pm_taxCDR(ttot,regi) * vm_emiCdrAll.l(ttot,regi);
 
 *** EOF ./modules/21_tax/on/presolve.gms

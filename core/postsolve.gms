@@ -493,7 +493,102 @@ if (cm_iterative_target_adj eq 9,
   ); !! if cm_emiscen eq 9,
 );   !! if cm_iterative_target_adj eq 9,
 
-***------ end of "cm_iterative_target_adj" variants-----------------------------------------
+
+
+*Anne* Seperate CO2 emissions and CDR removal prices with seperate year targets (c_peakBudgYr), exponential hotelling prices with adjusted starting points until target year and constant prices afterwards.
+if(cm_iterative_target_adj eq 13,
+  if(cm_emiscen eq 9,
+*last iteration's emissions
+    s_actual2050co2 = sum(ttot$(ttot.val eq c_peakBudgYr),sum(regi,(vm_emiAll.l(ttot,regi,"co2") + vm_emiCdrAll.l(ttot,regi))))*sm_c_2_co2; !! Gross CO2 
+    if(s_actual2050co2 < 0, s_actual2050co2 = sm_eps); 
+    s_actual2050cdr = sum(ttot$(ttot.val eq c_peakBudgYr),sum(regi, vm_emiCdrAll.l(ttot,regi))) *sm_c_2_co2;  !! CDR 
+*** budget calculated as 2015-2095 + 2100*5.5 + 2010*2 in Gt CO2; 
+s_actualbudgetco2 =           sum(ttot$(ttot.val < 2100 AND ttot.val > 2010), (sum(regi, (vm_emiTe.l(ttot,regi,"co2") + vm_emiCdr.l(ttot,regi,"co2") + vm_emiMac.l(ttot,regi,"co2"))) * sm_c_2_co2 * pm_ts(ttot)))
+$if not setglobal test_TS     + sum(regi, (vm_emiTe.l("2100",regi,"co2") + vm_emiCdr.l("2100",regi,"co2") + vm_emiMac.l("2100",regi,"co2")))*sm_c_2_co2 * 5.5
+                              + sum(regi, (vm_emiTe.l("2010",regi,"co2") + vm_emiCdr.l("2010",regi,"co2") + vm_emiMac.l("2010",regi,"co2")))*sm_c_2_co2 * 2;
+*** calculation of peak budget for diagnostics
+  p_actualbudgetco2(ttot)$(ttot.val > 2020) = sum(ttot2$(ttot2.val < ttot.val AND ttot2.val > 2020), (sum(regi, (vm_emiTe.l(ttot2,regi,"co2") + vm_emiCdr.l(ttot2,regi,"co2") + vm_emiMac.l(ttot2,regi,"co2"))) * sm_c_2_co2 * pm_ts(ttot2)))
+                       + sum(regi, (vm_emiTe.l(ttot,regi,"co2") + vm_emiCdr.l(ttot,regi,"co2") + vm_emiMac.l(ttot,regi,"co2"))) * sm_c_2_co2 * ((pm_ttot_val(ttot)-pm_ttot_val(ttot-1))/2 + 0.5)
+                       + sum(regi, (vm_emiTe.l("2020",regi,"co2") + vm_emiCdr.l("2020",regi,"co2") + vm_emiMac.l("2020",regi,"co2"))) * sm_c_2_co2 * (pm_ts("2020")/2 + 0.5);
+  s_actualbudgetco2 = smax(t$(t.val le c_peakBudgYr),p_actualbudgetco2(t));
+display s_actualbudgetco2;
+    display s_actualbudgetco2, s_actual2050co2, s_actual2050cdr;
+    !! Target 2050 CO2 
+    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND abs(c_target2050co2 - s_actual2050co2) ge 0.3 AND c_target2050co2 gt 0,   !!only for optimal iterations, and not after the last one, and only if target not yet reached
+      pm_taxCO2eq_iterationdiff(t,regi)$(t.val le c_peakBudgYr) = pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr) * min(max((s_actual2050co2/(c_target2050co2))** (10/(2 * iteration.val + 23)),0.5+iteration.val/208),2 - iteration.val/102)  - pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr);
+      pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr) = pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr) + pm_taxCO2eq_iterationdiff(t,regi)$(t.val le c_peakBudgYr) ;
+      o_taxCO2eq_iterDiff_Itr(iteration,regi) = pm_taxCO2eq_iterationdiff("2030",regi);
+      display o_taxCO2eq_iterDiff_Itr;
+      else
+        !! if model was not optimal, or if target already reached, keep tax constant
+        pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr) = pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr);
+        if((c_target2050co2 eq 0 AND c_target2050cdr gt 0),
+          pm_taxCO2eq(t,regi) = 0;
+        );
+      );	
+    !! Target at net-zero CDR (in target year c_peakBudgYr)
+    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND abs(c_target2050cdr - s_actual2050cdr) ge 0.3,   !!only for optimal iterations, and not after the last one, and only if target not yet reached
+      p_taxcdr_iterationdiff(t,regi)$(t.val le c_peakBudgYr) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr) * min(max((c_target2050cdr/s_actual2050cdr)** (10/(2 * iteration.val + 23)),0.5+iteration.val/208),2 - iteration.val/102)  - pm_taxCDR(t,regi)$(t.val le c_peakBudgYr);
+      pm_taxCDR(t,regi)$(t.val le c_peakBudgYr) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr) + p_taxcdr_iterationdiff(t,regi)$(t.val le c_peakBudgYr) ;
+      o_taxCDR_iterDiff_Itr(iteration,regi) = p_taxcdr_iterationdiff("2030",regi);
+      display o_taxCDR_iterDiff_Itr;
+      else
+        !! if model was not optimal, or if target already reached, keep tax constant
+        pm_taxCDR(t,regi)$(t.val le c_peakBudgYr) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr);
+      );	      
+    if((c_target2050cdr eq 0 AND c_target2050co2 gt 0),
+      pm_taxCDR(t,regi) = 0;
+      );    
+    if((c_target2050co2 eq 0 AND c_target2050cdr gt 0),
+      pm_taxCO2eq(t,regi) = 0;
+    );
+***-----------------------------------------------
+*AM* Additional targets for EUR
+***-----------------------------------------------
+    if(c_target2050cdrEUR > 0,
+    s_actual2050ghgEUR = sum(ttot$(ttot.val eq c_peakBudgYr),sum(regi$sameas(regi,"EUR"),
+        !! Gross CO2 emissions excluding novel CDR in GtC but including land use and managed forests (with Grassi shift)
+        ((vm_emiAll.l(ttot,regi,"co2") + vm_emiCdrAll.l(ttot,regi) - pm_LULUCFEmi_GrassiShift(ttot,regi)) 
+        !! CH4 emissions in GtCeq with GWP100
+        +vm_emiAll.l(ttot,regi,"ch4") * sm_tgch4_2_pgc
+        !! N2O emissions in GtCeq with GWP100
+        +vm_emiAll.l(ttot,regi,"n2o") * sm_tgn_2_pgc
+        !! Conversion to GtCO2eq
+        ))) * sm_c_2_co2;
+    s_actual2050cdrEUR = sum(ttot$(ttot.val eq c_peakBudgYr),sum(regi$(sameas(regi,"EUR")), vm_emiCdrAll.l(ttot,regi))) *sm_c_2_co2;  !! CDR in GtCO2    
+    !! Target 2050 GHG in Europe
+    display s_actual2050ghgEUR, s_actual2050cdrEUR;
+    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND abs(c_target2050cdrEUR - s_actual2050ghgEUR) ge 0.05 ,   !!only for optimal iterations, and not after the last one, and only if target not yet reached
+      pm_taxCO2eq_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) * min(max((s_actual2050ghgEUR/(c_target2050cdrEUR))** (10/(2 * iteration.val + 23)),0.5+iteration.val/208),2 - iteration.val/102)  - pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR"));
+      pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) + pm_taxCO2eq_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) ;
+      !!o_taxCO2eq_iterDiff_Itr(iteration,regi) = pm_taxCO2eq_iterationdiff("2030",regi);
+      !!display o_taxCO2eq_iterDiff_Itr;
+      !!else
+        !!!! if model was not optimal, or if target already reached, keep tax constant
+        !!pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr) = pm_taxCO2eq(t,regi)$(t.val le c_peakBudgYr);
+        !!if((c_target2050co2 eq 0 AND c_target2050cdr gt 0),
+          !!pm_taxCO2eq(t,regi) = 0;
+        !!);
+      );	
+    !! Target at net-zero CDR (in target year c_peakBudgYr)
+    if(o_modelstat eq 2 AND ord(iteration)<cm_iteration_max AND abs(c_target2050cdrEUR - s_actual2050cdrEUR) ge 0.05,   !!only for optimal iterations, and not after the last one, and only if target not yet reached
+      p_taxcdr_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) * min(max((c_target2050cdrEUR/s_actual2050cdrEUR)** (10/(2 * iteration.val + 23)),0.5+iteration.val/208),2 - iteration.val/102)  - pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR"));
+      pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) + p_taxcdr_iterationdiff(t,regi)$(t.val le c_peakBudgYr AND sameas(regi,"EUR")) ;
+      !!o_taxCDR_iterDiff_Itr(iteration,regi) = p_taxcdr_iterationdiff("2030",regi);
+      !!display o_taxCDR_iterDiff_Itr;
+      !!else
+        !! if model was not optimal, or if target already reached, keep tax constant
+        !!pm_taxCDR(t,regi)$(t.val le c_peakBudgYr) = pm_taxCDR(t,regi)$(t.val le c_peakBudgYr);
+      );	          
+    ); !! end of additional EUR GHG neutrality with limited CDR condition
+    pm_taxCDR(t,regi)$(t.val gt c_peakBudgYr) = sum(ttot$(ttot.val eq c_peakBudgYr),pm_taxCDR(ttot,regi)); !! Prices are constant after 2050 (year of net carbon neutrality)
+    display pm_taxCDR;
+    pm_taxCO2eq(t,regi)$(t.val gt c_peakBudgYr) = sum(ttot$(ttot.val eq c_peakBudgYr),pm_taxCO2eq(ttot,regi)); !! Prices are constant after 2050 (year of net carbon neutrality)
+    display pm_taxCO2eq;
+  ); !! end if cm_emiscen eq 9
+); !! end if cm_iterative_target_adj eq 13
+
+
 
 
 *** for having it available in next iteration, too:

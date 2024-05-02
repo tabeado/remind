@@ -23,6 +23,8 @@
 *###################### R SECTION START (MODULETYPES) ##########################
 $Ifi "%carbonprice%" == "NDC" $include "./modules/45_carbonprice/NDC/realization.gms"
 $Ifi "%carbonprice%" == "NPi" $include "./modules/45_carbonprice/NPi/realization.gms"
+$Ifi "%carbonprice%" == "SepMarkdiffCurv2const" $include "./modules/45_carbonprice/SepMarkdiffCurv2const/realization.gms"
+$Ifi "%carbonprice%" == "SeparateMarketsExpo2Const" $include "./modules/45_carbonprice/SeparateMarketsExpo2Const/realization.gms"
 $Ifi "%carbonprice%" == "diffCurvPhaseIn2Lin" $include "./modules/45_carbonprice/diffCurvPhaseIn2Lin/realization.gms"
 $Ifi "%carbonprice%" == "exogenous" $include "./modules/45_carbonprice/exogenous/realization.gms"
 $Ifi "%carbonprice%" == "expoLinear" $include "./modules/45_carbonprice/expoLinear/realization.gms"

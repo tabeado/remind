@@ -160,7 +160,21 @@ q37_limit_IndCCS_growth(ttot,regi,emiInd37)$( ttot.val ge cm_startyear ) ..
     * pm_ts(ttot)
     )
 ;
-
+***------------------------------------------------------
+*' Calculate industry CDR (i.e. Industry CCS from carbon neutral fuels, primarily bio-based)
+***------------------------------------------------------
+q37_IndCDR(ttot,regi)$(ttot.val ge cm_startyear)..
+  vm_IndCDR(ttot,regi) 
+  =e=
+      sum(emiMac2mac(emiInd37,macInd37),
+        sum(entyFe,
+          sum((secInd37_2_emiINd37(secInd37,emiInd37)),
+                vm_emiIndBase(ttot,regi,entyFE,secInd37))$(NOT SAMEAS (emiInd37,"co2cement_process"))            
+            * vm_IndstShareco2neutrcarbs(ttot,regi,entyFE)
+      )
+    * pm_macSwitch(macInd37)              !! sub-sector CCS available or not
+    * pm_macAbatLev(ttot,regi,macInd37)   !! abatement level at current price
+  ) * vm_FracCCS(ttot,regi);
 ***------------------------------------------------------
 *' Fix cement fuel and cement process emissions to the same abatement level.
 ***------------------------------------------------------

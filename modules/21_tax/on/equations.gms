@@ -31,6 +31,7 @@ q21_taxrev(t,regi)$(t.val ge max(2010,cm_startyear))..
   vm_taxrev(t,regi)
   =e=
     v21_taxrevGHG(t,regi)
+  - v21_taxrevCDR(t,regi)$(cm_iterative_target_adj eq 13)   
   + sum(emi_sectors, v21_taxrevCO2Sector(t,regi,emi_sectors))
   + v21_taxrevCO2luc(t,regi)
   + v21_taxrevCCS(t,regi) 
@@ -66,8 +67,16 @@ $endIf.cm_implicitPePriceTarget
 *'  Documentation of overall tax approach is above at q21_taxrev.
 ***---------------------------------------------------------------------------
 q21_taxrevGHG(t,regi)$(t.val ge max(2010,cm_startyear))..
-v21_taxrevGHG(t,regi) =e= pm_taxCO2eqSum(t,regi) * (vm_co2eq(t,regi) - vm_emiMacSector(t,regi,"co2luc")$(cm_multigasscen ne 3))
+v21_taxrevGHG(t,regi) =e= pm_taxCO2eqSum(t,regi) * (vm_co2eq(t,regi) + vm_emiCdrAll(t,regi)$(cm_iterative_target_adj eq 13) - vm_emiMacSector(t,regi,"co2luc")$(cm_multigasscen ne 3))
                            - pm_taxrevGHG0(t,regi);
+
+***---------------------------------------------------------------------------
+*'  Calculation of CDR revenues: tax rate (defined as fraction of carbon price) times net-negative emissions
+*'  Documentation of overall tax approach is above at q21_taxrev.
+***---------------------------------------------------------------------------
+q21_taxrevCDR(t,regi)..
+v21_taxrevCDR(t,regi) =e= pm_taxCDR(t,regi) * vm_emiCdrAll(t,regi)
+                                 - p21_taxrevCDR0(t,regi);
 
 
 ***---------------------------------------------------------------------------

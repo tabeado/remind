@@ -2088,6 +2088,26 @@ entyFe2Sector(all_enty,emi_sectors) "final energy (stationary and transportation
     fedie.cdr
 /
 
+se_co2neutralcarbs(entySE)
+/
+        segabio
+        segasyn
+        seliqbio
+        seliqsyn
+        sesobio
+/
+se_carbs(entySE)
+/
+        segabio
+        segasyn
+        segafos
+        seliqbio
+        seliqsyn
+        seliqfos
+        sesobio
+        sesofos
+/
+
 ppfEn2Sector(all_in,emi_sectors) "primary energy production factors mapping to sectors"
 /
     fegab.build
@@ -2767,6 +2787,18 @@ emi2te(all_enty,all_enty,all_te,all_enty)    " map emissions to technologies"
         seliqfos.fepet.tdfospet.co2
         seliqfos.fedie.tdfosdie.co2
         segafos.fegat.tdfosgat.co2
+/
+
+map_eqCarbCont(all_enty,all_enty,all_enty,all_te) "map hydrocarbon fuels from fossil or atm. origin to same carbon content"
+/
+        segabio.segafos.fegas.tdfosgas
+        segasyn.segafos.fegas.tdfosgas
+        segafos.segafos.fegas.tdfosgas
+        seliqbio.seliqfos.fehos.tdfoshos
+        seliqsyn.seliqfos.fehos.tdfoshos
+        seliqfos.seliqfos.fehos.tdfoshos
+        sesobio.sesofos.fesos.tdfossos
+        sesofos.sesofos.fesos.tdfossos
 /
 
 emi2fuel(all_enty,all_enty) "map emissions to fuel extraction"

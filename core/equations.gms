@@ -766,24 +766,78 @@ q_emiMac(t,regi,emiMac) ..
   )
 ;
 
+*** Equations for separate carbon markets on emissions and removals
 ***--------------------------------------------------
-*' All CDR emissions summed up
+*' Share of atmospheric carbon in captured carbon
 ***--------------------------------------------------
-q_emiCdrAll(t,regi)..
-  vm_emiCdrAll(t,regi)
-       =e= !! BECC + DACC
-  (sum(emiBECCS2te(enty,enty2,te,enty3),vm_emiTeDetail(t,regi,enty,enty2,te,enty3))
-  + sum(teCCS2rlf(te,rlf), vm_ccs_cdr(t,regi,"cco2","ico2","ccsinje",rlf)))
-  !! scaled by the fraction that gets stored geologically
-  * (sum(teCCS2rlf(te,rlf),
+q_ShareAtmCO2inSynfuels(t,regi)..
+  v_shareAtmCO2inSynfuels(t,regi)
+  =e=
+  !!Atmospheric CO2 (TODO: actually slightly higher, to be accurate atmospheric Industry carbon capture has to be added)
+  (sum(emiBECCS2te(enty,enty2,te,enty3),vm_emiTeDetail(t,regi,enty,enty2,te,enty3)) !!BECC
+  + sum(teCCS2rlf(te,rlf), vm_ccs_cdr(t,regi,"cco2","ico2","ccsinje",rlf))  !!DACC + OAE
+  !! - excluding carbon from fossil and synthetic fegas from DAC heating
+  -  0.9 * pm_emifac(t,regi,"segafos","fegas","tdfosgas","co2") * vm_demFeSector_afterTax(t,regi,"segafos","fegas","CDR","ETS")
+  -  0.9 * pm_emifac(t,regi,"segafos","fegas","tdfosgas","co2") * vm_demFeSector_afterTax(t,regi,"segasyn","fegas","CDR","ETS"))
+  /
+  !! Divided by all captured CO2 (TODO: To be accurate exclude captured carbon from synfuels in DAC and Industry)
+    (sum(teCCS2rlf(te,rlf),
+        vm_co2capture(t,regi,"cco2","ico2","ccsinje",rlf))+sm_eps
+    )
+    ;
+
+***--------------------------------------------------
+*' Share of atmospheric carbon in industry fuels
+***--------------------------------------------------
+q_IndstShareco2neutrcarbs(t,regi,entyFE)..
+  vm_IndstShareco2neutrcarbs(t,regi,entyFE)
+  =e=
+  (sum(entySeBio(entySE),
+    sum(emiMkt$(sector2emiMkt("indst",emiMkt)), vm_demFeSector_afterTax(t,regi,entySE,entyFE,"indst",emiMkt)) * pm_emifac_tailpipe(t,regi,entySE,entyFE))
+  + sum(entySeSyn(entySE),
+    sum(emiMkt$(sector2emiMkt("indst",emiMkt)), vm_demFeSector_afterTax(t,regi,entySE,entyFE,"indst",emiMkt)) * pm_emifac_tailpipe(t,regi,entySE,entyFE) * v_shareAtmCO2inSynfuels(t,regi)$((sameas(entySE,"seliqsyn")) OR (sameas(entySE,"segasyn"))))) 
+    /
+  sum(se_carbs(entySE),
+    sum(emiMkt$(sector2emiMkt("indst",emiMkt)), vm_demFeSector_afterTax(t,regi,entySE,entyFE,"indst",emiMkt)) * pm_emifac_tailpipe(t,regi,entySE,entyFE)
+    + sm_eps)
+;
+
+***--------------------------------------------------
+*' Fraction of captured emissions that get stored geologically
+***--------------------------------------------------
+q_FracCCS(t,regi)..
+  vm_FracCCS(t,regi)
+  =e=
+  (sum(teCCS2rlf(te,rlf),
         vm_co2CCS(t,regi,"cco2","ico2",te,rlf)) /
   (sum(teCCS2rlf(te,rlf),
         vm_co2capture(t,regi,"cco2","ico2","ccsinje",rlf))+sm_eps))
-  !! net negative emissions from co2luc
-  -  p_macBaseMagpieNegCo2(t,regi)
-       !! negative emissions from the cdr module that are not stored geologically
-       -       (vm_emiCdr(t,regi,"co2") + sum(teCCS2rlf(te,rlf), vm_ccs_cdr(t,regi,"cco2","ico2","ccsinje",rlf)))
 ;
+
+
+***--------------------------------------------------
+*' All novel CDR emissions summed up, negative land-use-change emissions are not included
+***--------------------------------------------------
+q_emiCdrAll(t,regi)..
+  vm_emiCdrAll(t,regi)
+       =e= !! BECC 
+  (sum(emiBECCS2te(enty,enty2,te,enty3),vm_emiTeDetail(t,regi,enty,enty2,te,enty3))
+  !! + DACC + OAE process calcination emissions (that are carbon neutral as they are overcompensated by ocean uptake)
+  + sum(teCCS2rlf(te,rlf), vm_ccs_cdr(t,regi,"cco2","ico2","ccsinje",rlf))
+  !! - fossil CCS from DAC with fegas
+  -  0.9 * pm_emifac(t,regi,"segafos","fegas","tdfosgas","co2") * vm_demFeSector_afterTax(t,regi,"segafos","fegas","CDR","ETS"))
+  !! scaled by the fraction that gets stored geologically
+  * vm_FracCCS(t,regi)
+  !! OAE net ocean 
+  + (1 - s33_OAE_chem_decomposition) * vm_emiCdrTeDetail(t, regi, "oae")
+  !! CDR from enhanced weathering
+  + vm_emiCdrTeDetail(t, regi, "weathering")
+  !! negative emissions from biochar
+  -   sum(emiBiochar2te(enty,enty2,te,enty3), vm_emiTeDetail(t,regi,enty,enty2,te,enty3))
+  !! Industry CDR (CCS from carbon neutral fuels)
+  + vm_IndCDR(t,regi)
+;
+
 
 
 ***------------------------------------------------------
