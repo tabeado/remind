@@ -1278,6 +1278,13 @@ $setglobal c_SSP_forcing_adjust  forcing_SSP2   !! def = forcing_SSP2  !! regexp
 $setGlobal cm_regiExoPrice  off    !! def = off
 *** cm_regiExoPrice_fromFile "set exogenous co2 tax path for specific regions from another run, require regipol module to be set to regiCarbonPrice (e.g. "PathToGDX.gdx")"
 $setGlobal cm_regiExoPrice_fromFile  off    !! def = off
+*** cm_regiExoPrice_manual "set exogenous co2 tax path for specific regions based on different policy settings"
+*** (off) - no manual co2 price path
+*** (ariadne_CurrPol1) - ariadne_CurrPol1 scenario, EU27 CO2 Prices -> ETS 100 EUR2020/tCO2 in 2030 and linear increase to 300 EUR2020/tCo2 by 2050, ES (ETS2) 45 EUR2020/tCO2 from 2030 and constant
+*** (ariadne_CurrPol2) - ariadne_CurrPol2 scenario, EU27 CO2 Prices -> following UBA Projektionsbericht 2024, 
+*** see Rahmendaten document Figure 7:
+*** ETS 120 EUR/tCO2 in 2030, increase to 180 in 2050, ES 100 EUR/tCO2 in 2040, increase to 230 EUR/tCO2 in 2050
+$setGlobal cm_regiExoPrice_manual  off    !! def = off
 *** cm_emiMktTarget "set a budget or year emission target, for all (all) or specific emission markets (ETS, ESD or other), and specific regions (e.g. DEU) or region groups (e.g. EU27)"
 ***   Example on how to use:
 ***     cm_emiMktTarget = '2020.2050.EU27_regi.all.budget.netGHG_noBunkers 72, 2020.2050.DEU.all.year.netGHG_noBunkers 0.1'

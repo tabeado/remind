@@ -928,4 +928,71 @@ execute_unload "postsolve_pm_taxCO2eq_fromFile", pm_taxCO2eq;
 display pm_taxCO2eq;
 $endIf.regiExoPrice_fromFile
 
+$ifThen.regiExoPrice_manual not "%cm_regiExoPrice_manual%" == "off"
+
+
+loop(regi$(regi_group("EU27_regi",regi)),
+*** Removing the existent co2 tax parameters for regions with exogenous set prices
+  pm_taxCO2eqSum(ttot,regi)$(ttot.val ge cm_startyear) = 0;
+  pm_taxCO2eq(ttot,regi)$(ttot.val ge cm_startyear) = 0;
+  pm_taxCO2eqRegi(ttot,regi)$(ttot.val ge cm_startyear)= 0;
+  pm_taxCO2eqSCC(ttot,regi)$(ttot.val ge cm_startyear) = 0;
+
+  pm_taxrevGHG0(ttot,regi)$(ttot.val ge cm_startyear) = 0;
+  pm_taxrevCO2Sector0(ttot,regi,emi_sectors)$(ttot.val ge cm_startyear) = 0;
+  pm_taxrevCO2LUC0(ttot,regi)$(ttot.val ge cm_startyear) = 0;
+  pm_taxrevNetNegEmi0(ttot,regi)$(ttot.val ge cm_startyear) = 0;
+
+
+
+$ifThen.regiExoPrice_manual_CurrPol1 "%cm_regiExoPrice_manual%" == "ariadne_CurrPol1"
+*** Ariadne Current Policies Scenario, Type 1:
+*** EU-ETS Price starts at 50 EUR2020/tCO2 in 2025 and increases to 300 EUR2020/tCO2 in 2050, constant afterwards
+*** EU-ETS2 (ES Market in REMIND) Price starts at 45 EUR2020/tCO2 in 2030 and stays constant
+
+
+  pm_taxemiMkt("2025",regi,"ETS") = 50;
+  pm_taxemiMkt("2030",regi,"ETS") = 100;
+  pm_taxemiMkt("2035",regi,"ETS") = 150;
+  pm_taxemiMkt("2040",regi,"ETS") = 200;
+  pm_taxemiMkt("2045",regi,"ETS") = 250;
+  pm_taxemiMkt(t,regi,"ETS")$(t.val ge 2050) = 300;
+
+  pm_taxemiMkt("2025",regi,"ES") = 0;
+  pm_taxemiMkt(t,regi,"ES")$(t.val ge 2030) = 45;
+
+*** convert from EUR2020/tCO2 to trillion USD2005/GtC
+  pm_taxemiMkt(t,regi,emiMkt)=pm_taxemiMkt(t,regi,emiMkt)*sm_DptCO2_2_TDpGtC/1.17;
+);
+
+$endIf.regiExoPrice_manual_CurrPol1
+ 
+$ifThen.regiExoPrice_manual_CurrPol2 "%cm_regiExoPrice_manual%" == "ariadne_CurrPol2"
+*** Ariadne Current Policies Scenario, Type 2:
+*** following UBA Projektionsbericht 2024, see Rahmendaten document Figure 7: 
+*** ETS 120 EUR/tCO2 in 2030, increase to 180 in 2050, ES 100 EUR/tCO2 in 2040, increase to 230 EUR/tCO2 in 2050
+
+  pm_taxemiMkt("2025",regi,"ETS") = 100;
+  pm_taxemiMkt("2030",regi,"ETS") = 120;
+  pm_taxemiMkt("2035",regi,"ETS") = 140;
+  pm_taxemiMkt("2040",regi,"ETS") = 160;
+  pm_taxemiMkt("2045",regi,"ETS") = 170;
+  pm_taxemiMkt(t,regi,"ETS")$(t.val ge 2050) = 180;
+
+  pm_taxemiMkt("2025",regi,"ES") = 50;
+  pm_taxemiMkt("2030",regi,"ES") = 100;
+  pm_taxemiMkt("2035",regi,"ES") = 150;
+  pm_taxemiMkt("2040",regi,"ES") = 180;
+  pm_taxemiMkt("2045",regi,"ES") = 210;
+  pm_taxemiMkt(t,regi,"ES")$(t.val ge 2050) = 230;
+
+*** convert from EUR2020/tCO2 to trillion USD2005/GtC
+  pm_taxemiMkt(t,regi,emiMkt)=pm_taxemiMkt(t,regi,emiMkt)*sm_DptCO2_2_TDpGtC/1.17;
+);
+
+$endIf.regiExoPrice_manual_CurrPol2
+ 
+execute_unload "postsolve_pm_taxCO2eq_manual", pm_taxCO2eq, pm_taxemiMkt;
+$endIf.regiExoPrice_manual
+
 *** EOF ./modules/47_regipol/regiCarbonPrice/postsolve.gms
