@@ -295,9 +295,16 @@ $ifthen.exogDemScen NOT "%cm_exogDem_scen%" == "off"
 vm_cesIO.fx(t,regi,in)$(pm_exogDemScen(t,regi,"%cm_exogDem_scen%",in))=pm_exogDemScen(t,regi,"%cm_exogDem_scen%",in);
 $endif.exogDemScen
 
-*' This bound avoids hydrogen production from gas in the European region (unlikely to happen after recent gas trade changes)
+*' This bound avoids liquids production from gas in the European region (unlikely to happen after recent gas trade changes)
 vm_deltaCap.up(t,regi,"gasftrec",rlf)$((t.val gt 2005) and (regi_group("EUR_regi",regi))) = 0;
 vm_deltaCap.up(t,regi,"gasftcrec",rlf)$((t.val gt 2005) and (regi_group("EUR_regi",regi))) = 0;
+
+*' This bound avoid grey hydrogen production from 2025 onwards in the EU.
+*' No EU region plans to expand grey hydrogen production and we do not represent current grey hydrogen production via this technology but as FE industry gas demand
+*' such that gash2 additions are model artefacts. 
+vm_deltaCap.up(t,regi,"gash2",rlf)$((t.val gt 2025) and (regi_group("EUR_regi",regi))) = 1e-7;
+
+
 
 *' @stop
 
