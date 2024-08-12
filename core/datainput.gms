@@ -760,7 +760,10 @@ pm_regiEarlyRetiRate(t,regi,teBio)   = 0.05;
 $ifthen.tech_earlyreti not "%c_tech_earlyreti_rate%" == "off"
 loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te),
   pm_regiEarlyRetiRate(t,regi,te)$(regi_group(ext_regi,regi) and (t.val lt 2035 or sameas(ext_regi,"GLO"))) = p_techEarlyRetiRate(ext_regi,te);
+*** Add further technologies that can be retired early depending on switch
+  teEarlyReti(te) = YES;
 );
+display teEarlyReti;
 $endif.tech_earlyreti
 
 *SB* Time-dependent early retirement rates in Baseline scenarios

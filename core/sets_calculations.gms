@@ -38,6 +38,11 @@ en2se(enty,enty2,te) = pe2se(enty,enty2,te) + se2se(enty,enty2,te);
 
 en2en(enty,enty2,te) = pe2se(enty,enty2,te) + se2se(enty,enty2,te) + se2fe(enty,enty2,te) + fe2ue(enty,enty2,te) + ccs2te(enty,enty2,te) + fe2mat(enty,enty2,te);
 te2rlf(te,rlf)       = teFe2rlf(te,rlf) + teSe2rlf(te,rlf) + teue2rlf(te,rlf) + teCCS2rlf(te,rlf) + teCCU2rlf2(te,rlf) +teNoTransform2rlf(te,rlf) + teFe2rlfH2BI(te,rlf) + teMat2rlf(te,rlf);
+
+*** by default, fossil no-CCS technologies and nuclear can be retired early
+teEarlyReti(te)      = teFosNoCCS(te);
+teEarlyReti("tnrs")  = YES;
+
 ***----------------------------------------------------------------------------
 *** Fill sets that were created empty and should be filled from the mappings above
 ***----------------------------------------------------------------------------

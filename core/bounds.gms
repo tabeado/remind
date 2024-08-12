@@ -339,14 +339,8 @@ vm_deltaCap.fx(t,regi,te,rlf)$(t.val le 2025 AND pm_data(regi,"tech_stat",te) eq
 *** allow non zero early retirement for all technologies to avoid mathematical errors
 vm_capEarlyReti.up(ttot,regi,te) = 1e-6;
 
-
-***generally allow full early retiremnt for all fossil technologies without CCS
-vm_capEarlyReti.up(ttot,regi,te)$(teFosNoCCS(te)) = 1;
-*** FS: allow nuclear early retirement (for nucscen 7)
-vm_capEarlyReti.up(ttot,regi,"tnrs") = 1;
-
-*** allow early retirement also for biomass technologies
-vm_capEarlyReti.up(ttot,regi,te)$(teBio(te)) = 1;
+*** allow early retirement for all technologies in set teEarlyReti
+vm_capEarlyReti.up(ttot,regi,te)$(teEarlyReti(te)) = 1;
 
 ***restrict early retirement to the modeling time frame (to reduce runtime, the early retirement equations are phased out after 2110)
 vm_capEarlyReti.up(ttot,regi,te)$(ttot.val lt 2009 or ttot.val gt 2111) = 0;
