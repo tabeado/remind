@@ -171,6 +171,20 @@ pm_secBioShare(ttot,regi,entyFe,sector)$((sameas(entyFe,"fegas") or sameas(entyF
   sum((entySe,all_enty,all_te)$entyFeSec2entyFeDetail(entyFe,sector,all_enty), f04_IO_output(ttot,regi,entySe,all_enty,all_te) )
 ;
 
+*** set 2020 biomass share in LDV transport in Germany to 6% based on AGEB data
+*** https://ag-energiebilanzen.de/daten-und-fakten/auswertungstabellen/
+pm_secBioShare("2020",regi,"fepet","trans")$(sameAs("DEU", regi)) = 0.06;
+*** set 2020 biomass share in in non-LDV transport in Germany to 5% based on AGEB data
+*** biofuel share in HDV road transport liquids about 7%, translated to total non-LDV liqiuds about 5%
+pm_secBioShare("2020",regi,"fedie","trans")$(sameAs("DEU", regi)) = 0.05;
+*** set 2020 biomass share in industry solids to 20% based on AGEB data
+pm_secBioShare("2020",regi,"fesos","indst")$(sameAs("DEU", regi)) = 0.2;
+
+*** set maximum coal share in buildings after 2020 to 2020 value as coal heating is not going to recover once phased out
+pm_secBioShare(t,regi,"fesos","build")$(t.val gt 2020) = pm_secBioShare("2020",regi,"fesos","build");
+*** set maximum coal share in industry in 2025 and 2030 to 2020 value as coal combustion is not going to recover until CCS is available
+pm_secBioShare(t,regi,"fesos","indst")$(t.val gt 2020 and t.val le 2030) = pm_secBioShare("2020",regi,"fesos","indst");
+
 display pm_secBioShare;
 
 pm_IO_input(regi,all_enty,all_enty2,all_te)   = 0;
