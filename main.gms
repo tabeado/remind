@@ -670,6 +670,170 @@ parameter
 ***       targets in p40_ElecBioBound are removed. The first year, in which no new
 ***       capacities are allowed, is 2025 or cm_startyear if larger.
 *'
+
+parameter
+  cm_feedstockMatchingBiomass    "feedstock matching of purpose grown biomass vs residues, see teBioPebiolcPurposeGrown and teBioPebiolcResidues"
+*** (0): off
+*** (1): "only BECCS" tech in teBECCS cannot demand more pebiolc than available purpose grown biomass (i.e. cannot demand residues)
+*** (2): "full for BE+CCS" tech in teBioPebiolcPurposeGrown cannot demand more pebiolc than available purpose grown biomass (i.e. cannot demand residues); 
+***      i.e., vm_fuExtr(t,regi,"pebiolc","1") +/- trade
+*** (3): (2) and tech in teBioPebiolcResidues cannot demand more pebiolc than available biomass residues (i.e. no purpose grown);
+***      i.e., vm_fuExtr(t,regi,"pebiolc","2"); 
+;
+  cm_feedstockMatchingBiomass = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrKonTiki          "capacity factor of low tech biochar production. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrKonTiki = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrOnly          "capacity factor of medium tech biochar production that optizes C in biochar and produces electricity. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrOnly = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrOnlyCF           "capacity factor of medium tech biochar production that optizes C in biochar and produces electricity. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrOnlyCF = 0.25; !! def = 0.9
+*'
+
+parameter
+  cm_biopyrHeat           "capacity factor of medium tech biochar production that optizes C in biochar and produces heat.  Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrHeat = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrHeatCF           "capacity factor of medium tech biochar production that optizes C in biochar and produces heat.  Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrHeatCF = 0.6; !! def = 0
+*'
+
+parameter
+  cm_biopyrCHP          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrCHP = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrCHPCF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrCHPCF = 0.7; !! def = 0
+*'
+
+
+parameter
+  cm_biopyrCHP850          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrCHP850 = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrCHP850CF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrCHP850CF = 0.7; !! def = 0
+*'
+
+
+parameter
+  cm_biopyrFawzy          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrFawzy = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrFawzyCF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrFawzyCF = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrRoberts          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrRoberts = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrRobertsCF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrRobertsCF = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrFuel          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrFuel = 0; !! def = 0
+*'
+
+
+parameter
+  cm_biopyrFuelCF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrFuelCF = 0.9; !! def = 0
+*'
+
+parameter
+  cm_biocharOnly_omv 
+;
+  cm_biocharOnly_omv = 0; !! def=0
+*' 
+
+parameter
+  cm_biocharHeat_omv 
+;
+  cm_biocharHeat_omv = 0; !! def=0
+*' 
+
+parameter
+  cm_biocharCHP_omv 
+;
+  cm_biocharCHP_omv = 0; !! def=0
+*' 
+
+parameter
+  cm_biocharCHP850_omv 
+;
+  cm_biocharCHP850_omv = 0; !! def=0
+*' 
+
+parameter
+  cm_biocharFuel_omv 
+;
+  cm_biocharFuel_omv = 0; !! def=0
+*' 
+
+
+parameter
+  cm_biocharpriceMax        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+  cm_biocharpriceMax = 0.2266; !! def = 0.272
+*' 0.278 TUSD 2005/TWa BC = 300 2015 USD/tBC
+
+parameter
+ cm_biocharpriceCoefficient        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
+;
+ cm_biocharpriceCoefficient = 24; !! def = 24
+*'
+
+parameter
+  cm_biocharpriceConstant        "Revenue assumed for sale of biochar4soils; REMIND native units, i.e. unit USD $[2005] / (TWa BC)"
+;
+  cm_biocharpriceConstant = 0.1812; !! def = 0.1812
+*' 0.0906 = 100 USD/tBC
+*' 0.1812 = 200 USD/tBC
+*' 0.2719 = 300 USD/tBC
+*' 0.3172 = 350 USD/tBC
+*' 0.4531 = 500 USD/tBC
+
+parameter
+  cm_biopyrMain_temp
+;
+  cm_biopyrMain_temp = 650; !! def=650
+
 parameter
   cm_startyear              "first optimized modelling time step [year]"
 ;
@@ -1718,6 +1882,21 @@ $setglobal cm_wastelag NO   !! def = NO   !! regexp = YES|NO
 $setglobal cm_feedstockEmiUnknownFate  off      !! def = off
 *** cm_feShareLimits <-   "off"  # def <- "off", limit the electricity final energy share to be in line with the industry maximum electrification levels (60% by 2050 in the electric scenario), 10% lower (=50% in 2050) in an increased efficiency World, or 20% lower (40% in 2050) in an incumbents future (incumbents). The incumbents scenario also limits a minimal coverage of buildings heat provided by gas and liquids (25% by 2050).
 $setglobal cm_feShareLimits  off  !! def = off
+*** flag whether biochar revenue is modelled or not; 0 = not, 1 = modelled
+$setGLobal cm_biocharRevenue 1 !! Def on
+*** flag determining the form of biochar price-demand function assumed"
+*** exponential: exponential price-demand curve, determined by cm_biocharpriceMax and cm_biocharpriceCoefficient
+*** constant: constant price, determined by  cm_biocharpriceConstant
+*** linearTimeDependent_pess
+*** linearTimeDependent_pess: decreasing price over time, independent of deployment
+*** linearTimeDependent_opt
+*** linearTimeDependent_opt2
+*** linearTimeDependent_vOpt
+$setGLobal  cm_biocharPriceForm linearTimeDependent_pess !! Def linearTimeDependent
+*** Biochar learning switch
+*** cm_BCLearning  1, biochar med and high tech technologies are learning
+*** cm_BCLearning  0, biochar med and high tech technologies are not learning
+$setglobal cm_BCLearning  0      !! def = 0
 *** VRE potential switches
 *** rescaling factor for sensitivity analysis on renewable potentials.
 *** This factor rescales all grades of a renewable technology which have not been used by 2020 (to avoid infeasiblities with existing capacities)
@@ -1812,7 +1991,7 @@ $setglobal cm_CES_configuration  indu_subsectors-buil_simple-tran_edge_esm-POP_p
 $setglobal c_CES_calibration_iterations  10     !!  def  =  10
 $setglobal c_CES_calibration_industry_FE_target  1
 *' setting which region is to be tested in the one-region test run (80_optimization = testOneRegi)
-$setglobal c_testOneRegi_region  EUR       !! def = EUR  !! regexp = [A-Z]{3}
+$setglobal c_testOneRegi_region  NEU       !! def = EUR  !! regexp = [A-Z]{3}
 *' cm_taxrc_RE     "switch to define whether tax on (CO2 content of) energy imports is recycled to additional direct investments in renewables (wind, solar and storage)"
 $setglobal cm_taxrc_RE  none   !! def = none   !! regexp = none|REdirect
 *' cm_repeatNonOpt       "should nonoptimal regions be solved again?"
