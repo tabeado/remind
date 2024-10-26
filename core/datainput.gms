@@ -176,6 +176,50 @@ if (cm_VRE_supply_assumptions eq 3,       !! "bleak" assumptions on VRE supply
     fm_dataglob("incolearn","spv") = 4960;
 );
 
+
+*TD* adjust learning factor for biochar technologies if biochar is learning or not
+$IFTHEN.cm_BCLearning %cm_BCLearning% == "0"
+fm_dataglob("incolearn","biopyrOnly") = 0;
+fm_dataglob("learn","biopyrOnly") = 0;
+
+fm_dataglob("incolearn","biopyrHeat") = 0;
+fm_dataglob("learn","biopyrHeat") = 0;
+
+fm_dataglob("incolearn","biopyrCHP") = 0;
+fm_dataglob("learn","biopyrCHP") = 0;
+
+fm_dataglob("incolearn","biopyrCHP850") = 0;
+fm_dataglob("learn","biopyrCHP850") = 0;
+
+fm_dataglob("incolearn","biopyrFuel") = 0;
+fm_dataglob("learn","biopyrFuel") = 0;
+$ENDIF.cm_BCLearning
+
+** adjust eta and omv for lower temperature if pyrolysis. Carbon sequestration is later
+if (cm_biopyrMain_temp eq 500,
+    fm_dataglob("eta",te)$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = 0.48;
+    fm_dataglob("omv",te)$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = 85;
+);
+
+** specific setting of omv
+if (cm_biocharOnly_omv gt 0, 
+    fm_dataglob("omv","biopyrOnly") = cm_biocharOnly_omv; 
+);
+
+if (cm_biocharHeat_omv gt 0, 
+    fm_dataglob("omv","biopyrHeat") = cm_biocharHeat_omv; 
+);
+
+if (cm_biocharCHP_omv gt 0, 
+    fm_dataglob("omv","biopyrCHP") = cm_biocharCHP_omv; 
+);
+if (cm_biocharCHP850_omv gt 0, 
+    fm_dataglob("omv","biopyrCHP850") = cm_biocharCHP850_omv; 
+);
+if (cm_biocharFuel_omv gt 0, 
+    fm_dataglob("omv","biopyrFuel") = cm_biocharFuel_omv; 
+);
+
 *** New nuclear assumption for SSP5
 if (cm_nucscen eq 6,
   f_dataglob_SSP5("inco0","tnrs") = 6270; !! increased from 4000 to 6270 with the update of technology costs in REMIND 1.7 to keep the percentage increase between SSP2 and SSP5 constant
@@ -614,6 +658,11 @@ loop(emi2te(enty,enty2,te,enty3)$teCCS(te),
     fm_dataemiglob(enty,enty2,te,"cco2") = fm_dataemiglob(enty,enty2,te,"cco2") * (1 - s_co2pipe_leakage );
 );
 
+
+if (cm_biopyrMain_temp eq 500,
+     fm_dataemiglob("pebiolc","sebiochar",te,"co2")$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = 10.7;
+);
+
 *** Allocate emission factors to pm_emifac
 option pm_emifac:3:3:1;
 pm_emifac(ttot,regi,enty,enty2,te,"co2")$emi2te(enty,enty2,te,"co2")   = fm_dataemiglob(enty,enty2,te,"co2");
@@ -749,6 +798,16 @@ pm_cf(ttot,regi,"h2turbVRE")$(ttot.val ge 2025) = pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"tdh2b") = pm_cf(ttot,regi,"tdh2s");
 pm_cf(ttot,regi,"tdh2i") = pm_cf(ttot,regi,"tdh2s");
 
+*TD* Set capacity factors for pyrolysis technologies. THIS NEEDS TO BE CHECKED & ADJUSTED.
+pm_cf(ttot,regi,"biopyrKonTiki" ) = 0.9;
+pm_cf(ttot,regi,"biopyrOnly" ) = cm_biopyrOnlyCF;
+pm_cf(ttot,regi,"biopyrHeat" ) = cm_biopyrHeatCF;
+pm_cf(ttot,regi,"biopyrCHP") = cm_biopyrCHPCF;
+pm_cf(ttot,regi,"biopyrCHP850") =cm_biopyrCHP850CF;
+pm_cf(ttot,regi,"biopyrFawzy") = cm_biopyrFawzyCF;
+pm_cf(ttot,regi,"biopyrRoberts") = cm_biopyrRobertsCF;
+pm_cf(ttot,regi,"biopyrFuel") = cm_biopyrFuelCF;
+pm_cf(ttot,regi,"biochar4soil") = 1;
 
 *** Region- and tech-specific early retirement rates
 loop(ext_regi$pm_extRegiEarlyRetiRate(ext_regi),
@@ -764,6 +823,10 @@ pm_regiEarlyRetiRate(t,regi,"coalhp")  = 0.5 * pm_regiEarlyRetiRate(t,regi,"coal
 pm_regiEarlyRetiRate(t,regi,"biohp")   = 0.25 * pm_regiEarlyRetiRate(t,regi,"biohp");   !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
 pm_regiEarlyRetiRate(t,regi,"biochp")  = 0.25 * pm_regiEarlyRetiRate(t,regi,"biochp");  !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
 pm_regiEarlyRetiRate(t,regi,"bioigcc") = 0.25 * pm_regiEarlyRetiRate(t,regi,"bioigcc"); !! reduce bio early retirement rate
+!!pm_regiEarlyRetiRate(t,regi,"biopyrCHP")   = 0.25 * pm_regiEarlyRetiRate(t,regi,"biopyrCHP");   !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
+!!pm_regiEarlyRetiRate(t,regi,"biopyrHeat")  = 0.25 * pm_regiEarlyRetiRate(t,regi,"biopyrHeat");  !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
+!!pm_regiEarlyRetiRate(t,regi,"biopyrCHP850")   = 0.25 * pm_regiEarlyRetiRate(t,regi,"biopyrCHP850");   !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
+
 
 $ifthen.tech_earlyreti not "%c_tech_earlyreti_rate%" == "off"
 loop((ext_regi,te)$p_techEarlyRetiRate(ext_regi,te),
@@ -1222,6 +1285,13 @@ $endif.cm_subsec_model_steel
   p_adj_coeff(ttot,regi,"gasftrec")        = 0.4;
   p_adj_coeff(ttot,regi,"coalftrec")       = 0.6;
   p_adj_coeff(ttot,regi,"bioftrec")        = 0.65;
+  p_adj_coeff(ttot,regi,"biopyrOnly")      = 0.55; !! like biochp;
+  p_adj_coeff(ttot,regi,"biopyrHeat")      = 0.55; !! like biochp;
+  p_adj_coeff(ttot,regi,"biopyrCHP")       = 0.55; 
+  p_adj_coeff(ttot,regi,"biopyrCHP850")    = 0.55;
+  p_adj_coeff(ttot,regi,"biopyrFawzy")     = 0.55;
+  p_adj_coeff(ttot,regi,"biopyrRoberts")   = 0.55;
+  p_adj_coeff(ttot,regi,"biopyrFuel")      = 0.65; !! like bioftrec;
   p_adj_coeff(ttot,regi,"gash2")           = 0.35;
   p_adj_coeff(ttot,regi,"coalh2")          = 0.55;
   p_adj_coeff(ttot,regi,"bioh2")           = 0.6;

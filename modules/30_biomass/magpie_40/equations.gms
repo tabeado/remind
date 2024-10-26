@@ -126,6 +126,28 @@ q30_BioPEProdTotal(t,regi)..
           vm_fuExtr(t,regi,enty,rlf))
 ;
 
+*** Use only purpose grown biomass (not residues) in every BECCS technology.
+q30_feedstockMatchingBECCS(t,regi)$(cm_feedstockMatchingBiomass EQ 1 AND t.val GE cm_startyear)..
+        sum(pe2se("pebiolc",enty,teBECCS), vm_demPe(t,regi,"pebiolc",enty,teBECCS))
+        =l=
+        vm_fuExtr(t,regi,"pebiolc","1") - vm_Xport(t,regi,"pebiolc") + vm_Mport(t,regi,"pebiolc") + 0.20 * vm_fuExtr(t,regi,"pebiolc","2")
+;
+
+*** Use only purpose grown biomass (not residues) in every technology in teBioPebiolcPurposeGrown (certain BE and BECCS).
+q30_feedstockMatchingPurposeGrownBiomass(t,regi)$(cm_feedstockMatchingBiomass EQ 2 AND t.val GE cm_startyear)..
+        sum(pe2se("pebiolc",enty,teBioPebiolcPurposeGrown), vm_demPe(t,regi,"pebiolc",enty,teBioPebiolcPurposeGrown))
+        =l=
+        vm_fuExtr(t,regi,"pebiolc","1") - vm_Xport(t,regi,"pebiolc") + vm_Mport(t,regi,"pebiolc")  + 0.20 * vm_fuExtr(t,regi,"pebiolc","2")
+;
+
+*** Use only residues (not purpose grown biomass) in every technology in teBioPebiolcResidues.
+q30_feedstockMatchingResidueBiomass(t,regi)$(cm_feedstockMatchingBiomass GE 3 AND t.val GE cm_startyear)..
+        sum(pe2se("pebiolc",enty,teBioPebiolcResidues), vm_demPe(t,regi,"pebiolc",enty,teBioPebiolcResidues))
+        =l=
+        vm_fuExtr(t,regi,"pebiolc","2")
+;
+
+
 *' @stop
 
 *** EOF ./modules/30_biomass/magpie_40/equations.gms

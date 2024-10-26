@@ -196,6 +196,15 @@ all_te          "all energy technologies, including from modules"
         bioethl         "biomass to ethanol"
         bioeths         "sugar and starch biomass to ethanol"
         biodiesel       "oil biomass to biodiesel"
+        biopyrKonTiki   
+        biopyrOnly      
+        biopyrHeat      
+        biopyrCHP       
+        biopyrCHP850    
+        biopyrFawzy
+        biopyrRoberts
+        biopyrFuel
+        biochar4soil    "further use of biochar, e.g. for soil, or for building materials"
         geohdr          "geothermal electric hot dry rock"
         geohe           "geothermal heat"
         hydro           "hydro electric"
@@ -373,6 +382,7 @@ all_enty             "all types of quantities"
         seh2         "SE hydrogen"
         sehe         "SE district heating and heat pumps"
         seel         "SE electricity"
+        sebiochar    "SE Biochar from pyrolysis, not consumed as energy"
 
         feso
         fesos        "FE solids stationary"
@@ -1187,6 +1197,15 @@ te(all_te)              "energy technologies"
         bioethl         "biomass to ethanol"
         bioeths         "sugar and starch biomass to ethanol"
         biodiesel       "oil biomass to biodiesel"
+        biopyrKonTiki   
+        biopyrOnly      
+        biopyrHeat      
+        biopyrCHP       
+        biopyrCHP850    
+        biopyrFawzy
+        biopyrRoberts
+        biopyrFuel
+        biochar4soil    
         geohdr          "geothermal electric hot dry rock"
         geohe           "geothermal heat"
         hydro           "hydro electric"
@@ -1297,6 +1316,13 @@ teAdj(all_te)           "technologies with adjustment costs on capacity addition
   bioethl         "biomass to ethanol"
   bioeths         "sugar and starch biomass to ethanol"
   biodiesel       "oil biomass to biodiesel"
+  biopyrOnly      
+  biopyrHeat     
+  biopyrCHP       
+  biopyrCHP850    
+  biopyrFawzy
+  biopyrRoberts
+  biopyrFuel
   geohdr          "geothermal electric hot dry rock"
   geohe           "geothermal heat"
   hydro           "hydro electric"
@@ -1353,6 +1379,13 @@ teLearn(all_te)     "Learning technologies (for which investment costs are reduc
         storwindoff "storage technology for wind offshore"
         storcsp     "storage technology for csp"
         elh2        "hydrogen elecrolysis"
+***$ifthen.cm_BCLearning %cm_BCLearning% == "1"
+        biopyrOnly 
+        biopyrHeat 
+        biopyrCHP
+        biopyrCHP850
+        biopyrFuel 
+*** $endif.cm_BCLearning
 /
 
 teNoLearn(all_te)   "Technologies without learning effect"
@@ -1407,6 +1440,14 @@ teBio(all_te)      "biomass energy systems technologies"
         bioethl     "biomass to ethanol"
         bioeths     "sugar and starch biomass to ethanol"
         biodiesel   "oil biomass to biodiesel"
+        biopyrKonTiki   
+        biopyrOnly      
+        biopyrHeat      
+        biopyrCHP       
+        biopyrCHP850    
+        biopyrFawzy
+        biopyrRoberts
+        biopyrFuel
 /
 teRe(all_te)     "renewable technologies including biomass"
 /
@@ -1425,6 +1466,14 @@ teRe(all_te)     "renewable technologies including biomass"
         bioethl     "biomass to ethanol"
         bioeths     "sugar and starch biomass to ethanol"
         biodiesel   "oil biomass to biodiesel"
+        biopyrKonTiki   
+        biopyrOnly      
+        biopyrHeat      
+        biopyrCHP       
+        biopyrCHP850    
+        biopyrFawzy
+        biopyrRoberts
+        biopyrFuel
         geohdr      "geothermal electric hot dry rock"
         geohe       "geothermal heat"
         hydro       "hydro electric"
@@ -1518,22 +1567,60 @@ teFosNoCCS(all_te)  "fossil technologies without CCS"
         coaltr       "transformation of coal"
         refliq
 /
-teBioPebiolc(all_te)      "biomass technologies using pebiolc"
+teBioPebiolcPurposegrown(all_te)      "biomass technologies using purpose grown pebiolc"
 /
-        biotr
-        biotrmod
-        biochp
-        biohp
-        bioigcc
         bioigccc
-        biogas
         biogasc
         bioftrec
         bioftcrec
         bioh2
         bioh2c
         bioethl
+        biopyrFuel
 /
+
+teBioPebiolcResidues(all_te)      "biomass technologies using pebiolc from residues"
+/    
+        biotr
+        biotrmod
+        biochp
+        biohp
+        bioigcc
+        biogas
+        biopyrKonTiki 
+        biopyrOnly    
+        biopyrHeat   
+        biopyrCHP      
+        biopyrCHP850
+        biopyrFawzy
+        biopyrRoberts
+/
+
+teBioPebiolc(all_te)      "biomass technologies using pebiolc"
+/
+        set.teBioPebiolcPurposeGrown       
+        set.teBioPebiolcResidues       
+/
+
+teBECCS(all_te)
+/
+        bioigccc
+        biogasc
+        bioftcrec
+        bioh2c
+/
+
+teBiochar(all_te)
+/
+        biopyrKonTiki   "biomass pyrolysis to biochar; very basic, decentralized facilities like the KonTiki"
+        biopyrOnly      "biomass pyrolysis to biochar; industrial facilities, maximizing biochar quality and quality, plus electricity output"
+        biopyrHeat      "biomass pyrolysis to biochar; industrial facilities, maximizing biochar quality and quality, plus heat output"
+        biopyrCHP       "biomass pyrolysis to biochar; industrial facilities, maximizing biochar quality and quality, plus both Electricity and Heat output"
+        biopyrCHP850    "biomass pyrolysis to biochar; industrial facilities, maximizing energy output, both Electricity and Heat output"
+        biopyrFawzy
+        biopyrRoberts
+/
+
 teNoTransform(all_te) "all technologies that do not transform energy but still have investment and O&M costs (like storage or grid)"
 /
        storspv       "storage technology for photo voltaic (PV)"
@@ -1617,6 +1704,8 @@ enty(all_enty)       "all types of quantities"
         segafos      "secondary energy gas from fossil primary energy"
         segasyn      "secondary energy synthetic gas from H2"
         sehe         "secondary energy district heating and heat pumps"
+        sebiochar    "SE Biochar from pyrolysis, not consumed as energy"
+
         fegas        "final energy gas stationary"
         fehos        "final energy heating oil stationary"
         fesos        "final energy solids stationary"
@@ -1762,6 +1851,7 @@ entySe(all_enty)   "secondary energy types"
   seh2       "SE hydrogen"
   sehe       "SE district heating nd heat pumps"
   seel       "SE electricity"
+  sebiochar    "SE Biochar from pyrolysis, not consumed as energy"
 /
 
 entySeFos(all_enty)   "secondary energy types from fossil primary energy"
@@ -1825,6 +1915,21 @@ entyFeTrans(all_enty) "final energy types from transport sector"
 /
 
 feForCes(all_enty)   "limit q_balFeForCes to entyFe in fe2ppfEn"
+
+teSpecificRevenue(all_te) "artificial demand technologies for products  that are not yet demanded elsewhere in the model"
+/       
+        biochar4soil          "use biochar for soil amendment, demands TWa of biochar"
+/
+
+entySpecificRevenue(all_enty)
+/
+        sebiochar
+/
+
+SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue)
+/
+        sebiochar.biochar4soil
+/
 
 emi(all_enty)      "types of emissions, these emissions are given to the climate module"
 
@@ -2280,6 +2385,9 @@ char            "characteristics of technologies"
   elh2VREcapRatio    "ratio of elh2VRE capacity to storage technology capacity"
   h2turbVREcapRatio  "ratio of h2turbVRE capacity to storage technology capacity"
   batteryVREcapRatio  "ratio of battery capacity to storage technology capacity"
+  priceMax          "prohibitive price of specific Revenue goods, at which there is no demand, in 2005trilUSD"
+  priceCoefficient    "slope of the demand curve, currently only exponential price development"
+  priceMin              "price floor"
 /
 
 ***-----------------------------------------------------------------------------
@@ -2434,6 +2542,14 @@ pe2se(all_enty,all_enty,all_te) "map primary energy carriers to secondary"
         pebiolc.sesobio.biotrmod
         pebiolc.segabio.biogas
         pebiolc.segabio.biogasc
+        pebiolc.sebiochar.biopyrKonTiki
+        pebiolc.sebiochar.biopyrOnly
+        pebiolc.sebiochar.biopyrHeat
+        pebiolc.sebiochar.biopyrCHP
+        pebiolc.sebiochar.biopyrCHP850
+        pebiolc.sebiochar.biopyrFawzy
+        pebiolc.sebiochar.biopyrRoberts
+        pebiolc.sebiochar.biopyrFuel
         pegeo.seel.geohdr
         pegeo.sehe.geohe
         pehyd.seel.hydro
@@ -2568,6 +2684,19 @@ pc2te(all_enty,all_enty,all_te,all_enty)    "mapping for own consumption of tech
         pecoal.seh2.coalh2c.seel
         pebiolc.seel.biochp.sehe
         pebiolc.segabio.biogasc.seel
+        pebiolc.sebiochar.biopyrOnly.seel
+        pebiolc.sebiochar.biopyrHeat.sehe
+        pebiolc.sebiochar.biopyrHeat.seel
+        pebiolc.sebiochar.biopyrCHP.seel
+        pebiolc.sebiochar.biopyrCHP.sehe
+        pebiolc.sebiochar.biopyrCHP850.seel
+        pebiolc.sebiochar.biopyrCHP850.sehe
+        pebiolc.sebiochar.biopyrFawzy.sehe
+        pebiolc.sebiochar.biopyrRoberts.seel
+        pebiolc.sebiochar.biopyrRoberts.sehe
+        pebiolc.sebiochar.biopyrFuel.seel
+        pebiolc.sebiochar.biopyrFuel.seliqbio
+        pebiolc.sebiochar.biopyrFuel.sehe
         segabio.fegas.tdbiogas.seel
         segafos.fegas.tdfosgas.seel
         pegeo.sehe.geohe.seel
@@ -2671,6 +2800,14 @@ emi2te(all_enty,all_enty,all_te,all_enty)    " map emissions to technologies"
         pebiolc.segabio.biogasc.co2
         pebiolc.segabio.biogasc.cco2
         pebiolc.segabio.biogasc.n2o
+        pebiolc.sebiochar.biopyrKonTiki.co2
+        pebiolc.sebiochar.biopyrOnly.co2
+        pebiolc.sebiochar.biopyrHeat.co2
+        pebiolc.sebiochar.biopyrCHP.co2
+        pebiolc.sebiochar.biopyrCHP850.co2
+        pebiolc.sebiochar.biopyrFawzy.co2
+        pebiolc.sebiochar.biopyrRoberts.co2
+        pebiolc.sebiochar.biopyrFuel.co2
         segabio.fegas.tdbiogas.ch4
         segafos.fegas.tdfosgas.ch4
 *        cco2.pco2.ccscomp.co2
@@ -2774,6 +2911,18 @@ emiBECCS2te(all_enty,all_enty,all_te,all_enty) "mapping of BECCS PE,SE,technolog
         pebiolc.segabio.biogasc.cco2
 /
 
+emiBiochar2te(all_enty,all_enty,all_te,all_enty) "mapping of Biochar PE,SE,technology and emissions captured long-term in biochar"
+/
+        pebiolc.sebiochar.biopyrKonTiki.co2
+        pebiolc.sebiochar.biopyrOnly.co2
+        pebiolc.sebiochar.biopyrHeat.co2
+        pebiolc.sebiochar.biopyrCHP.co2
+        pebiolc.sebiochar.biopyrCHP850.co2
+        pebiolc.sebiochar.biopyrFawzy.co2
+        pebiolc.sebiochar.biopyrRoberts.co2
+        pebiolc.sebiochar.biopyrFuel.co2
+/
+
 *NB*111125 emissions from fossil fuel extraction by grade that is on top of combustion
 emi2fuelMine(all_enty,all_enty,rlf)   "missions from fossil fuel extraction"
 /
@@ -2818,6 +2967,7 @@ demSeOth2te(all_enty,all_te)      "map other SE demands not directly following t
   seh2.csp
   segabio.csp
   segafos.csp
+  sebiochar.biochar4soil
 /
 
 prodSeOth2te(all_enty,all_te)      "map other se production not directly following the sedem-route through technologies"
@@ -2831,6 +2981,7 @@ teSe2rlf(all_te,rlf)        "mapping for techologies to grades. Currently, the i
       (windon,windoff,spv,csp,refliq,hydro,geohe,geohdr,solhe,ngcc,ngccc,ngt,gaschp,gashp,gash2,gash2c,gastr,gasftrec,gasftcrec,dot,
        igcc,igccc,pc,coaltr,coalgas,coalh2,coalh2c,coalchp,coalhp,coalftrec,coalftcrec,
        biotr,biotrmod,biogas,biogasc,bioftrec,bioftcrec,bioh2,bioh2c,biohp,biochp,bioigcc,bioigccc,
+       biopyrKonTiki, biopyrOnly, biopyrHeat, biopyrCHP, biopyrCHP850, biopyrFawzy, biopyrRoberts, biopyrFuel
        elh2,h2turb,elh2VRE,h2turbVRE,bioethl,bioeths,biodiesel,tnrs,fnrs
        ) . 1
 /

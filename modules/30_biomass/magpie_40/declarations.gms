@@ -70,5 +70,8 @@ q30_limitXpBio(ttot,all_regi)      "Only purpose grown bioenergy may be exported
 q30_costAdj(ttot,all_regi)         "Improve convergence penalizing deviations from last coupling iteration"
 q30_limitTeBio(ttot,all_regi)      "Limit BECCS in policy runs relative to reference scenario"
 q30_BioPEProdTotal(ttot,all_regi)  "Calculate total domestic PE biomass production"
+q30_feedstockMatchingBECCS(ttot,all_regi) "Use only purpose grown biomass (not residues) in every technology in teBioPebiolcPurposeGrown"
+q30_feedstockMatchingPurposeGrownBiomass(ttot,all_regi) "Use only purpose grown biomass (not residues) in every technology in teBioPebiolcPurposeGrown"
+q30_feedstockMatchingResidueBiomass(ttot,all_regi) "Use only residues (not purpose grown biomass) in every technology in teBioPebiolcResidues"
 ;
 *** EOF ./modules/30_biomass/magpie_40/declarations.gms

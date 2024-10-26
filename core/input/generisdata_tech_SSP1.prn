@@ -53,6 +53,22 @@ omf                            0.03        0.04        0.04        0.04        0
 omv                                       30.11       25.00       31.50       50.50       10.90      12.80     10.60       10.60       97.27       38.99        5.05                   10.60
 lifetime              35         35          40          40          40          40          40         40        35          35          35          35          35          35          35
 
++                  biopyrKonTiki       biopyrOnly         biopyrHeat        biopyrCHP           biopyrCHP850        biopyrFawzy           biopyrRoberts         biopyrFuel
+tech_stat                    0               2                  2                2                     2                    2                    2                   2
+inco0                        0               1                  1                1                     1                    1                    1                   1
+constrTme                    0               3                  3                3                     3                    3                    3                   3
+eta                        0.36             0.44               0.44             0.44                 0.32                  0.38                  0.55                0.32
+omf                        0.04             0.04               0.04             0.04                 0.04                  0.17                                      0.04  
+omv                         20              87                 87               87                   104                  387                   176                  104
+lifetime                     1              35                 35               35                    35                   35                    35                   35
+incolearn                                  810                530              810                  1216                                                             725
+learn                                       0.10               0.10             0.10                  0.10                                                           0.10   
+ccap0                                    0.0000001           0.0000001        0.0000001           0.00000001                                                        0.00000001
+
++                   biochar4soil
+lifetime                   1   
+priceMax                  0.272
+priceCoefficient          24
 
 +                geohdr       geohe       hydro       windon      windoff        spv       solhe         csp
 tech_stat            1

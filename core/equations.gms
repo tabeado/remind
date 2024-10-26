@@ -109,6 +109,75 @@ q_costOM(t,regi)..
   + vm_omcosts_cdr(t,regi)
 ;
 
+**---------------------------------------------------------------------------
+*' Revenue from specific products which are not demanded elsewhere
+***---------------------------------------------------------------------------
+* Demand may come from different places. To be adjusted once carbonFibre implementation is clear.
+q_demSpecificGoodsCalculation(t,regi,SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+  v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue)
+  =e=
+  v_demSeOth(t,regi,entySpecificRevenue,teSpecificRevenue)
+;
+
+$ifthen.priceBCformConstant "%cm_biocharPriceForm%" == "constant"
+ q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+    v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+    =e=
+    cm_biocharpriceConstant
+    ; 
+$endIf.priceBCformConstant
+
+$ifthen.priceBCformExponential  "%cm_biocharPriceForm%" == "exponential"
+ q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+        v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+        =e=
+        pm_data(regi,"priceMax", teSpecificRevenue)
+        *exp(-1*pm_data(regi,"priceCoefficient", teSpecificRevenue) * v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue))
+    ;
+$endIf.priceBCformExponential
+
+$ifthen.priceBCformLin1 "%cm_biocharPriceForm%" == "linearTimeDependent_opt"
+q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+        v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+        =e=
+        1 * v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+    ;
+$endIf.priceBCformLin1
+
+
+$ifthen.priceBCformLinX "%cm_biocharPriceForm%" == "linearTimeDependent_Vpess"
+q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+        v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+        =e=
+        1 * v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+    ;
+$endIf.priceBCformLinX
+
+
+$ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_pess"
+q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+        v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+        =e=
+        1 * v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+    ;
+$endIf.priceBCformLin
+
+$ifthen.priceBCformLin2 "%cm_biocharPriceForm%" == "linearTimeDependent_vOpt"
+q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+        v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+        =e=
+        1 * v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+    ;
+$endIf.priceBCformLin2
+
+qm_revenueOfSpecificGoods(t, regi)..
+    vm_revenueFromSpecificGoods(t, regi)
+    =e= 
+    sum((entySpecificRevenue,teSpecificRevenue)$SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue), 
+     v_priceOfSpecificGoods(t,regi,teSpecificRevenue) * v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue))
+;
+
+
 ***---------------------------------------------------------------------------
 *' Energy balance equations equate the production of and demand for each primary, secondary and final energy.
 *' The balance equation for primary energy equals supply of primary energy demand on primary energy.

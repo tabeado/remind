@@ -279,10 +279,40 @@ p04_prodCoupleGlob("pebiolc","seliqbio","bioftrec","seel")  = 0.147; !! from Liu
 p04_prodCoupleGlob("pebiolc","seliqbio","bioftcrec","seel") = 0.108; !! from Liu et al. 2011 (Making Fischer-Tropsch Fuels and Electricity from Coal and Biomass: Performance and Cost Analysis)
 p04_prodCoupleGlob("pebiolc","segabio","biogasc","seel")    = -0.07;
 p04_prodCoupleGlob("pebiolc","seliqbio","bioethl","seel")   = 0.153;
+
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrOnly","seel") = -0.063; 
+
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","seel") = -0.063;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = 0.97;
+
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.22; 
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.24; 
+
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP850","sehe") = 1.5; 
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP850","seel") = 0.75;
+
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFawzy","sehe") = 0.725;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrRoberts","sehe") = 0.517; 
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrRoberts","seel") = -0.036;
+
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seel") = -0.095;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seliqbio") = 1.72;
+
 p04_prodCoupleGlob("segabio","fegas","tdbiogas","seel")     = -0.05;
 p04_prodCoupleGlob("segafos","fegas","tdfosgas","seel")     = -0.05;
 p04_prodCoupleGlob("pegeo","sehe","geohe","seel")           = -0.3;
 p04_prodCoupleGlob("cco2","ico2","ccsinje","seel")          = -0.005;
+
+if(cm_biopyrMain_temp eq 500,
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrOnly","seel") = -0.052; 
+
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","seel") = -0.052;
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = 0.69;
+
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.15; 
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.165; 
+)
+
 *** use global data for coule products if regional data form IEA are 0
 loop(pc2te(enty,enty2,te,enty3),
     loop(regi,
@@ -457,5 +487,12 @@ loop(regi,
 );
 
 display pm_histfegrowth, pm_data;
+
+loop(regi,
+      pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP", "seel") = ((1-pm_data(regi,"eta","biopyrCHP")  - 0.2) * pm_data(regi,"eta","biochp")) / (pm_data(regi,"eta","biopyrCHP")); !! remaining gas yield * transformation to electricity = actual electricity yield --> divide by main product yield
+      pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP", "sehe") = ((1-pm_data(regi,"eta","biopyrCHP")  - 0.2) * pm_data(regi,"eta","biochp") * pm_prodCouple(regi,"pebiolc","seel","biochp", "sehe")) / (pm_data(regi,"eta","biopyrCHP"));
+      pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP850", "seel") = ((1-pm_data(regi,"eta","biopyrCHP850") - 0.2) * pm_data(regi,"eta","biochp")) / (pm_data(regi,"eta","biopyrCHP850"));
+      pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP850", "sehe") = ((1-pm_data(regi,"eta","biopyrCHP850") - 0.2) * pm_data(regi,"eta","biochp") * pm_prodCouple(regi,"pebiolc","seel","biochp", "sehe")) / (pm_data(regi,"eta","biopyrCHP850"));
+);
 
 *** EOF ./modules/04_PE_FE_parameters/iea2014/datainput.gms
