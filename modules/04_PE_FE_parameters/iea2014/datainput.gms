@@ -270,7 +270,12 @@ display pm_IO_input, p04_IO_output;
 *** ----------------------------------------------------------------------------------------------------------
 ***--------------------------------------- calculate coupled products ----------------------------------------
 *** ----------------------------------------------------------------------------------------------------------
-loop(pc2te(enty,enty2,te,enty3),
+
+*** calculate coupled production parameter from IEA input data
+*** exception for self consumption of technologies in pc2te_selfCons
+*** referring to consumption of the output of the technology
+*** This data is assigned below based on AGEB.
+loop(pc2te(enty,enty2,te,enty3)$( NOT pc2te_selfCons(enty,enty2,te,enty3)),
     loop(regi,
        if(p04_IO_output(regi,enty,enty2,te) ne 0,
           pm_prodCouple(regi,enty,enty2,te,enty3)  =  p04_IO_output(regi,enty,enty3,te) / p04_IO_output(regi,enty,enty2,te);
@@ -293,6 +298,15 @@ p04_prodCoupleGlob("segabio","fegas","tdbiogas","seel")     = -0.05;
 p04_prodCoupleGlob("segafos","fegas","tdfosgas","seel")     = -0.05;
 p04_prodCoupleGlob("pegeo","sehe","geohe","seel")           = -0.3;
 p04_prodCoupleGlob("cco2","ico2","ccsinje","seel")          = -0.005;
+*** self ownconsumption of electricity for power plants
+*** assign global values based on average 1990-2023 data for Germany
+*** data from AGEB, https://ag-energiebilanzen.de/wp-content/uploads/2024/04/STRERZ_Abg_02_2024_korr.xlsx
+p04_prodCoupleGlob("pecoal","seel",te,"seel")$(pe2se("pecoal","seel",te)) = -0.08;
+p04_prodCoupleGlob("pegas","seel",te,"seel")$(pe2se("pegas","seel",te)) = -0.04;
+p04_prodCoupleGlob("peoil","seel",te,"seel")$(pe2se("peoil","seel",te)) = -0.1;
+p04_prodCoupleGlob("peur","seel",te,"seel")$(pe2se("peur","seel",te)) = -0.05;
+p04_prodCoupleGlob("pebiolc","seel",te,"seel")$(pe2se("pebiolc","seel",te)) = -0.07;
+p04_prodCoupleGlob("seh2","seel",te,"seel")$(se2se("seh2","seel",te)) = -0.04;
 *** use global data for coule products if regional data form IEA are 0
 loop(pc2te(enty,enty2,te,enty3),
     loop(regi,
