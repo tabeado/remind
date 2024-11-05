@@ -338,9 +338,16 @@ loop(entyFe$(SAMEAS(entyFe,"fehos") OR SAMEAS(entyFe,"fedie") OR SAMEAS(entyFe,"
 	);
 );
 
+*** FS: increase eta efficiencies of tdels and tdelt as own consumption of power plants is included via pm_prodCouple and original efficiencies were calculated based on IEA data of gross electricity generation
+*** Increase efficiencies by the share of own consumption in Germany in 2005 (AGEB data). The own consumption shares in pm_prodCouple*** is also derived from this source. We therefore assume own consumption share of power plants from German data for all regions.
+*** Limit maximum electricity t&d eta to 0.97 as there always will be some transmission losses
+pm_data(regi,"eta","tdels") =  min(pm_data(regi,"eta","tdels") + 0.06, 0.97);
+pm_data(regi,"eta","tdelt") =  min(pm_data(regi,"eta","tdelt") + 0.06, 0.97);
 
 
-*** calculate mix0 - the share in the production of v*_INIdemEn0, which is the energy demand in t0 minus the energy produced by couple production
+execute_unload "after_read_eta.gdx";
+
+** calculate mix0 - the share in the production of v*_INIdemEn0, which is the energy demand in t0 minus the energy produced by couple production
 ***old calculation: mix0(enty, enty2, te) = output(enty, enty2, te) / sum( (enty3,te2), output(enty3, enty2, te2) $(enty2 is not joint product of a te2 that is technology with joint products, like CHP )
 loop(en2en(enty,enty2,te),  !! this sum does not include couple production, only direct transformation processes
   loop(regi,
