@@ -1,4 +1,4 @@
-*** |  (C) 2006-2023 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -20,37 +20,40 @@
 
 *' ####### Power Sector
 
+$ifThen.tech_bounds_2025 "%cm_tech_bounds_2025%" == "on"
 *' This limits wind and solar PV capacity additions for 2025 in light of recent slow developments as of 2023.
 *' Upper bound is double the historic maximum capacity addition in 2011-2020.
+*' In addition: Limit solar PV capacity to 120 GW in 2025 (2023-2027 average) given that we are at only 76 GW PV in 2023
 loop(regi$(sameAs(regi,"DEU")),
-  vm_deltaCap.up("2025",regi,"wind","1")=2*smax(tall$(tall.val ge 2011 and tall.val le 2020), pm_delta_histCap(tall,regi,"wind"));
+  vm_deltaCap.up("2025",regi,"windon","1")=2*smax(tall$(tall.val ge 2011 and tall.val le 2020), pm_delta_histCap(tall,regi,"windon"));
   vm_deltaCap.up("2025",regi,"spv","1")=2*smax(tall$(tall.val ge 2011 and tall.val le 2020), pm_delta_histCap(tall,regi,"spv"));
+  vm_cap.up("2025",regi,"spv","1")=0.12;
 );
+$endIf.tech_bounds_2025
+
 
 *' limit solar PV to 120 GW in 2025 (2023-2027 average) given that we are at only 76 GW PV in 2023
 vm_cap.up("2025",regi,"spv","1")$(sameAs(regi,"DEU"))=0.12;
 
 *' These bounds account for historic gas power development.
-vm_prodSEtotal.up("2020",regi,"pegas","seel")$(sameAs(regi,"DEU"))= 0.36*sm_EJ_2_TWa;
-vm_prodSEtotal.up("2025",regi,"pegas","seel")$(sameAs(regi,"DEU"))= 0.4*sm_EJ_2_TWa;
+*' TODO: Historical fixings should be done in the core the via input data from mrremind, this still needs to be moved
+v47_prodSEtotal.up("2020",regi,"pegas","seel")$(sameAs(regi,"DEU"))= 0.36*sm_EJ_2_TWa;
+$ifThen.tech_bounds_2025 "%cm_tech_bounds_2025%" == "on"
+v47_prodSEtotal.up("2025",regi,"pegas","seel")$(sameAs(regi,"DEU"))= 0.4*sm_EJ_2_TWa;
+$endIf.tech_bounds_2025
 
 *' These bounds account for historic coal power development.
 vm_cap.up("2020",regi,"pc","1")$((cm_startyear le 2020) and (sameas(regi,"DEU"))) = 38.028/1000;
 *' This limits early retirement of coal power in Germany in 2020s to avoid extremly fast phase-out.
 vm_capEarlyReti.up('2025',regi,'pc')$(sameAs(regi,"DEU")) = 0.65;
 
-*' DEU coal-power capacity phase-out, upper bounds following the Kohleausstiegsgesetz from 2020.
-*' https://www.bmuv.de/faqs/kohleausstiegsgesetz
-    vm_capTotal.up("2025",regi,"pecoal","seel")$(sameas(regi,"DEU"))=25/1000;
-    vm_capTotal.up("2030",regi,"pecoal","seel")$(sameas(regi,"DEU"))=17/1000;
-    vm_capTotal.up("2035",regi,"pecoal","seel")$(sameas(regi,"DEU"))=6/1000;
-    vm_capTotal.up("2040",regi,"pecoal","seel")$(sameas(regi,"DEU"))=1.1/1000;
 
 *' This aligns 2020 chp capcities for Germany with historic data (AGEB)
 *' most of district heating is provided by CHP plants.
 *' coal share of chp heat output to be between 20-25% of total district heating demand
 *' gas share of chp heat output to be between 50-55% of total district heating demand
 *' bio share of chp heat output to be between 15-25% of total district heating demand
+*' TODO: Historical fixings should be done in the core via input data from mrremind, this still needs to be moved
 loop(regi$(sameAs(regi,"DEU")),
     loop(t$(t.val eq 2020),
         vm_cap.lo(t,regi,"coalchp","1")= 0.2
@@ -122,15 +125,11 @@ loop(regi$(sameAs(regi,"DEU")),
     );
 );
 
-
 *' ####### Carbon Management
 
 *' only start industry carbon capture in Germany by 2030 as status of projects for 2025 unclear,
 *' see IEA CCUS database https://www.iea.org/data-and-statistics/data-tools/ccus-projects-explorer
 vm_emiIndCCS.up(t,regi,emiInd37)$(sameAs(regi,"DEU") AND t.val lt 2030)=0;
-
-*' This limits CO2 underground injection up to 2030 in line with recent developments as of 2023.
-vm_co2CCS.up(t,regi,"cco2","ico2",te,rlf)$((t.val le 2030) AND (sameas(regi,"DEU"))) = 1e-3;
 
 *' ###### Bounds for Germany-specific Policies (activated by switches)
 
@@ -158,7 +157,8 @@ vm_emiTeDetail.up(t,regi,peFos,entySe,teFosCCS,"cco2")$((sameas(regi,"DEU")) AND
 *' Convert cm_deuCDRmax from MtCO2/yr to model unit of GtC/yr.
 vm_emiCdrAll.up(t,regi)$((cm_deuCDRmax ge 0) AND (sameas(regi,"DEU"))) = cm_deuCDRmax / 1000 / sm_c_2_co2;
 
-*' Bounds for German Energy Security Scenario
+
+*' Bounds for German Energy Security Scenario (activated by switches)
 
 *' Background: The energy security scenario used for the Ariadne Report on energy sovereignity in 2022 assumes that there is a continued gas crisis after 2022/23 in Germany
 *' with higher gas prices (see cm_EnSecScen_price) or limits to gas consumption (see cm_EnSecScen_limit switch) in the medium-term.

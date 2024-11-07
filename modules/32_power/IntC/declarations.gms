@@ -1,4 +1,4 @@
-*** |  (C) 2006-2023 Potsdam Institute for Climate Impact Research (PIK)
+*** |  (C) 2006-2024 Potsdam Institute for Climate Impact Research (PIK)
 *** |  authors, and contributors see CITATION.cff file. This file is part
 *** |  of REMIND and licensed under AGPL-3.0-or-later. Under Section 7 of
 *** |  AGPL-3.0, you are granted additional permissions described in the
@@ -18,9 +18,8 @@ parameters
     o32_dispatchDownPe2se(ttot,all_regi,all_te)     "output parameter to check by how much a pe2se te reduced its output below the normal, in % of the normal output."
     p32_shThresholdTotVREAddIntCost(ttot)           "Total VRE share threshold above which additional integration challenges arise. Increases with time as eg in 2030, there is still little experience with managing systems with 80% VRE share. Unit: Percent"
     p32_FactorAddIntCostTotVRE                      "Multiplicative factor that influences how much the total VRE share increases integration challenges"
-    p32_flexSeelShare_slope(ttot,all_regi,all_te)   "Slope of relationship between average electricity price for flexible technology and share of this technology in total electricity demand. Unit: [ % percentage of average electricity price / % share in electricity demand]."
-    p32_phaseInFlexTax(ttot)                        "phase-in factor for flexibility tax, scales linearly between 0 in 2020 and 1 in 2040"
     p32_phaseInElh2VREcap(ttot)                     "phase-in factor for electrolysis capacities built from stored VRE electricity, scale up from 2030 to 2040"
+    p32_flexSeelShare_slope(ttot,all_regi,all_te)   "Slope of relationship between average electricity price for flexible technology and share of this technology in total electricity demand. Unit: [ % percentage of average electricity price / % share in electricity demand]."
 ;
 
 scalars
