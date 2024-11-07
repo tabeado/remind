@@ -43,6 +43,24 @@ te2rlf(te,rlf)       = teFe2rlf(te,rlf) + teSe2rlf(te,rlf) + teue2rlf(te,rlf) + 
 teEarlyReti(te)      = teFosNoCCS(te);
 teEarlyReti("tnrs")  = YES;
 
+*** add electricity generation technologies with self consumption (i.e. consuming their own output) 
+*** for pecoal, pegas, peoil, peur, pebiolc and seh2
+*** to pc2te set which contains all technologies with co-production or own consumption of energy
+pc2te("pecoal","seel",te,"seel")$(pe2se("pecoal","seel",te)) = yes;
+pc2te("pegas","seel",te,"seel")$(pe2se("pegas","seel",te)) = yes;
+pc2te("peoil","seel",te,"seel")$(pe2se("peoil","seel",te)) = yes;
+pc2te("peur","seel",te,"seel")$(pe2se("peur","seel",te)) = yes;
+pc2te("pebiolc","seel",te,"seel")$(pe2se("pebiolc","seel",te)) = yes;
+pc2te("seh2","seel",te,"seel")$(se2se("seh2","seel",te)) = yes;
+
+*** also add these technologies to pc2te_selfCons set which contains only technologies with self consumption
+pc2te_selfCons("pecoal","seel",te,"seel")$(pe2se("pecoal","seel",te)) = yes;
+pc2te_selfCons("pegas","seel",te,"seel")$(pe2se("pegas","seel",te)) = yes;
+pc2te_selfCons("peoil","seel",te,"seel")$(pe2se("peoil","seel",te)) = yes;
+pc2te_selfCons("peur","seel",te,"seel")$(pe2se("peur","seel",te)) = yes;
+pc2te_selfCons("pebiolc","seel",te,"seel")$(pe2se("pebiolc","seel",te)) = yes;
+pc2te_selfCons("seh2","seel",te,"seel")$(se2se("seh2","seel",te)) = yes;
+
 ***----------------------------------------------------------------------------
 *** Fill sets that were created empty and should be filled from the mappings above
 ***----------------------------------------------------------------------------

@@ -2583,6 +2583,10 @@ pc2te(all_enty,all_enty,all_te,all_enty)    "mapping for own consumption of tech
         pegeo.sehe.geohe.seel
         cco2.ico2.ccsinje.seel
 /
+
+pc2te_selfCons(all_enty,all_enty,all_te,all_enty)	"mapping of coupled production parameter dimensions for technologies with self consumption, i.e. consuming their own output"
+//
+
 *NB* mappings for emissions, capture and leakage
 emi2te(all_enty,all_enty,all_te,all_enty)    " map emissions to technologies"
 /
