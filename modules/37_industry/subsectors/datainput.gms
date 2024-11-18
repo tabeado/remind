@@ -577,14 +577,14 @@ $offdelim
 
 *' Adjust feedstock shares to meet non-energy Use in Germany of 0.932 EJ/yr in 2020 (AGEB, Table 2.2, line 11)
 *' https://ag-energiebilanzen.de/daten-und-fakten/auswertungstabellen/
-$ontext
+$ifthen.no_calibration "%CES_parameters%" == "load"   !! CES_parameters
 loop(regi$(sameAs("DEU",regi)),
 p37_chemicals_feedstock_share(t,regi)= p37_chemicals_feedstock_share(t,regi) * (0.932 / ( pm_fedemand("2020",regi,"feso_chemicals")
 											 +pm_fedemand("2020",regi,"feli_chemicals")
 											 +pm_fedemand("2020",regi,"fega_chemicals") ) )
 										/ p37_chemicals_feedstock_share("2020",regi);
 );
-$offtext
+$endif.no_calibration
 
 *' load baseline industry ETS solids demand
 if (cm_startyear ne 2005,   !! not a BAU scenario
