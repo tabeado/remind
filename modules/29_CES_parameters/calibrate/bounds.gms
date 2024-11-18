@@ -58,7 +58,29 @@ loop (pf_industry_relaxed_bounds_dyn37(in),
   + INF$( sm_CES_calibration_iteration gt sm_tmp );
 );
 
-*' more generous calibration bounds for Germany to accomodate changes in feedstock shares
+*' buildings bounds in first calibration iterations for Germany to help calibration
+sm_tmp = 5;  !! last iteration with bounds on buildings
+loop(regi$(sameAs("DEU",regi)),
+loop (ppfen_buildings_dyn36(in),
+  vm_cesIO.lo(t_29(t),regi_dyn29(regi),in)
+  = max(
+      ( pm_cesdata(t,regi,in,"quantity")
+        !! goes from 0.95 to 1e-12 in -0.2 steps
+      * max(1e-12, 0.95 + min(0, (1 - sm_CES_calibration_iteration) / sm_tmp))
+      ),
+      abs(pm_cesdata(t,regi,in,"offset_quantity"))
+    );
+
+  vm_cesIO.up(t,regi_dyn29(regi),in)
+  = ( pm_cesdata(t,regi,in,"quantity")
+    !! goes from 1.05 to 2.05 in +0.2 steps, then jumps to inf
+    * (1.05 + max(0, (sm_CES_calibration_iteration - 1) / sm_tmp))
+    )$( sm_CES_calibration_iteration le sm_tmp )
+  + INF$( sm_CES_calibration_iteration gt sm_tmp );
+);
+);
+
+*' more generous calibration industry bounds for Germany to accomodate changes in feedstock shares
 loop(regi$(sameAs("DEU",regi)),
 loop (pf_industry_relaxed_bounds_dyn37(in),
   vm_cesIO.lo(t_29(t),regi_dyn29(regi),in)
