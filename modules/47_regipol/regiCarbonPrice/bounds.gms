@@ -20,6 +20,12 @@
 
 *' ####### Power Sector
 
+
+*' 2025 lower bounds for VREs based on installed capacity by 2023
+vm_cap.lo("2025",regi,"spv","1")$(sameAs(regi,"DEU"))=0.082;
+vm_cap.lo("2025",regi,"windon","1")$(sameAs(regi,"DEU"))=0.061;
+vm_cap.lo("2025",regi,"windoff","1")$(sameAs(regi,"DEU"))=0.008;
+
 $ifThen.tech_bounds_2025 "%cm_tech_bounds_2025%" == "on"
 *' This limits wind and solar PV capacity additions for 2025 in light of recent slow developments as of 2023.
 *' Upper bound is double the historic maximum capacity addition in 2011-2020.
@@ -32,8 +38,6 @@ loop(regi$(sameAs(regi,"DEU")),
 $endIf.tech_bounds_2025
 
 
-*' limit solar PV to 120 GW in 2025 (2023-2027 average) given that we are at only 76 GW PV in 2023
-vm_cap.up("2025",regi,"spv","1")$(sameAs(regi,"DEU"))=0.12;
 
 *' These bounds account for historic gas power development.
 *' TODO: Historical fixings should be done in the core the via input data from mrremind, this still needs to be moved
