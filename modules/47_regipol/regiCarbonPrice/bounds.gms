@@ -20,12 +20,6 @@
 
 *' ####### Power Sector
 
-
-*' 2025 lower bounds for VREs based on installed capacity by 2023
-vm_cap.lo("2025",regi,"spv","1")$(sameAs(regi,"DEU"))=0.082;
-vm_cap.lo("2025",regi,"windon","1")$(sameAs(regi,"DEU"))=0.061;
-vm_cap.lo("2025",regi,"windoff","1")$(sameAs(regi,"DEU"))=0.008;
-
 $ifThen.tech_bounds_2025 "%cm_tech_bounds_2025%" == "on"
 *' This limits wind and solar PV capacity additions for 2025 in light of recent slow developments as of 2023.
 *' Upper bound is double the historic maximum capacity addition in 2011-2020.
@@ -33,7 +27,11 @@ $ifThen.tech_bounds_2025 "%cm_tech_bounds_2025%" == "on"
 loop(regi$(sameAs(regi,"DEU")),
   vm_deltaCap.up("2025",regi,"windon","1")=2*smax(tall$(tall.val ge 2011 and tall.val le 2020), pm_delta_histCap(tall,regi,"windon"));
   vm_deltaCap.up("2025",regi,"spv","1")=2*smax(tall$(tall.val ge 2011 and tall.val le 2020), pm_delta_histCap(tall,regi,"spv"));
-  vm_cap.up("2025",regi,"spv","1")=0.12;
+
+*' 2025 lower bounds for VRE capacities based on installed capacity by 2024 and recent yearly growth rates
+  vm_cap.lo("2025",regi,"spv","1")=0.096+0.014;
+  vm_cap.lo("2025",regi,"windon","1")=0.062+0.003;
+  vm_cap.lo("2025",regi,"windoff","1")=0.009+0.001;
 );
 $endIf.tech_bounds_2025
 
