@@ -1110,18 +1110,18 @@ p_histCapFac(tall,all_regi,"wind") = 0;
 *** Capacity factor for wind and solar
 *** Effective capacity factor pm_dataren("nur") * pm_cf scales from historical values in 2015 to grade-based values in 2030
 ***   pm_dataren("nur",rlf) is the capacity factor of a given rlf grade
-***   pm_cf is a multiplier that scales linearly from p_aux_capacityFactorHistOverREMIND in 2015 to 1 in 2030
+***   pm_cf is a multiplier that scales linearly from p_aux_capacityFactorHistOverREMIND in 2015 to 1 in 2040
 *** This scaling accounts for lag effects, for instance turbines in the 2000s were much smaller hence yielding lower capacity factors
 p_aux_capacityFactorHistOverREMIND(regi,teVRE) = 1;
 p_aux_capacityFactorHistOverREMIND(regi,teVRE) $ (p_histCapFac("2015",regi,teVRE) and p_avCapFac2015(regi,teVRE)) =
   p_histCapFac("2015",regi,teVRE) / p_avCapFac2015(regi,teVRE);
 
-loop(t $ (t.val ge 2015 AND t.val lt 2030),
+loop(t $ (t.val ge 2015 AND t.val lt 2040),
   pm_cf(t,regi,teVRE) =
     pm_cf(t,regi,teVRE) !! always 1 for VRE in f_cf, but could be modified by modules
-    * ( (2030 - pm_ttot_val(t)) * p_aux_capacityFactorHistOverREMIND(regi,teVRE)
+    * ( (2040 - pm_ttot_val(t)) * p_aux_capacityFactorHistOverREMIND(regi,teVRE)
       + (pm_ttot_val(t) - 2015)
-    ) / (2030 - 2015) 
+    ) / (2040 - 2015)
 );
 
 *CG* set storage and grid of windoff to be the same as windon
