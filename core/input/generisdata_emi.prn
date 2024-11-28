@@ -14,7 +14,7 @@ pegas.seh2.gash2                    15.3             0.00315
 pegas.seh2.gash2c                    1.5      13.8   0.00315
 pegas.sehe.gashp                    15.3             0.00315
 pegas.seliqfos.gasftrec             15.3           
-pegas.seliqfos.gasftcrec            13.8       1.5
+pegas.seliqfos.gasftcrec            15.1       0.2
 pecoal.seel.igcc                    26.1             0.04415
 pecoal.seel.pc                      26.1             0.04415
 pecoal.seel.igccc                    2.6      23.5   0.04415
@@ -23,14 +23,14 @@ pecoal.sehe.coalhp                  26.1             0.04415
 pecoal.seh2.coalh2                  26.1             0.04415
 pecoal.seh2.coalh2c                  2.6      23.5   0.04415
 pecoal.seliqfos.coalftrec           26.1           
-pecoal.seliqfos.coalftcrec           7.8      18.3
+pecoal.seliqfos.coalftcrec          10.3      15.8
 pecoal.sesofos.coaltr               26.1             0.04415
 pecoal.segafos.coalgas              26.1             0.04415
 pebiolc.seel.bioigccc              -20.0      20.0
 pebiolc.seel.bioigcc
-pebiolc.segabio.biogasc             -9.5       9.5
-pebiolc.seliqbio.bioftcrec         -12.0      12.0 
-pebiolc.seh2.bioh2c                -22.5      22.5   
+pebiolc.segabio.biogasc       -14.1      14.1
+pebiolc.seliqbio.bioftcrec    -14.6      14.6
+pebiolc.seh2.bioh2c           -22.5      22.5   
 pebiolc.seel.biochp                             
 pebiolc.seh2.bioh2                              
 pebiolc.sehe.biohp
