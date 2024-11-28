@@ -1898,12 +1898,10 @@ $setGLobal cm_biocharRevenue 1 !! Def on
 *** flag determining the form of biochar price-demand function assumed"
 *** exponential: exponential price-demand curve, determined by cm_biocharpriceMax and cm_biocharpriceCoefficient
 *** constant: constant price, determined by  cm_biocharpriceConstant
-*** linearTimeDependent_pess
 *** linearTimeDependent_pess: decreasing price over time, independent of deployment
+*** linearTimeDependent_main
 *** linearTimeDependent_opt
-*** linearTimeDependent_opt2
-*** linearTimeDependent_vOpt
-$setGLobal  cm_biocharPriceForm linearTimeDependent_pess !! Def linearTimeDependent
+$setGLobal  cm_biocharPriceForm linearTimeDependent_main !! Def linearTimeDependent
 *** Biochar learning switch
 *** cm_BCLearning  1, biochar med and high tech technologies are learning
 *** cm_BCLearning  0, biochar med and high tech technologies are not learning
