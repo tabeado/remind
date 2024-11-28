@@ -835,6 +835,16 @@ parameter
   cm_biopyrMain_temp = 650; !! def=650
 
 parameter
+  cm_coupleProdHeat              "Input the couple product share as decimal"
+;
+  cm_coupleProdHeat = 0; !! def=0
+
+parameter 
+  cm_ccap0BC
+;
+  cm_ccap0BC = 0; !! def=0
+
+parameter
   cm_startyear              "first optimized modelling time step [year]"
 ;
   cm_startyear        = 2005;      !! def = 2005 for a baseline  !! regexp = 20[0-9](0|5)

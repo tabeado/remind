@@ -220,6 +220,11 @@ if (cm_biocharFuel_omv gt 0,
     fm_dataglob("omv","biopyrFuel") = cm_biocharFuel_omv; 
 );
 
+if (cm_ccap0BC gt 0,
+     fm_dataglob("ccap0",te)$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = cm_ccap0BC;
+);
+
+
 *** New nuclear assumption for SSP5
 if (cm_nucscen eq 6,
   f_dataglob_SSP5("inco0","tnrs") = 6270; !! increased from 4000 to 6270 with the update of technology costs in REMIND 1.7 to keep the percentage increase between SSP2 and SSP5 constant
