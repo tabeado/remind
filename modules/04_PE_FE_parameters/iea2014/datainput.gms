@@ -303,14 +303,17 @@ p04_prodCoupleGlob("pegeo","sehe","geohe","seel")           = -0.3;
 p04_prodCoupleGlob("cco2","ico2","ccsinje","seel")          = -0.005;
 
 if(cm_biopyrMain_temp eq 500,
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrOnly","seel") = -0.052; 
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrOnly","seel") = -0.04; 
 
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","seel") = -0.052;
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = 0.69;
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","seel") = -0.04;
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = 0.58;
 
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.15; 
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.165; 
-)
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.27; 
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.10; 
+  if(cm_coupleProdHeat gt 0,
+    p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = cm_coupleProdHeat;
+  );
+);
 
 *** use global data for coule products if regional data form IEA are 0
 loop(pc2te(enty,enty2,te,enty3),
@@ -487,11 +490,11 @@ loop(regi,
 
 display pm_histfegrowth, pm_data;
 
-loop(regi,
-      pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP", "seel") = ((1-pm_data(regi,"eta","biopyrCHP")  - 0.2) * pm_data(regi,"eta","biochp")) / (pm_data(regi,"eta","biopyrCHP")); !! remaining gas yield * transformation to electricity = actual electricity yield --> divide by main product yield
-      pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP", "sehe") = ((1-pm_data(regi,"eta","biopyrCHP")  - 0.2) * pm_data(regi,"eta","biochp") * pm_prodCouple(regi,"pebiolc","seel","biochp", "sehe")) / (pm_data(regi,"eta","biopyrCHP"));
-      pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP850", "seel") = ((1-pm_data(regi,"eta","biopyrCHP850") - 0.2) * pm_data(regi,"eta","biochp")) / (pm_data(regi,"eta","biopyrCHP850"));
-      pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP850", "sehe") = ((1-pm_data(regi,"eta","biopyrCHP850") - 0.2) * pm_data(regi,"eta","biochp") * pm_prodCouple(regi,"pebiolc","seel","biochp", "sehe")) / (pm_data(regi,"eta","biopyrCHP850"));
-);
+* loop(regi,
+*       pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP", "seel") = ((1-pm_data(regi,"eta","biopyrCHP")  - 0.2) * pm_data(regi,"eta","biochp")) / (pm_data(regi,"eta","biopyrCHP")); !! remaining gas yield * transformation to electricity = actual electricity yield --> divide by main product yield
+*       pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP", "sehe") = ((1-pm_data(regi,"eta","biopyrCHP")  - 0.2) * pm_data(regi,"eta","biochp") * pm_prodCouple(regi,"pebiolc","seel","biochp", "sehe")) / (pm_data(regi,"eta","biopyrCHP"));
+*       pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP850", "seel") = ((1-pm_data(regi,"eta","biopyrCHP850") - 0.2) * pm_data(regi,"eta","biochp")) / (pm_data(regi,"eta","biopyrCHP850"));
+*       pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP850", "sehe") = ((1-pm_data(regi,"eta","biopyrCHP850") - 0.2) * pm_data(regi,"eta","biochp") * pm_prodCouple(regi,"pebiolc","seel","biochp", "sehe")) / (pm_data(regi,"eta","biopyrCHP850"));
+* );
 
 *** EOF ./modules/04_PE_FE_parameters/iea2014/datainput.gms

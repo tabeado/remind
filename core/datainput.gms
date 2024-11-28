@@ -198,7 +198,7 @@ $ENDIF.cm_BCLearning
 ** adjust eta and omv for lower temperature if pyrolysis. Carbon sequestration is later
 if (cm_biopyrMain_temp eq 500,
     fm_dataglob("eta",te)$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = 0.48;
-    fm_dataglob("omv",te)$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = 85;
+    fm_dataglob("omv",te)$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = 71;
 );
 
 ** specific setting of omv
@@ -283,7 +283,17 @@ p_inco0(ttot,all_regi,"wind") = 0;
 
 
 $if not "%cm_inco0RegiFactor%" == "off" parameter p_new_inco0RegiFactor(all_te) / %cm_inco0RegiFactor% /;
-$if not "%cm_inco0RegiFactor%" == "off"           p_inco0(ttot,regi,te)$(p_inco0(ttot,regi,te) and p_new_inco0RegiFactor(te)) = p_new_inco0RegiFactor(te) * p_inco0(ttot,regi,te);
+$if not "%cm_inco0RegiFactor%" == "off"
+           p_inco0(ttot,regi,te)$(p_inco0(ttot,regi,te) and p_new_inco0RegiFactor(te)) = p_new_inco0RegiFactor(te) * p_inco0(ttot,regi,te);
+
+*RP* rescale the global CSP investment costs in REMIND: Originally we assume a SM3/12h setup, while the cost data from IEA for the short term seems rather based on a SM2/6h setup (with 40% average CF)
+*** Accordingly, also decrease long-term costs in REMIND to 0.7 of the current values
+fm_dataglob("inco0","csp")     = 0.7 * fm_dataglob("inco0","csp");
+fm_dataglob("incolearn","csp") = 0.7 * fm_dataglob("incolearn","csp");
+
+***---------------------------------------------------------------------------
+*** Unit adjustments
+***---------------------------------------------------------------------------
 
 *** inco0 (and incolearn) are given in $/kW (or $/(tC/a) for ccs-related tech or $/(t/a) for process-based industry)
 *** convert to REMIND units, i.e., T$/TW (or T$/(GtC/a) for ccs-related tech or T$/(Gt/a) for process-based industry)
@@ -292,11 +302,6 @@ fm_dataglob("inco0",te)        = s_DpKW_2_TDpTW   * fm_dataglob("inco0",te);
 fm_dataglob("incolearn",te)    = s_DpKW_2_TDpTW   * fm_dataglob("incolearn",te);
 fm_dataglob("omv",te)          = s_DpKWa_2_TDpTWa * fm_dataglob("omv",te);
 p_inco0(ttot,regi,te)          = s_DpKW_2_TDpTW   * p_inco0(ttot,regi,te);
-
-*RP* rescale the global CSP investment costs in REMIND: Originally we assume a SM3/12h setup, while the cost data from IEA for the short term seems rather based on a SM2/6h setup (with 40% average CF)
-*** Accordingly, also decrease long-term costs in REMIND to 0.7 of the current values
-fm_dataglob("inco0","csp")     = 0.7 * fm_dataglob("inco0","csp");
-fm_dataglob("incolearn","csp") = 0.7 * fm_dataglob("incolearn","csp");
 
 *** adjust costs for oae from USD/GtCaO to USD/GtC
 fm_dataglob("inco0", "oae_ng") = fm_dataglob("inco0", "oae_ng") / (cm_33_OAE_eff / sm_c_2_co2);
@@ -665,7 +670,7 @@ loop(emi2te(enty,enty2,te,enty3)$teCCS(te),
 
 
 if (cm_biopyrMain_temp eq 500,
-     fm_dataemiglob("pebiolc","sebiochar",te,"co2")$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = 10.7;
+     fm_dataemiglob("pebiolc","sebiochar",te,"co2")$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = -10.7;
 );
 
 *** Allocate emission factors to pm_emifac
@@ -809,8 +814,6 @@ pm_cf(ttot,regi,"biopyrOnly" ) = cm_biopyrOnlyCF;
 pm_cf(ttot,regi,"biopyrHeat" ) = cm_biopyrHeatCF;
 pm_cf(ttot,regi,"biopyrCHP") = cm_biopyrCHPCF;
 pm_cf(ttot,regi,"biopyrCHP850") =cm_biopyrCHP850CF;
-pm_cf(ttot,regi,"biopyrFawzy") = cm_biopyrFawzyCF;
-pm_cf(ttot,regi,"biopyrRoberts") = cm_biopyrRobertsCF;
 pm_cf(ttot,regi,"biopyrFuel") = cm_biopyrFuelCF;
 pm_cf(ttot,regi,"biochar4soil") = 1;
 
@@ -1290,12 +1293,10 @@ $endif.cm_subsec_model_steel
   p_adj_coeff(ttot,regi,"gasftrec")        = 0.4;
   p_adj_coeff(ttot,regi,"coalftrec")       = 0.6;
   p_adj_coeff(ttot,regi,"bioftrec")        = 0.65;
-  p_adj_coeff(ttot,regi,"biopyrOnly")      = 0.55; !! like biochp;
-  p_adj_coeff(ttot,regi,"biopyrHeat")      = 0.55; !! like biochp;
+  p_adj_coeff(ttot,regi,"biopyrOnly")      = 0.55; !! like biochp and bioigcc;
+  p_adj_coeff(ttot,regi,"biopyrHeat")      = 0.55; 
   p_adj_coeff(ttot,regi,"biopyrCHP")       = 0.55; 
   p_adj_coeff(ttot,regi,"biopyrCHP850")    = 0.55;
-  p_adj_coeff(ttot,regi,"biopyrFawzy")     = 0.55;
-  p_adj_coeff(ttot,regi,"biopyrRoberts")   = 0.55;
   p_adj_coeff(ttot,regi,"biopyrFuel")      = 0.65; !! like bioftrec;
   p_adj_coeff(ttot,regi,"gash2")           = 0.35;
   p_adj_coeff(ttot,regi,"coalh2")          = 0.55;
@@ -1696,4 +1697,50 @@ p_prodAllReference(t,regi,te) =
 *' initialize vm_changeProdStartyearCost for tax calculation
 vm_changeProdStartyearCost.l(t,regi,te) = 0;
 
+*' biochar bounds information
+p_biocharBounds("2020","EUR","bcal") = 1.72e-5;
+p_biocharBounds("2025","EUR","bcal") = 9.62e-5;
+p_biocharBounds("2025","EUR","bcau") = p_biocharBounds("2025","EUR","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","NEU","bcal") = 1.55e-6;
+p_biocharBounds("2025","NEU","bcal") = 8.66e-6;
+p_biocharBounds("2025","NEU","bcau") = p_biocharBounds("2025","NEU","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","USA","bcal") = 6.9e-5;
+p_biocharBounds("2025","USA","bcal") = 2.06e-4;
+p_biocharBounds("2025","USA","bcau") = p_biocharBounds("2025","USA","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","CAZ","bcal") = 5.45e-6;
+p_biocharBounds("2025","CAZ","bcal") = 2.31e-5;
+p_biocharBounds("2025","CAZ","bcau") = p_biocharBounds("2025","CAZ","bcal") * (1.55/0.9);
+
+
+p_biocharBounds("2020","LAM","bcal") = 0;
+p_biocharBounds("2025","LAM","bcal") = 4.76e-5;
+p_biocharBounds("2025","LAM","bcau") = p_biocharBounds("2025","LAM","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","CHA","bcal") = 0;
+p_biocharBounds("2025","CHA", "bcal") = 6.43e-5;
+p_biocharBounds("2025","CHA","bcau") = p_biocharBounds("2025","CHA","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","OAS", "bcal") = 0;
+p_biocharBounds("2025","OAS", "bcal") = 3.57e-6;
+p_biocharBounds("2025","OAS","bcau") = p_biocharBounds("2025","OAS","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","IND", "bcal") = 0;
+p_biocharBounds("2025","IND", "bcal") = 3.57e-6;
+p_biocharBounds("2025","IND","bcau") = p_biocharBounds("2025","IND","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","SSA", "bcal") = 0;
+p_biocharBounds("2025","SSA","bcal") = 3.6e-5;
+p_biocharBounds("2025","SSA","bcau") = p_biocharBounds("2025","SSA","bcal") * (1.55/0.9);
+
+* p_biocharBounds("2025","MEA","bcal") = 0;
+* p_biocharBounds("2025","MEA","bcau") = 3.6e-5;
+* p_biocharBounds("2025","REF","bcal") = 0;
+* p_biocharBounds("2025","REF","bcau") = 3.6e-5;
+* p_biocharBounds("2025","JPN","bcal") = 0;
+* p_biocharBounds("2025","JPN","bcau") = 3.6e-5;
+
+p_numberOfBCoptions = (cm_biopyrOnly + cm_biopyrHeat + cm_biopyrCHP + cm_biopyrCHP850);
 *** EOF ./core/datainput.gms

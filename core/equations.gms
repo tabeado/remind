@@ -127,11 +127,11 @@ $ifthen.priceBCformConstant "%cm_biocharPriceForm%" == "constant"
     ; 
 $endIf.priceBCformConstant
 
-$ifthen.priceBCformExponential  "%cm_biocharPriceForm%" == "exponential"
- q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
-        v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
-        =e=
-        pm_data(regi,"priceMax", teSpecificRevenue)
+$ifthen.priceBCformExponential "%cm_biocharPriceForm%" == "exponential"
+q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
+     v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
+     =e=
+     (pm_data(regi,"priceMax", teSpecificRevenue) - cm_biocharpriceConstant)
         *exp(-1*pm_data(regi,"priceCoefficient", teSpecificRevenue) * v_demSpecificGoods(t,regi,entySpecificRevenue,teSpecificRevenue))
     ;
 $endIf.priceBCformExponential
@@ -145,7 +145,7 @@ q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teS
 $endIf.priceBCformLin1
 
 
-$ifthen.priceBCformLinX "%cm_biocharPriceForm%" == "linearTimeDependent_Vpess"
+$ifthen.priceBCformLinX "%cm_biocharPriceForm%" == "linearTimeDependent_main"
 q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
         v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
         =e=

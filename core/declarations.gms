@@ -196,6 +196,8 @@ $endif.scaleDemand
 
 p_boundtmp(tall,all_regi,all_te,rlf)                 "read-in bound on capacities"
 p_bound_cap(tall,all_regi,all_te,rlf)                "read-in bound on capacities"
+p_biocharBounds(tall,all_regi,char)                 "specific bounds on capacities of biochar - helper until done with mrremind"
+p_numberOfBCoptions
 pm_data(all_regi,char,all_te)                        "Large array for most technical parameters of technologies; more detail on the individual technical parameters can be found in the declaration of the set 'char' "
 pm_cf(tall,all_regi,all_te)                          "Installed capacity availability - capacity factor (fraction of the year that a plant is running)"
 p_tkpremused(all_regi,all_te)                        "turn-key cost premium used in the model (with a discount rate of 3+ pure rate of time preference); in comparison to overnight costs)"
@@ -595,6 +597,8 @@ sm_GJ_2_TWa                                           "multiplicative factor to 
 sm_TWa_2_TWh                                          "tera Watt year to Tera Watt hour"                    /8.76e+3/,
 sm_TWa_2_MWh                                          "tera Watt year to Mega Watt hour"                    /8.76e+9/,
 sm_TWa_2_kWh                                          "tera Watt year to kilo Watt hour"                    /8.76e+12/,
+s_tBC_2_TWa                                           "t biochar to TWa biochar (29000 [MJ/tBC]*10^-12[EJ/MJ]/31.536[EJ/TWa])"    /9.196e-10/,
+
 *RP* all these new conversion factors with the form "s_xxx_2_yyy" are multplicative factors. Thus, if you have a number in Unit xxx, you have to
 *RP* multiply this number by the conversion factor s_xxx_2_yyy to get the new value in Unit yyy.
 s_NO2_2_N                                             "convert NO2 to N [14 / (14 + 2 * 16)]"   / .304 /
