@@ -189,148 +189,59 @@ if (c_bioh2scen eq 0, !! no bioh2 technologies
 );
 
 
+*TD* set capacity for all biochar technologies to 0 until 2015 and biopyrFuel to 0 until 2025 as it does not exist yet commercially
+ vm_cap.fx(t,regi,te,rlf)$(t.val le 2015 AND (sameAs(te,"biopyrKonTiki") OR sameAs(te,"biopyrOnly") OR 
+                                               sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP") OR sameas(te,"biopyrCHP850"))) = 0;
+ vm_cap.fx(t,regi,te,rlf)$(t.val le 2025 AND sameas(te,"biopyrFuel")) = 0;
+
 *TD* switch pyrolysis technologies off/on
 if (cm_biopyrKonTiki eq 0,             !! 0 = no biopyrKonTiki (default)
-  vm_deltaCap.up(t,regi,"biopyrKonTiki",rlf)$(t.val gt 2005) = 1.0e-6;
-  vm_deltaCap.lo(t,regi,"biopyrKonTiki",rlf)$(t.val gt 2005) = 0;
-  vm_cap.lo(t,regi,"biopyrKonTiki",rlf) = 0;
+  vm_deltaCap.up(t,regi,"biopyrKonTiki",rlf)$(t.val ge 2020) = 1.0e-6;
   else
-   vm_cap.up(t,regi,"biopyrKonTiki",rlf)$(t.val le 2020) =  1.0e-4*1.2;  
+  vm_cap.up(t,regi,"biopyrKonTiki",rlf)$(t.val ge 2020) =  1.2e-5;  !! KonTiki minimum capacity after 2020
 );
 
-if (cm_biopyrOnly eq 0,             !! 0 = no biopyrOnly (default)
-  vm_deltaCap.up(t,regi,"biopyrOnly",rlf)$(t.val gt 2005)       = 1.0e-6;
-  !!vm_deltaCap.lo(t,regi,"biopyrOnly",rlf)$(t.val gt 2005) = 0;
-  vm_cap.lo(t,regi,"biopyrOnly",rlf) = 0;
+if (cm_biopyrOnly eq 0,
+   vm_deltaCap.up(t,regi,"biopyrOnly",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
   else
-   vm_cap.lo(t,regi,"biopyrOnly",rlf)$(t.val eq 2020) =  1.0e-8; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
-   vm_cap.up(t,regi,"biopyrOnly",rlf)$(t.val eq 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
-   vm_cap.up(t,"CHA","biopyrOnly",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
-   vm_cap.up(t,regi,"biopyrOnly",rlf)$((t.val le 2020) AND (sameas(regi,"EUR"))) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,regi,"biopyrOnly",rlf)$((t.val le 2020) AND (sameas(regi,"DEU"))) =  (1/3) * 1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,"USA","biopyrOnly",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
-   vm_cap.up("2025",regi,"biopyrOnly",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","CHA","biopyrOnly",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrOnly",rlf)$(sameas(regi,"EUR")) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrOnly",rlf)$(sameas(regi,"DEU")) = (1/3)* 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","USA","biopyrOnly",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+    vm_cap.up("2020",regi,"biopyrOnly",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2025",regi,"biopyrOnly",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
+    vm_cap.lo("2025",regi,"biopyrOnly",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
 );
 
-*TD* If turned on, the current upper limit for all but CAZ due to overproduction there is set at 120% 
-* of the actual highest level observed in CHA in 2020
-if (cm_biopyrHeat eq 0,             !! 0 = no biopyrHeat (default). 
-  vm_deltaCap.up(t,regi,"biopyrHeat",rlf)$(t.val gt 2005)  = 1.0e-6;
-  !!vm_deltaCap.lo(t,regi,"biopyrHeat",rlf)$(t.val gt 2005) = 0;
-  vm_cap.lo(t,regi,"biopyrHeat",rlf) = 0;
+if (cm_biopyrHeat eq 0,
+   vm_deltaCap.up(t,regi,"biopyrHeat",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
   else
-   vm_cap.lo(t,regi,"biopyrHeat",rlf)$(t.val eq 2020) =  1.0e-8; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
-   vm_cap.up(t,regi,"biopyrHeat",rlf)$(t.val eq 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
-   vm_cap.up(t,"CHA","biopyrHeat",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
-   vm_cap.up(t,regi,"biopyrHeat",rlf)$((t.val le 2020) AND (sameas(regi,"EUR"))) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,regi,"biopyrHeat",rlf)$((t.val le 2020) AND (sameas(regi,"DEU"))) = (1/3)* 1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,"USA","biopyrHeat",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
-   vm_cap.up("2025",regi,"biopyrHeat",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","CHA","biopyrHeat",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrHeat",rlf)$(sameas(regi,"EUR")) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrHeat",rlf)$(sameas(regi,"DEU")) =  (1/3) * 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","USA","biopyrHeat",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+    vm_cap.up("2020",regi,"biopyrHeat",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2025",regi,"biopyrHeat",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
+    vm_cap.lo("2025",regi,"biopyrHeat",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
 );
 
-
-if (cm_biopyrCHP eq 0,             !! 0 = no biopyrCHP (default). 
-  vm_deltaCap.up(t,regi,"biopyrCHP",rlf)$(t.val ge 2005) = 1.0e-6;
-  vm_cap.lo(t,regi,"biopyrCHP",rlf) = 0;
+if (cm_biopyrCHP eq 0,
+   vm_deltaCap.up(t,regi,"biopyrCHP",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
   else
-   vm_cap.up(t,regi,"biopyrCHP",rlf)$(t.val eq 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
-   vm_cap.up(t,"CHA","biopyrCHP",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
-   vm_cap.up(t,regi,"biopyrCHP",rlf)$((t.val le 2020) AND (sameas(regi,"EUR"))) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,regi,"biopyrCHP",rlf)$((t.val le 2020) AND (sameas(regi,"DEU"))) = (1/3)* 1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,"USA","biopyrCHP",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
-   !!vm_cap.up("2025",regi,"biopyrCHP",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","CHA","biopyrCHP",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrCHP",rlf)$(sameas(regi,"EUR")) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrCHP",rlf)$(sameas(regi,"DEU")) = (1/3)* 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","USA","biopyrCHP",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
+    vm_cap.up("2020",regi,"biopyrCHP",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2025",regi,"biopyrCHP",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
+    vm_cap.lo("2025",regi,"biopyrCHP",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
 );
 
-if (cm_biopyrCHP850 eq 0,             !! 0 = no biopyrCHP (default). 
-  vm_deltaCap.up(t,regi,"biopyrCHP850",rlf)$(t.val ge 2005) = 1.0e-6;
-  vm_cap.lo(t,regi,"biopyrCHP850",rlf) = 0;
+if (cm_biopyrCHP850 eq 0,
+   vm_deltaCap.up(t,regi,"biopyrCHP850",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
   else
-   vm_cap.lo(t,regi,"biopyrCHP850",rlf)$(t.val eq 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
-   vm_cap.up(t,"CHA","biopyrCHP850",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
-   vm_cap.up(t,regi,"biopyrCHP850",rlf)$((t.val le 2020) AND (sameas(regi,"EUR"))) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,regi,"biopyrCHP850",rlf)$((t.val le 2020) AND (sameas(regi,"DEU"))) =  (1/3)*1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,"USA","biopyrCHP850",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
-   vm_cap.up("2025",regi,"biopyrCHP850",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","CHA","biopyrCHP850",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrCHP850",rlf)$(sameas(regi,"EUR")) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrCHP850",rlf)$(sameas(regi,"DEU")) = (1/3)*1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","USA","biopyrCHP850",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years);
+    vm_cap.up("2020",regi,"biopyrCHP850",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2025",regi,"biopyrCHP850",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
+    vm_cap.lo("2025",regi,"biopyrCHP850",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
 );
 
-if (cm_biopyrFawzy eq 0,             !! 0 = no biopyrElec (default)
-  vm_deltaCap.up(t,regi,"biopyrFawzy",rlf)$(t.val ge 2005) = 1.0e-6;
-  vm_cap.lo(t,regi,"biopyrFawzy",rlf) = 0;
-  else
-   vm_cap.lo(t,regi,"biopyrFawzy",rlf)$(t.val eq 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
-   vm_cap.up(t,"CHA","biopyrFawzy",rlf)$(t.val le 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
-   vm_cap.up(t,regi,"biopyrFawzy",rlf)$((t.val le 2020) AND (sameas(regi,"EUR"))) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,regi,"biopyrFawzy",rlf)$((t.val le 2020) AND (sameas(regi,"DEU"))) =  (1/3)*1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,"USA","biopyrFawzy",rlf)$(t.val le 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
-   vm_cap.up("2025",regi,"biopyrFawzy",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","CHA","biopyrFawzy",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrFawzy",rlf)$(sameas(regi,"EUR")) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrFawzy",rlf)$(sameas(regi,"DEU")) = (1/3)* 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","USA","biopyrFawzy",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years);
-)
-
-
-if (cm_biopyrRoberts eq 0,             !! 0 = no biopyrElec (default)
-  vm_deltaCap.up(t,regi,"biopyrRoberts",rlf)$(t.val ge 2005) = 1.0e-6;
-  vm_cap.lo(t,regi,"biopyrRoberts",rlf) = 0;
-  else
-   vm_cap.lo(t,regi,"biopyrRoberts",rlf)$(t.val eq 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
-   vm_cap.up(t,"CHA","biopyrRoberts",rlf)$(t.val eq 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
-   vm_cap.up(t,regi,"biopyrRoberts",rlf)$((t.val eq 2020) AND (sameas(regi,"EUR"))) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,regi,"biopyrRoberts",rlf)$((t.val eq 2020) AND (sameas(regi,"DEU"))) =  (1/3)* 1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,"USA","biopyrRoberts",rlf)$(t.val eq 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
-   vm_cap.up("2025",regi,"biopyrRoberts",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","CHA","biopyrRoberts",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrRoberts",rlf)$(sameas(regi,"EUR")) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrRoberts",rlf)$(sameas(regi,"DEU")) = (1/3)* 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","USA","biopyrRoberts",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years);
+if (cm_biopyrFuel eq 0,
+   vm_deltaCap.up(t,regi,"biopyrFuel",rlf)$(t.val ge 2025) = 1.0e-6;  !! limit to negligible increase as of 2025 when turned off
+  else 
+   vm_deltaCap.lo(t,regi,"biopyrFuel",rlf)$(t.val ge 2025) = 1.0e-8; !! initiate a negligible increase as of 2025 to help model find the technology
 );
-
-
-if (cm_biopyrFuel eq 0,             !! 0 = no biopyrFuel (default)
-  vm_deltaCap.up(t,regi,"biopyrFuel",rlf)$(t.val ge 2005) = 1.0e-6;
-  vm_cap.lo(t,regi,"biopyrFuel",rlf) = 0;
-  else
-   vm_cap.lo(t,regi,"biopyrFuel",rlf)$(t.val eq 2020) =  1.0e-6; !! All regions set to limit of CAZ that is known. for the regions with more, set these values!!!
-   vm_cap.up(t,"CHA","biopyrFuel",rlf)$(t.val eq 2020) = 1.0e-4*1.0;  !! this is the max value for China which did significantly more biopyr in 2022 than EUR
-   vm_cap.up(t,regi,"biopyrFuel",rlf)$((t.val eq 2020) AND (sameas(regi,"EUR"))) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,regi,"biopyrFuel",rlf)$((t.val eq 2020) AND (sameas(regi,"DEU"))) =  (1/3)* 1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR
-   vm_cap.up(t,"USA","biopyrFuel",rlf)$(t.val eq 2020) =  1.0e-5*1.2; !! This is the max value for Europe in 2020.  It is set for US and EUR because they are very similar 
-   vm_cap.up("2025",regi,"biopyrFuel",rlf) =  1.0e-6*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","CHA","biopyrFuel",rlf) = 1.0e-4*1.0*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrFuel",rlf)$(sameas(regi,"EUR")) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025",regi,"biopyrFuel",rlf)$(sameas(regi,"DEU")) = (1/3)* 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years
-   vm_cap.up("2025","USA","biopyrFuel",rlf) = 1.0e-5*1.2*14; !! not allowing more than 70% growth in first 5 years);
-);
-
 
 ***----------------------------------------------------------------------------
 *' if deployment-independent path for biochar over time: fix price by timestep
 ***----------------------------------------------------------------------------
-$ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_Vpess"
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val le 2025) = 0.1812; !! 200 USD_2015/t BC
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2030) = 0.1359; !! 150 USD/t BC
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2035) = 0.0906; !! 100 USD/t BC
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2040) = 0.0634; !!  70 USD/t BC
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val ge 2045) = 0.0634; !!  70 USD/tBC
-$endIf.priceBCformLin
-
 
 $ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_pess"
 v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val le 2025) = 300 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; !! 300 USD_2015/t BC to tUSD/TWa
