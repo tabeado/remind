@@ -71,7 +71,6 @@ luse                                                                            
 +                  elh2         dot         dhp       h2turb      h2curt       h2turbVRE  elh2VRE      h22ch4      MeOH
 tech_stat            3                                    5           5            5                     3          3
 inco0               3500         480         360         510         700          510      0.1          700        800
->>>>>>> 7d7976b63e09d2295629aec7679388ef5d796f27
 constrTme            2            2           1           2           2            2        1            2          2
 mix0
 eta                 0.73        0.30        0.80        0.40        0.62         0.40      0.73         0.8        0.7
