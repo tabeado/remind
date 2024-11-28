@@ -738,31 +738,6 @@ parameter
   cm_biopyrCHP850CF = 0.7; !! def = 0
 *'
 
-
-parameter
-  cm_biopyrFawzy          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
-;
-  cm_biopyrFawzy = 0; !! def = 0
-*'
-
-parameter
-  cm_biopyrFawzyCF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
-;
-  cm_biopyrFawzyCF = 0; !! def = 0
-*'
-
-parameter
-  cm_biopyrRoberts          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
-;
-  cm_biopyrRoberts = 0; !! def = 0
-*'
-
-parameter
-  cm_biopyrRobertsCF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
-;
-  cm_biopyrRobertsCF = 0; !! def = 0
-*'
-
 parameter
   cm_biopyrFuel          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
 ;

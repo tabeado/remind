@@ -42,9 +42,7 @@ pebiolc.sebiochar.biopyrOnly        -9.0
 pebiolc.sebiochar.biopyrHeat        -9.0
 pebiolc.sebiochar.biopyrCHP         -9.0
 pebiolc.sebiochar.biopyrCHP850      -7.3   
-pebiolc.sebiochar.biopyrFawzy       -8.9
-pebiolc.sebiochar.biopyrRoberts    -10.0     
-pebiolc.sebiochar.biopyrFuel        -3.7     
+pebiolc.sebiochar.biopyrFuel        -6.0     
 peoil.seliqfos.refliq               20               
 peoil.seel.dot                      20             0.01892
 seh2.segasyn.h22ch4                                                  0.395
