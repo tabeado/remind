@@ -32,6 +32,10 @@ loop(regi$(sameAs(regi,"DEU")),
   vm_cap.lo("2025",regi,"spv","1")=0.096+0.014;
   vm_cap.lo("2025",regi,"windon","1")=0.062+0.003;
   vm_cap.lo("2025",regi,"windoff","1")=0.009+0.001;
+*' 2025 lower bounds for VRE capacities based on installed capacity by 2024 and double recent yearly growth rates
+  vm_cap.up("2025",regi,"spv","1")=0.096+2*0.014;
+  vm_cap.up("2025",regi,"windon","1")=0.062+2*0.003;
+  vm_cap.up("2025",regi,"windoff","1")=0.009+2*0.001;
 );
 $endIf.tech_bounds_2025
 
