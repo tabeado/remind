@@ -280,16 +280,22 @@ p04_prodCoupleGlob("pebiolc","seliqbio","bioftcrec","seel") = 0.108; !! from Liu
 p04_prodCoupleGlob("pebiolc","segabio","biogasc","seel")    = -0.07;
 p04_prodCoupleGlob("pebiolc","seliqbio","bioethl","seel")   = 0.153;
 
-p04_prodCoupleGlob("pebiolc","sebiochar","biopyrOnly","seel") = -0.05; 
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrOnly","seel") = -0.04; 
 
-p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","seel") = -0.05;
-p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = 0.71;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","seel") = -0.04;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = 0.58;
 if(cm_coupleProdHeat gt 0,
   p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = cm_coupleProdHeat;
 );
 
-p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.32; 
-p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.12; 
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.27; 
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.10; 
+if(cm_coupleProdHeatCHP gt 0,
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = cm_coupleProdHeatCHP;
+);
+if(cm_coupleProdElecCHP gt 0,
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = cm_coupleProdElecCHP;
+);
 
 p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP850","sehe") = 1.49; 
 p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP850","seel") = 0.74;
@@ -302,14 +308,14 @@ p04_prodCoupleGlob("segafos","fegas","tdfosgas","seel")     = -0.05;
 p04_prodCoupleGlob("pegeo","sehe","geohe","seel")           = -0.3;
 p04_prodCoupleGlob("cco2","ico2","ccsinje","seel")          = -0.005;
 
-if(cm_biopyrMain_temp eq 500,
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrOnly","seel") = -0.04; 
+if(cm_biopyrMain_temp eq 650,
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrOnly","seel") = -0.05; 
 
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","seel") = -0.04;
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = 0.58;
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","seel") = -0.05;
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = 1.03;
 
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.27; 
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.10; 
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.32; 
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.12; 
   if(cm_coupleProdHeat gt 0,
     p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = cm_coupleProdHeat;
   );

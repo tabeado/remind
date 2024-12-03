@@ -721,7 +721,7 @@ parameter
 parameter
   cm_biopyrOnlyCF           "capacity factor of medium tech biochar production that optizes C in biochar and produces electricity. Set to 0 to turn off; e.g., 0.9 to turn on"
 ;
-  cm_biopyrOnlyCF = 0.25; !! def = 0.9
+  cm_biopyrOnlyCF = 0.9; !! def = 0.9
 *'
 
 parameter
@@ -745,7 +745,7 @@ parameter
 parameter
   cm_biopyrCHPCF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
 ;
-  cm_biopyrCHPCF = 0.7; !! def = 0
+  cm_biopyrCHPCF = 0.6; !! def = 0
 *'
 
 
@@ -758,7 +758,7 @@ parameter
 parameter
   cm_biopyrCHP850CF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
 ;
-  cm_biopyrCHP850CF = 0.7; !! def = 0
+  cm_biopyrCHP850CF = 0.6; !! def = 0
 *'
 
 parameter
@@ -830,17 +830,37 @@ parameter
 parameter
   cm_biopyrMain_temp
 ;
-  cm_biopyrMain_temp = 650; !! def=650
+  cm_biopyrMain_temp = 500; !! def=500
 
 parameter
   cm_coupleProdHeat              "Input the couple product share as decimal"
 ;
   cm_coupleProdHeat = 0; !! def=0
 
+parameter
+  cm_coupleProdHeatCHP              "Input the couple product share as decimal"
+;
+  cm_coupleProdHeatCHP = 0; !! def=0
+
+parameter
+  cm_coupleProdElecCHP              "Input the couple product share as decimal"
+;
+  cm_coupleProdElecCHP = 0; !! def=0
+
 parameter 
   cm_ccap0BC
 ;
   cm_ccap0BC = 0; !! def=0
+
+parameter
+  cm_biopyrLifetime             "Adjust lifetime of pyrolysis units"
+;
+  cm_biopyrLifetime = 0; !! def = 0  
+
+parameter
+  cm_biocharPermanence          "assumption about permanence of carbon in biochar over at least 100 years"
+;
+  cm_biocharPermanence = 0.8; !! def = 0.8
 
 parameter
   cm_startyear              "first optimized modelling time step [year]"

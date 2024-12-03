@@ -202,10 +202,15 @@ fm_dataglob("learn","biopyrFuel") = 0;
 $ENDIF.cm_BCLearning
 
 ** adjust eta and omv for lower temperature if pyrolysis. Carbon sequestration is later
-if (cm_biopyrMain_temp eq 500,
+if (cm_biopyrMain_temp eq 650,
     fm_dataglob("eta",te)$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = 0.48;
     fm_dataglob("omv",te)$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = 71;
 );
+
+** adjust lifetime
+if (cm_biopyrLifetime ne 0,
+    fm_dataglob("lifetime",te)$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = cm_biopyrLifetime;
+)
 
 ** specific setting of omv
 if (cm_biocharOnly_omv gt 0, 
@@ -678,9 +683,14 @@ loop(emi2te(enty,enty2,te,enty3)$teCCS(te),
 );
 
 
-if (cm_biopyrMain_temp eq 500,
+if (cm_biopyrMain_temp eq 650,
      fm_dataemiglob("pebiolc","sebiochar",te,"co2")$(sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP")) = -10.7;
 );
+
+if (cm_biocharPermanence ne 0.8,
+     fm_dataemiglob("pebiolc","sebiochar",te,"co2") = fm_dataemiglob("pebiolc","sebiochar",te,"co2") * cm_biocharPermanence / 0.8;
+);
+
 
 *** Allocate emission factors to pm_emifac
 option pm_emifac:3:3:1;
