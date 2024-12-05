@@ -808,24 +808,25 @@ parameter
 parameter
   cm_biocharpriceMax        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
 ;
-  cm_biocharpriceMax = 0.2266; !! def = 0.272
-*' 0.278 TUSD 2005/TWa BC = 300 2015 USD/tBC
+  cm_biocharpriceMax = 0.336; !! def = 0.336
+*' 0.336 TUSD 2017/TWa BC = 300 2015 USD/tBC
 
 parameter
  cm_biocharpriceCoefficient        "Revenue assumed for sale of biochar4soils; unit USD/ $[2015] / (kW[output] * a) energy production to be deductible from omv (preliminary solution)"
 ;
- cm_biocharpriceCoefficient = 24; !! def = 24
+ cm_biocharpriceCoefficient = 251; !! def = 251
 *'
 
 parameter
   cm_biocharpriceConstant        "Revenue assumed for sale of biochar4soils; REMIND native units, i.e. unit USD $[2005] / (TWa BC)"
 ;
   cm_biocharpriceConstant = 0.1812; !! def = 0.1812
-*' 0.0906 = 100 USD/tBC
-*' 0.1812 = 200 USD/tBC
-*' 0.2719 = 300 USD/tBC
-*' 0.3172 = 350 USD/tBC
-*' 0.4531 = 500 USD/tBC
+*' 0.1087 = 100 USD/tBC
+*' 0.1631 = 150 USD/tBC
+*' 0.2175 = 200 USD/tBC
+*' 0.2719 = 250 USD/tBC
+*' 0.3262 = 300 USD/tBC
+*' 0.3806 = 350 USD/tBC
 
 parameter
   cm_biopyrMain_temp
