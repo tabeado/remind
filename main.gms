@@ -849,6 +849,11 @@ parameter
   cm_coupleProdElecCHP = 0; !! def=0
 
 parameter 
+  cm_coupleProdFuel
+;
+  cm_coupleProdFuel = 0; !! def=0, optimistic 1.84
+
+parameter 
   cm_ccap0BC
 ;
   cm_ccap0BC = 0; !! def=0

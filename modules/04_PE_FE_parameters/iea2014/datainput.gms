@@ -301,7 +301,11 @@ p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP850","sehe") = 1.49;
 p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP850","seel") = 0.74;
 
 p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seel") = -0.08;
-p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seliqbio") = 0.62;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seliqbio") = 0.62; 
+
+if(cm_coupleProdFuel gt 0,
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seliqbio") = cm_coupleProdFuel; 
+);
 
 p04_prodCoupleGlob("segabio","fegas","tdbiogas","seel")     = -0.05;
 p04_prodCoupleGlob("segafos","fegas","tdfosgas","seel")     = -0.05;
