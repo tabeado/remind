@@ -2690,7 +2690,6 @@ pc2te(all_enty,all_enty,all_te,all_enty)    "mapping for own consumption of tech
         pebiolc.sebiochar.biopyrCHP850.sehe
         pebiolc.sebiochar.biopyrFuel.seel
         pebiolc.sebiochar.biopyrFuel.seliqbio
-        pebiolc.sebiochar.biopyrFuel.sehe
         segabio.fegas.tdbiogas.seel
         segafos.fegas.tdfosgas.seel
         pegeo.sehe.geohe.seel
