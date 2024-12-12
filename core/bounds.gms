@@ -180,6 +180,7 @@ if (c_bioliqscen eq 0, !! no bioliquids technologies
   vm_deltaCap.up(t,regi,"bioftrec",rlf)$(t.val gt 2005)    = 1.0e-6;
   vm_deltaCap.up(t,regi,"bioftcrec",rlf)$(t.val gt 2005)   = 1.0e-6;
   vm_deltaCap.up(t,regi,"bioethl",rlf)$(t.val gt 2005)     = 1.0e-6;
+  vm_deltaCap.up(t,regi,"biopyrFuel",rlf)$(t.val gt 2025)  = 1.0e-6;
 ***  vm_cap.fx(t,regi,"bioftcrec",rlf)    = 0;
 ***  vm_cap.fx(t,regi,"bioftrec",rlf)     = 0;
 ***  vm_cap.fx(t,regi,"bioethl",rlf)      = 0;
