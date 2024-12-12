@@ -6,7 +6,8 @@
 # |  Contact: remind@pik-potsdam.de
 
 library(magclass)
-library(remind2)
+#library(remind2)
+devtools::load_all("/p/tmp/tabeado/Biochar/2024_10/remind2")
 library(lucode2)
 library(gms)
 library(methods)
