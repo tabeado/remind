@@ -1425,9 +1425,9 @@ $setGlobal cm_implicitPePriceTarget  off  !! def = off  !! regexp = off|highFoss
 ***     cm_VREminShare = "2050.EUR_regi 0.7".
 ***       Require a minimum 70% VRE share (wind plus solar) in electricity production for all regions that belong to EUR in year 2050."
 $setGlobal cm_VREminShare    off !! def = off
-*** cm_VREminCap "minimum variable renewables capacities."
-***  (off):   (default) no bounds
-***  (ampel): sets lower bounds on capacities for wind, solar and H2 as specified in the ampel coalition agreement and KSG."
+*** cm_VREminCap "Activate lower bounds on 2025-2030 capacity installations in Germany reflecting different scenarios of technology upscaling in the next 5 years"
+***  (CurrPol):   Current policy development, 6 GW/yr onshore wind, 2 GW/yr offshore wind, at least 7 GW large-scale heat pumps in 2030
+***  (Opt): Optimistic development with government support, 7.5 GW/yr onshore wind, 2 GW/yr offshore wind, at least 7 GW large-scale heat pumps in 2030
 $setGlobal cm_VREminCap    off !! def = off
 *** cm_CCSmaxBound "limits Carbon Capture and Storage (including DACCS and BECCS) to a maximum value."
 ***   Example on how to use:

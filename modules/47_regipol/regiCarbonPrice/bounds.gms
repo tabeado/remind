@@ -32,13 +32,26 @@ loop(regi$(sameAs(regi,"DEU")),
   vm_cap.lo("2025",regi,"spv","1")=0.096+0.014;
   vm_cap.lo("2025",regi,"windon","1")=0.062+0.003;
   vm_cap.lo("2025",regi,"windoff","1")=0.009+0.001;
-*' 2025 lower bounds for VRE capacities based on installed capacity by 2024 and double recent yearly growth rates
+*' 2025 lower bounds for VRE capacities based on installed capacity by 2024 
+*' plus double recent yearly growth rates for and triple recent yearly growth rates for wind
   vm_cap.up("2025",regi,"spv","1")=0.096+2*0.014;
-  vm_cap.up("2025",regi,"windon","1")=0.062+2*0.003;
-  vm_cap.up("2025",regi,"windoff","1")=0.009+2*0.001;
+  vm_cap.up("2025",regi,"windon","1")=0.062+3*0.003;
+  vm_cap.up("2025",regi,"windoff","1")=0.009+3*0.001;
 );
 $endIf.tech_bounds_2025
 
+*' renewable power and heat pump growth scenarios for Germany between 2025 and 2030
+$ifthen.cm_VREminCap "%cm_VREminCap%" == "CurrPol"
+    vm_deltaCap.lo("2030",regi,"windon","1")$(sameAs(regi,"DEU")) = 6/1000;
+    vm_deltaCap.lo("2030",regi,"windoff","1")$(sameAs(regi,"DEU")) = 2/1000;
+    vm_cap.lo("2030",regi,"geohe","1")$(sameAs(regi,"DEU")) = 7/1000;
+$endIf.cm_VREminCap
+
+$ifthen.cm_VREminCap "%cm_VREminCap%" == "Opt"
+    vm_deltaCap.lo("2030",regi,"windon","1")$(sameAs(regi,"DEU")) = 7.5/1000;
+    vm_deltaCap.lo("2030",regi,"windoff","1")$(sameAs(regi,"DEU")) = 3/1000;
+    vm_cap.lo("2030",regi,"geohe","1")$(sameAs(regi,"DEU")) = 7/1000;
+$endIf.cm_VREminCap
 
 
 *' These bounds account for historic gas power development.
@@ -138,17 +151,6 @@ loop(regi$(sameAs(regi,"DEU")),
 vm_emiIndCCS.up(t,regi,emiInd37)$(sameAs(regi,"DEU") AND t.val lt 2030)=0;
 
 *' ###### Bounds for Germany-specific Policies (activated by switches)
-
-*' Power Sector Bounds for German Ampel Scenario
-$ifthen.cm_VREminCap "%cm_VREminCap%" == "ampel"
-    vm_cap.lo("2030","DEU","spv","1")     = 0.215;
-    vm_cap.lo("2030","DEU","wind","1")    = 0.115;
-    vm_cap.lo("2030","DEU","windoff","1") = 0.03;
-    vm_cap.lo("2035","DEU","windoff","1") = 0.04;
-    vm_cap.lo("2045","DEU","windoff","1") = 0.07;
-    vm_cap.lo("2030","DEU","elh2","1")    = 10*pm_eta_conv("2030","DEU","elh2")/1000;
-$endIf.cm_VREminCap
-
 
 *' Force 2030 coal phase-out in ARIADNE Ampel scenarios 
 $IFTHEN.EarlyPhaseOut "%cm_CoalRegiPol%" == "ampel"
