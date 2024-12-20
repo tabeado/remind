@@ -850,9 +850,8 @@ pm_regiEarlyRetiRate(t,regi,"coalhp")  = 0.5 * pm_regiEarlyRetiRate(t,regi,"coal
 pm_regiEarlyRetiRate(t,regi,"biohp")   = 0.25 * pm_regiEarlyRetiRate(t,regi,"biohp");   !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
 pm_regiEarlyRetiRate(t,regi,"biochp")  = 0.25 * pm_regiEarlyRetiRate(t,regi,"biochp");  !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
 pm_regiEarlyRetiRate(t,regi,"bioigcc") = 0.25 * pm_regiEarlyRetiRate(t,regi,"bioigcc"); !! reduce bio early retirement rate
-!!pm_regiEarlyRetiRate(t,regi,"biopyrCHP")   = 0.25 * pm_regiEarlyRetiRate(t,regi,"biopyrCHP");   !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
-!!pm_regiEarlyRetiRate(t,regi,"biopyrHeat")  = 0.25 * pm_regiEarlyRetiRate(t,regi,"biopyrHeat");  !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
-!!pm_regiEarlyRetiRate(t,regi,"biopyrCHP850")   = 0.25 * pm_regiEarlyRetiRate(t,regi,"biopyrCHP850");   !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
+pm_regiEarlyRetiRate(t,regi,"biopyrCHP")   = 0.25 * pm_regiEarlyRetiRate(t,regi,"biopyrCHP");   !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
+pm_regiEarlyRetiRate(t,regi,"biopyrHeat")  = 0.25 * pm_regiEarlyRetiRate(t,regi,"biopyrHeat");  !! chp should only be phased out slowly, as district heating networks/ industry uses are designed to a specific heat input
 
 
 $ifthen.tech_earlyreti not "%c_tech_earlyreti_rate%" == "off"
