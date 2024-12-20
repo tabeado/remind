@@ -1937,7 +1937,11 @@ $setGLobal  cm_biocharPriceForm linearTimeDependent_main !! Def linearTimeDepend
 *** Biochar learning switch
 *** cm_BCLearning  1, biochar med and high tech technologies are learning
 *** cm_BCLearning  0, biochar med and high tech technologies are not learning
-$setglobal cm_BCLearning  0      !! def = 0
+$setglobal cm_BCLearning  1      !! def = 1
+*** BiopyrFuel learning or not
+*** cm_BCfuelLearning 1, biopyrFuel is learning
+*** cm_BCfuelLearning 0, biopyrFuel is not learning
+$setglobal cm_BCfuelLearning 0 !! def = 0
 *** VRE potential switches
 *** rescaling factor for sensitivity analysis on renewable potentials.
 *** This factor rescales all grades of a renewable technology which have not been used by 2020 (to avoid infeasiblities with existing capacities)
