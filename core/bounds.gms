@@ -195,6 +195,8 @@ if (c_bioh2scen eq 0, !! no bioh2 technologies
 ***  vm_cap.fx(t,regi,"bioh2",rlf)       = 0;
 );
 
+*TD* limit bioftcrec in 2025 to 0 
+ vm_cap.fx(t,regi,te,rlf)$(t.val le 2025 AND sameas(te,"bioftcrec")) = 0;
 
 *TD* set capacity for all biochar technologies to 0 until 2015 and biopyrFuel to 0 until 2025 as it does not exist yet commercially
  vm_cap.fx(t,regi,te,rlf)$(t.val le 2015 AND (sameAs(te,"biopyrKonTiki") OR sameAs(te,"biopyrOnly") OR 
