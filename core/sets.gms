@@ -1382,8 +1382,10 @@ $ifthen.cm_BCLearning %cm_BCLearning% == "1"
         biopyrHeat 
         biopyrCHP
         biopyrCHP850
-        biopyrFuel 
 $endif.cm_BCLearning
+$ifthen.cm_BCfuelLearning %cm_BCfuelLearning% == "1"
+        biopyrFuel 
+$endif.cm_BCfuelLearning
 /
 
 teNoLearn(all_te)   "Technologies without learning effect"
