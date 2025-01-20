@@ -651,6 +651,26 @@ parameter
 ***       capacities are allowed, is 2025 or cm_startyear if larger.
 *'
 parameter
+  cm_DACregionalHeat  "regional heat demand or uniform heat demand"
+;
+  cm_DACregionalHeat = 0;   !! def=0 means no regional differentiation of feels demand by DAC, 1 = regional differentiation is on
+*** (0): (default) no regionalization of heat demand
+*** (1): average regionalization of heat demand
+*** (2): stronger regionalization of energy demand
+*'
+parameter
+  cm_globalValueDACfeels          " test "
+;
+  cm_globalValueDACfeels = 21.12; !! default = 21.12, i.e. the general original value. Can be reduced for testign
+*'
+
+parameter
+  cm_hydrogenForDac             " test "
+;
+  cm_hydrogenForDac = 1;!! default = 1, i.e. DAC can use hydrogen
+*'
+
+parameter
   cm_startyear              "first optimized modelling time step [year]"
 ;
   cm_startyear        = 2005;      !! def = 2005 for a baseline

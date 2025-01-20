@@ -47,15 +47,26 @@ q33_DacFEdemand_el(t,regi,entyFe)$(t.val ge 2025)..
 *'  Calculation of heat demand of direct air capture. Heat can be provided as heat or by electricity, gas or H2; 
 *'  For example, vm_otherFEdemand(t,regi,"fegas") is calculated as the total energy demand for heat from fegas minus what is already covered by other carriers (i.e. heat, h2 or elec) 
 ***---------------------------------------------------------------------------
-q33_DacFEdemand_heat(t,regi)$(t.val ge 2025)..
-	(v33_DacFEdemand_heat(t,regi,"feels") / p33_dac_fedem_heat(regi,"feels") 
-	+ v33_DacFEdemand_heat(t,regi,"fegas") / p33_dac_fedem_heat(regi,"fegas") 
-	+ v33_DacFEdemand_heat(t,regi,"fehes")/ p33_dac_fedem_heat(regi,"fehes")
-	+ v33_DacFEdemand_heat(t,regi,"feh2s") / p33_dac_fedem_heat(regi,"feh2s"))
-	* (-1/ sm_EJ_2_TWa)
-	=e=
-	vm_emiCdr(t,regi,"co2")
+$IFTHEN.hydrogenForDac %cm_hydrogenForDac% == "1"
+	q33_DacFEdemand_heat(t,regi)$(t.val ge 2025)..
+		(v33_DacFEdemand_heat(t,regi,"feels") / p33_dac_fedem_heat(regi,"feels") 
+		+ v33_DacFEdemand_heat(t,regi,"fegas") / p33_dac_fedem_heat(regi,"fegas") 
+		+ v33_DacFEdemand_heat(t,regi,"fehes")/ p33_dac_fedem_heat(regi,"fehes")
+		+ v33_DacFEdemand_heat(t,regi,"feh2s") / p33_dac_fedem_heat(regi,"feh2s"))
+		* (-1/ sm_EJ_2_TWa)
+		=e=
+		vm_emiCdr(t,regi,"co2")
 	;
+$ELSE.hydrogenForDac
+	q33_DacFEdemand_heat(t,regi)$(t.val ge 2025)..
+		(v33_DacFEdemand_heat(t,regi,"feels") / p33_dac_fedem_heat(regi,"feels") 
+		+ v33_DacFEdemand_heat(t,regi,"fegas") / p33_dac_fedem_heat(regi,"fegas") 
+		+ v33_DacFEdemand_heat(t,regi,"fehes")/ p33_dac_fedem_heat(regi,"fehes"))
+		* (-1/ sm_EJ_2_TWa)
+		=e=
+		vm_emiCdr(t,regi,"co2")
+	;
+$ENDIF.hydrogenForDac
 
 ***---------------------------------------------------------------------------
 *'  Calculation of total energy demand of direct air capture. 
