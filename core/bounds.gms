@@ -200,7 +200,7 @@ if (c_bioh2scen eq 0, !! no bioh2 technologies
 
 *TD* set capacity for all biochar technologies to 0 until 2015 and biopyrFuel to 0 until 2025 as it does not exist yet commercially
  vm_cap.fx(t,regi,te,rlf)$(t.val le 2015 AND (sameAs(te,"biopyrKonTiki") OR sameAs(te,"biopyrOnly") OR 
-                                               sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP") OR sameas(te,"biopyrCHP850"))) = 0;
+                                               sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP") OR sameas(te,"biopyrElec"))) = 0;
  vm_cap.fx(t,regi,te,rlf)$(t.val le 2025 AND sameas(te,"biopyrFuel")) = 0;
 
 *TD* switch pyrolysis technologies off/on
@@ -226,20 +226,20 @@ if (cm_biopyrHeat eq 0,
     vm_cap.lo("2025",regi,"biopyrHeat",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
 );
 
+if (cm_biopyrElec eq 0,
+   vm_deltaCap.up(t,regi,"biopyrElec",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
+  else
+    vm_cap.up("2020",regi,"biopyrElec",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2025",regi,"biopyrElec",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
+    vm_cap.lo("2025",regi,"biopyrElec",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
+);
+
 if (cm_biopyrCHP eq 0,
    vm_deltaCap.up(t,regi,"biopyrCHP",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
   else
     vm_cap.up("2020",regi,"biopyrCHP",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
     vm_cap.up("2025",regi,"biopyrCHP",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
     vm_cap.lo("2025",regi,"biopyrCHP",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
-);
-
-if (cm_biopyrCHP850 eq 0,
-   vm_deltaCap.up(t,regi,"biopyrCHP850",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
-  else
-    vm_cap.up("2020",regi,"biopyrCHP850",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
-    vm_cap.up("2025",regi,"biopyrCHP850",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
-    vm_cap.lo("2025",regi,"biopyrCHP850",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
 );
 
 if (cm_biopyrFuel eq 0,
