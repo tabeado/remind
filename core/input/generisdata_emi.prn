@@ -40,9 +40,9 @@ pebiolc.segabio.biogas
 pebiolc.sebiochar.biopyrKonTiki     -8.3
 pebiolc.sebiochar.biopyrOnly       -10.7
 pebiolc.sebiochar.biopyrHeat       -10.7
+pebiolc.sebiochar.biopyrElec       -10.7
 pebiolc.sebiochar.biopyrCHP        -10.7
-pebiolc.sebiochar.biopyrCHP850      -7.3   
-pebiolc.sebiochar.biopyrFuel        -6.0     
+pebiolc.sebiochar.biopyrFuel        -5.6     
 peoil.seliqfos.refliq               20               
 peoil.seel.dot                      20             0.01892
 seh2.segasyn.h22ch4                                                  0.395
