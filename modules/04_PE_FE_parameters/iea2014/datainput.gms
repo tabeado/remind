@@ -288,6 +288,11 @@ if(cm_coupleProdHeat gt 0,
   p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = cm_coupleProdHeat;
 );
 
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrElec","seel") = 0.13;
+if(cm_coupleProdElec gt 0,
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrElec","sehe") = cm_coupleProdElec;
+);
+
 p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.27; 
 p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.10; 
 if(cm_coupleProdHeatCHP gt 0,
@@ -297,14 +302,12 @@ if(cm_coupleProdElecCHP gt 0,
   p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = cm_coupleProdElecCHP;
 );
 
-p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP850","sehe") = 1.49; 
-p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP850","seel") = 0.74;
-
-p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seel") = -0.08;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seel") = -0.2; !! according to Buffi
 p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seliqbio") = 0.62; 
 
 if(cm_coupleProdFuel gt 0,
   p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seliqbio") = cm_coupleProdFuel; 
+  !!p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seh2") = -0.57;
 );
 
 p04_prodCoupleGlob("segabio","fegas","tdbiogas","seel")     = -0.05;
@@ -503,8 +506,6 @@ display pm_histfegrowth, pm_data;
 * loop(regi,
 *       pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP", "seel") = ((1-pm_data(regi,"eta","biopyrCHP")  - 0.2) * pm_data(regi,"eta","biochp")) / (pm_data(regi,"eta","biopyrCHP")); !! remaining gas yield * transformation to electricity = actual electricity yield --> divide by main product yield
 *       pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP", "sehe") = ((1-pm_data(regi,"eta","biopyrCHP")  - 0.2) * pm_data(regi,"eta","biochp") * pm_prodCouple(regi,"pebiolc","seel","biochp", "sehe")) / (pm_data(regi,"eta","biopyrCHP"));
-*       pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP850", "seel") = ((1-pm_data(regi,"eta","biopyrCHP850") - 0.2) * pm_data(regi,"eta","biochp")) / (pm_data(regi,"eta","biopyrCHP850"));
-*       pm_prodCouple(regi,"pebiolc","sebiochar","biopyrCHP850", "sehe") = ((1-pm_data(regi,"eta","biopyrCHP850") - 0.2) * pm_data(regi,"eta","biochp") * pm_prodCouple(regi,"pebiolc","seel","biochp", "sehe")) / (pm_data(regi,"eta","biopyrCHP850"));
 * );
 
 *** EOF ./modules/04_PE_FE_parameters/iea2014/datainput.gms
