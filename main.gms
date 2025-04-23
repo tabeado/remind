@@ -731,7 +731,19 @@ parameter
 parameter
   cm_biopyrHeatCF           "capacity factor of medium tech biochar production that optizes C in biochar and produces heat.  Set to 0 to turn off; e.g., 0.9 to turn on"
 ;
-  cm_biopyrHeatCF = 0.6; !! def = 0
+  cm_biopyrHeatCF = 0.8; !! def = 0
+*'
+
+parameter
+  cm_biopyrElec           "capacity factor of medium tech biochar production that optizes C in biochar and produces heat.  Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrElec = 0; !! def = 0
+*'
+
+parameter
+  cm_biopyrElecCF           "capacity factor of medium tech biochar production that optizes C in biochar and produces heat.  Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrElecCF = 0.8; !! def = 0
 *'
 
 parameter
@@ -744,19 +756,6 @@ parameter
   cm_biopyrCHPCF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
 ;
   cm_biopyrCHPCF = 0.6; !! def = 0
-*'
-
-
-parameter
-  cm_biopyrCHP850          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
-;
-  cm_biopyrCHP850 = 0; !! def = 0
-*'
-
-parameter
-  cm_biopyrCHP850CF          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
-;
-  cm_biopyrCHP850CF = 0.6; !! def = 0
 *'
 
 parameter
@@ -772,6 +771,12 @@ parameter
   cm_biopyrFuelCF = 0.9; !! def = 0
 *'
 
+parameter 
+  cm_biopyrFuelyield      "switch to change the biopyrFuel technology's biochar yield efficiency"
+;
+  cm_biopyrFuelyield = 0;   !! def = 0
+*' 
+
 parameter
   cm_biocharOnly_omv 
 ;
@@ -783,17 +788,15 @@ parameter
 ;
   cm_biocharHeat_omv = 0; !! def=0
 *' 
-
+parameter
+  cm_biocharElec_omv 
+;
+  cm_biocharElec_omv = 0; !! def=0
+*' 
 parameter
   cm_biocharCHP_omv 
 ;
   cm_biocharCHP_omv = 0; !! def=0
-*' 
-
-parameter
-  cm_biocharCHP850_omv 
-;
-  cm_biocharCHP850_omv = 0; !! def=0
 *' 
 
 parameter
@@ -835,6 +838,11 @@ parameter
   cm_coupleProdHeat              "Input the couple product share as decimal"
 ;
   cm_coupleProdHeat = 0; !! def=0
+
+parameter
+  cm_coupleProdElec             "Input the couple product share as decimal"
+;
+  cm_coupleProdElec = 0; !! def=0
 
 parameter
   cm_coupleProdHeatCHP              "Input the couple product share as decimal"
@@ -1571,6 +1579,10 @@ $setGlobal cm_VREminShare    off !! def = off
 ***     amount of Carbon Capture and Storage (including DACCS and BECCS) is limited to a maximum of 2GtCO2 per yr globally, and 250 Mt CO2 per yr in EU28.
 ***   This switch only works for model native regions. If you want to apply it to a group region use cm_implicitQttyTarget instead.
 $setGlobal cm_CCSmaxBound    off  !! def = off
+*** cm_33_EW_maxShareOfCropland
+*** limit the share of cropland on which rocks can be spread. Affects the maximum total amount of rocks weathering on fields.
+*** example: "GLO 1, LAM 0.5" limits amount of rocks weathering on cropland in LAM to 50% of max value if all LAM cropland were used.
+$setglobal cm_33_EW_maxShareOfCropland GLO 1 !! def = GLO 1
 *** c_tech_CO2capturerate "changes CO2 capture rate of carbon capture technologies"
 ***   Example on how to use:
 ***     c_tech_CO2capturerate   bioh2c 0.8, bioftcrec 0.4
