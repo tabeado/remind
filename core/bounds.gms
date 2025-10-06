@@ -529,5 +529,19 @@ v_changeProdStartyearSlack.lo(t,regi,te) $ ( (t.val > 2005) and (t.val = cm_star
 *** CB 20120319: avoid negative adjustment costs in 2005 (they would allow the model to artificially save money)
 v_adjFactor.fx("2005",regi,te) = 0;
 
+*** bounds on Emissions for regional targets. The bounds are updated in each iteration
+$ifthen.regiTargets not "%cm_budgetCO2from2020RegiShare%" == "off"
+* Peak budget until 2070
+
+loop(regi,
+if(pm_budgetCO2from2020Regi(regi) gt 0, 
+  vm_EmiCum.up(ttot,regi)$(ttot.val ge 2100) = pm_budgetCO2from2020Regi_iter(iteration,regi);
+  vm_EmiCum.lo(ttot,regi)$(ttot.val ge 2100) = (1 - cm_regionalBudgetTolerance_Rel) * pm_budgetCO2from2020Regi_iter(iteration,regi) - cm_regionalBudgetTolerance_Abs ; 
+else
+  vm_EmiCum.lo(ttot,regi)$(ttot.val ge 2100) = pm_budgetCO2from2020Regi_iter(iteration,regi);
+  vm_EmiCum.up(ttot,regi)$(ttot.val ge 2100) = (1 - cm_regionalBudgetTolerance_Rel) * pm_budgetCO2from2020Regi_iter(iteration,regi) + cm_regionalBudgetTolerance_Abs ; 
+);
+);
+$endif.regiTargets
 
 *** EOF ./core/bounds.gms

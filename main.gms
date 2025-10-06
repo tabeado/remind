@@ -550,6 +550,20 @@ parameter
 ;
   cm_budgetCO2_absDevTol      = 2;   !! def = 2 !! regexp = is.nonnegative
 *' 
+parameter
+  cm_regionalBudgetTolerance_Rel   "Relative deviation from a regional target tolerated. Either this or cm_regionalBudgetTolerance_Abs has to be 0!"
+;
+  cm_regionalBudgetTolerance_Rel = 0.3; !! def = 0.3 !! regexp. is.nonnegative
+*'
+parameter                 
+  cm_regionalBudgetTolerance_Abs  "absolute deviation from a regional target tolerated. Either this or cm_regionalBudgetTolerance_Rel has to be 0!"
+;
+  cm_regionalBudgetTolerance_Abs = 0; !! def = 0 !! regexp. is.nonnegative
+*'
+parameter
+  cm_iterBoundMax       "number of iterations across which the EOC budget target is enforced from the input gdx starting point"
+;
+  cm_iterBoundMax       = 10; !! def = 10
 
 parameter
   cm_peakBudgYr       "time of global net-zero CO2 emissions (peak budget)"
@@ -1817,7 +1831,8 @@ $setglobal cm_taxCO2_regiDiff_convergence   scenario    !! def = scenario
 *** For example, setting the switch to GLO 50, SSA 5, CHA 40 means that in cm_startyear, SSA has carbon price of 5$/tCO2,  CHA has carbon price of 40$/tCO2, and all other regions have carbon price of 50$/tCO2.
 *** Important note: If regional carbon prices in the start year are manually set, the regional values are used as lower bounds for pm_taxCO2eq
 $setglobal cm_taxCO2_regiDiff_startyearValue endogenous !! def = "endogenous"
-
+*' cm_budgetCO2from2020RegiShare     "switch to set eoc regional carbon budget shares by region (for easier comparison than total budgets, endogenous calculation possible)"
+$setglobal cm_budgetCO2from2020RegiShare  off !! def = off
 *** cm_ind_energy_limit Switch for setting upper limits on industry energy
 *** efficiency improvements.  See ./modules/37_subsectors/datainput.gms for
 *** implementation.

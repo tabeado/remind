@@ -1648,4 +1648,37 @@ p_prodAllReference(t,regi,te) =
 *' initialize vm_changeProdStartyearCost for tax calculation
 vm_changeProdStartyearCost.l(t,regi,te) = 0;
 
+*** get bounds on cumulative emissions
+$ifthen.regiTargets "%cm_budgetCO2from2020RegiShare%" == "off"
+pm_budgetCO2from2020Regi(regi) = 1;          !! not sure if needed
+pm_budgetCO2from2020RegiShare(regi)  = 1;    !!
+$else.regiTargets
+pm_budgetCO2from2020Regi(regi) = pm_budgetCO2from2020RegiShare(regi) * cm_budgetCO2from2020;
+
+*** Get a convergence path towards the final regional cumulative emission targets 
+!! calculate starting point from input gdx
+Execute_Loadpoint 'input' vm_emiAll.l = vm_emiAll.l;
+pm_actualbudgetco2Regi(ttot, regi) = sum(ttot2$( 2020 le ttot2.val AND ttot2.val le ttot.val ),
+      vm_emiAll.l(ttot2,regi,"co2")
+      * ( (0.5 + pm_ts(ttot2) / 2)$( ttot2.val eq 2020 ) !! second half of the 2020 period (mid 2020 - end 2022) plus 0.5 to account fo beginning 2020 - mid 2020  
+        + (pm_ts(ttot2))$( 2020 lt ttot2.val AND ttot2.val lt ttot.val ) !! entire middle periods
+        + ((pm_ttot_val(ttot) - pm_ttot_val(ttot-1)) / 2 + 0.5)$(ttot2.val eq ttot.val ) !! first half of the final period plus 0.5 to account fo mid - end of final year
+        )
+    ) 
+    * sm_c_2_co2;
+pm_budgetCO2from2020Regi_start(regi) = pm_actualbudgetco2Regi("2100", regi);
+
+!! calculate bounds depending on iteration --> linear convergence towards target; slope depends on stringency of the target
+loop(iteration$(iteration.val le cm_iterBoundMax),
+  pm_budgetCO2from2020Regi_iter(iteration, regi) = 
+              pm_budgetCO2from2020Regi_start(regi) + iteration.val * ((pm_budgetCO2from2020Regi(regi) - pm_budgetCO2from2020Regi_start(regi))/cm_iterBoundMax);
+);
+
+pm_budgetCO2from2020Regi_iter(iteration, regi)$(iteration.val gt cm_iterBoundMax)  = pm_budgetCO2from2020Regi(regi);
+
+vm_emiAll.l(ttot,regi,enty) = 0; !! resetting vm_emiAll again just to be sure
+
+$endif.regiTargets
+
+
 *** EOF ./core/datainput.gms

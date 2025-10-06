@@ -129,6 +129,7 @@ vm_co2eqGlob(ttot)                                   "total global greenhouse ga
 vm_co2eq(ttot,all_regi)                              "total greenhouse gas emissions measured in co2 equivalents that are subject to carbon pricing, be aware that emissions coverage of this variable depends on switch cm_multigasscen [GtCeq]"
 vm_co2eqMkt(ttot,all_regi,all_emiMkt)                "total greenhouse gas emissions per market measured in co2 equivalents that are subject to carbon pricing, be aware that emissions coverage of this variable depends on switch cm_multigasscen [GtCeq]"
 vm_emiAll(ttot,all_regi,all_enty)                    "total emissions by species [GtC, Mt CH4, Mt N, Mt SO2, Mt BC, Mt OC]"
+vm_emiCum(ttot,all_regi)                             "total cumulative regional CO2 emissions, from 2020"
 v_co2eqCum(all_regi)                                 "cumulated vm_co2eq emissions for the first budget period [GtCeq]"
 
 *** sectoral emissions
@@ -175,6 +176,7 @@ q_co2eqMkt(ttot,all_regi,all_emiMkt)                 "regional emissions per mar
 q_co2eqGlob(ttot)                                    "global emissions in co2 equivalents"
 qm_co2eqCum(all_regi)                                "cumulate regional emissions over time"
 q_budgetCO2eqGlob                                    "global emission budget balance"
+q_EmiCumNet(ttot,all_regi)
 q_emiTeDetailMkt(ttot,all_regi,all_enty,all_enty,all_te,all_enty,all_emiMkt) "detailed energy specific emissions per region and market"
 q_emiTeMkt(ttot,all_regi,all_enty,all_emiMkt)        "total energy-emissions per region and market"
 q_emiEnFuelEx(ttot,all_regi,all_enty)                "energy emissions from fuel extraction"
@@ -572,6 +574,17 @@ parameters
 pm_budgetCO2eq(all_regi)                             "budget for regional energy-emissions in period 1 [GtC]"
 pm_actualbudgetco2(ttot)                             "actual level of cumulated emissions starting from 2020 [GtCO2]"
 p_actualbudgetco2_iter(iteration,ttot)               "track actual level of cumulated emissions starting from 2020 over iterations [GtCO2]"
+pm_budgetCO2from2020Regi(all_regi)                    "regional carbon budget (Gt CO2)" 
+pm_budgetCO2from2020Regi_start(all_regi)              "Regional CO2 budget 2020 until 2100 from input gdx"  
+pm_budgetCO2from2020Regi_iter(iteration, all_regi)         "Regional CO2 budget 2020 until 2100 by iteration"     
+pm_actualbudgetco2Regi(ttot,all_regi)                "Regional- actual level of cumulated emissions starting from 2020 [GtCO2]"
+p_actualbudgetco2Regi_iter(iteration,ttot,all_regi)  "Regional- track actual level of cumulated emissions starting from 2020 over iterations [GtCO2]"
+
+$ifthen.regiBudget "%cm_budgetCO2from2020RegiShare%" == "off" !! (cm_iterative_target_adj == "4") OR (cm_iterative_target_adj == "44")
+pm_budgetCO2from2020RegiShare(all_regi)                 "share of region in global carbon budget" 
+$else.regiBudget
+pm_budgetCO2from2020RegiShare(all_regi)                 "share of region in global carbon budget" /%cm_budgetCO2from2020RegiShare%/
+$endif.regiBudget
 
 *** iteration parameters
 pm_SolNonInfes(all_regi)                             "model status from last iteration. 1 means status 2 or 7, 0 for all other status codes"
