@@ -90,6 +90,19 @@ pm_IndstCO2Captured(ttot,regi,entySe,entyFe(entyFeCC37),secInd37,emiMkt)$(
 ;
 
 
+*** calculate the share of sebio-based co2 captured
+pm_SeBio_IndCC_fraction0(ttot,regi,emiInd37)$(
+              sum(secInd37$secInd37_2_emiInd37(secInd37,emiInd37),
+                  (sum((entySe,entyFe,emiMkt),
+                        pm_IndstCO2Captured(ttot,regi,entySe,entyFe,secInd37,emiMkt))))) 
+  = sum(secInd37$secInd37_2_emiInd37(secInd37,emiInd37), 
+        sum( (entySe,entyFe, emiMkt)$(entySeBio(entySe)), 
+          pm_IndstCO2Captured(ttot,regi,entySe,entyFe,secInd37,emiMkt)) 
+    / (sum((entySe,entyFe,emiMkt), 
+          pm_IndstCO2Captured(ttot,regi,entySe,entyFe,secInd37,emiMkt))))
+;
+
+
 *** ---------------------------------------------------------------------------
 *** Process-Based
 *** ---------------------------------------------------------------------------

@@ -172,4 +172,7 @@ v37_plasticWaste.fx(t,regi,entySe,entyFe,emiMkt)$(
                         AND entyFE2sector2emiMkt_NonEn(entyFe,"indst",emiMkt) )
   = v37_plasticWaste.l(t,regi,entySe,entyFe,emiMkt)$( t.val ge 2015 );
 
+!! Fix to avoid reoccurring random infeasibilities. May need to be excluded if e.g. synfuels (or something else) are set to zero.
+vm_demFeSector_afterTax.lo(t,regi,entySe,"fesos","indst",emiMkt)$(NOT sameAs(emiMkt, "other")) = 1e-16;
+
 *** EOF ./modules/37_industry/subsectors/bounds.gms

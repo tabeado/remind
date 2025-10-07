@@ -95,6 +95,8 @@ $ifthen.cm_wasteIncinerationCCSshare not "%cm_wasteIncinerationCCSshare%" == "of
   p37_wasteIncinerationCCSMaxShare(ttot,ext_regi)            "switch values for proportion of waste incineration that is captured [%]"
   / %cm_wasteIncinerationCCSshare% /
 $endIf.cm_wasteIncinerationCCSshare
+
+  pm_SeBio_IndCC_fraction0(ttot,all_regi,emiInd37)            "share of fuel co2 captured that is from sebio [fraction]"
 ;
 
 Positive Variables

@@ -187,6 +187,68 @@ if (c_bioh2scen eq 0, !! no bioh2 technologies
 ***  vm_cap.fx(t,regi,"bioh2c",rlf)       = 0;
 ***  vm_cap.fx(t,regi,"bioh2",rlf)       = 0;
 );
+
+*TD* limit bioftcrec in 2025 to 0 
+ vm_cap.fx(t,regi,te,rlf)$(t.val le 2025 AND sameas(te,"bioftcrec")) = 0;
+
+*TD* set capacity for all biochar technologies to 0 until 2015 and biopyrFuel to 0 until 2025 as it does not exist yet commercially
+ vm_cap.fx(t,regi,te,rlf)$(t.val le 2015 AND (sameAs(te,"biopyrOnly") OR sameas(te,"biopyrHeat") OR sameas(te,"biopyrCHP") )) = 0;
+ vm_cap.fx(t,regi,te,rlf)$(t.val le 2025 AND sameas(te,"biopyrFuel")) = 0;
+
+*TD* switch pyrolysis technologies off/on. Deployment data is provided in core/datainput.gms
+if (cm_biopyrOnly eq 0,
+   vm_deltaCap.up(t,regi,"biopyrOnly",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
+  else
+    vm_cap.up("2020",regi,"biopyrOnly",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2025",regi,"biopyrOnly",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
+    vm_cap.lo("2025",regi,"biopyrOnly",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions;
+    vm_cap.up("2030",regi,"biopyrOnly",rlf) = (1 + cm_BCshortTermLimit)**5  * vm_cap.up("2025",regi,"biopyrOnly",rlf);
+);
+
+if (cm_biopyrHeat eq 0,
+   vm_deltaCap.up(t,regi,"biopyrHeat",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
+  else
+    vm_cap.up("2020",regi,"biopyrHeat",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2025",regi,"biopyrHeat",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
+    vm_cap.lo("2025",regi,"biopyrHeat",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2030",regi,"biopyrHeat",rlf) = (1.8)**5 * vm_cap.up("2025",regi,"biopyrHeat",rlf);
+);
+
+if (cm_biopyrCHP eq 0,
+   vm_deltaCap.up(t,regi,"biopyrCHP",rlf)$(t.val ge 2020) = 1.0e-6;  !! limit to negligible increase as of 2020 when turned off
+  else
+    vm_cap.up("2020",regi,"biopyrCHP",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2025",regi,"biopyrCHP",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
+    vm_cap.lo("2025",regi,"biopyrCHP",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
+    vm_cap.up("2030",regi,"biopyrCHP",rlf) = (1.8)**5 * vm_cap.up("2025",regi,"biopyrCHP",rlf);
+);
+
+if (cm_biopyrFuel eq 0,
+   vm_deltaCap.up(t,regi,"biopyrFuel",rlf)$(t.val gt 2025) = 1.0e-6; !! limit to negligible increase as of 2025 when turned off
+  else 
+   vm_deltaCap.lo(t,regi,"biopyrFuel",rlf)$(t.val gt 2025) = 1.0e-8; !! initiate a negligible increase as of 2025 to help model find the technology
+);
+
+***----------------------------------------------------------------------------
+*' if deployment-independent path for biochar over time: fix price by timestep
+***----------------------------------------------------------------------------
+
+$ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_pess"
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val le 2025) = 300 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2030) = 200 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2035) = 150 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val ge 2040) = 100 / s_tBC_2_TWa / sm_trillion_2_non *  s_D2015_2_D2017;
+$endIf.priceBCformLin
+
+$ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_opt"
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val le 2025) = 300 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017;
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2030) = 250 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017;
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2035) = 200 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017;
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2040) = 150 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017;
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2045) = 100 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017;
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val ge 2050) = 70 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+$endIf.priceBCformLin
+
 *' @stop
 
 ***--------------------------------------------------------------------

@@ -183,6 +183,8 @@ $endif.scaleDemand
 
 p_boundtmp(tall,all_regi,all_te,rlf)                 "read-in bound on capacities"
 p_bound_cap(tall,all_regi,all_te,rlf)                "read-in bound on capacities"
+p_biocharBounds(tall,all_regi,char)                  "data on already existing capacities of biochar"
+p_numberOfBCoptions                                  "number of established biochar producing technologies activated in the scenario"
 pm_data(all_regi,char,all_te)                        "Large array for most technical parameters of technologies; more detail on the individual technical parameters can be found in the declaration of the set 'char' "
 pm_cf(tall,all_regi,all_te)                          "Installed capacity availability - capacity factor (fraction of the year that a plant is running)"
 p_tkpremused(all_regi,all_te)                        "turn-key cost premium used in the model (with a discount rate of 3+ pure rate of time preference); in comparison to overnight costs)"
@@ -423,6 +425,7 @@ v_shSeFeSector(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "share of
 v_shGasLiq_fe(ttot,all_regi,emi_sectors)             "share of gases and liquids in sector final energy [0..1]"
 
 vm_emiCdrAll(ttot,all_regi)                          "all CDR emissions"
+vm_emiBECCS(ttot,all_regi)                           "all BECCS emissions, [GtC/yr]"
 
 vm_feedstockEmiUnknownFate(ttot,all_regi,all_enty,all_enty,all_emiMkt)      "Carbon flow: carbon contained in feedstocks with unknown fate (not plastics)(assumed to go back into the atmosphere) [GtC]"
 vm_incinerationEmi(ttot,all_regi,all_enty,all_enty,all_emiMkt)              "Emissions from incineration of plastic waste [GtC]"
@@ -437,6 +440,11 @@ vm_demFeForEs(ttot,all_regi,all_enty,all_esty,all_teEs)     "Final energy which 
 
 vm_prodEs(ttot,all_regi,all_enty,all_esty,all_teEs)          "Energy services (unit determined by conversion factor pm_fe2es)."
 vm_transpGDPscale(ttot,all_regi)                            "dampening factor to align edge-t non-energy transportation costs with historical GDP data"  
+
+* revenue calculation for biochar technologies
+v_demSpecificGoods(ttot,all_regi,all_enty,all_te)    "Collecting the amount of specific goods being produced, currently only biochar"
+v_priceOfSpecificGoods(ttot, all_regi,all_te)        "Price in in tril$/TWa for products modelled that are not yet demanded elsewhere in the model, currently only biochar"
+vm_revenueFromSpecificGoods(ttot, all_regi)          "Revenue in tril$ from products modelled that are not yet demanded elsewhere in the model, currently only biochar"
 
 $ifthen.seFeSectorShareDev not "%cm_seFeSectorShareDevMethod%" == "off"
   v_penSeFeSectorShare(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "penalty cost for secondary energy share deviation between sectors, for each sector/emiMarket combination"
@@ -520,6 +528,7 @@ q_limitCapCCS(ttot,all_regi,all_enty,all_enty,all_te,rlf)                       
 q_limitCCS(all_regi,all_enty,all_enty,all_te,rlf)                                      "ccs constraint for sequestration alternatives"
 
 q_emiCdrAll(ttot,all_regi)                           "summing over all CDR emissions"
+q_emiBECCS(ttot,all_regi)                           "summing over all BECCS emissions"
 
 q_balcapture(ttot,all_regi,all_enty,all_enty,all_te)  "balance equation for carbon capture"
 q_balCCUvsCCS(ttot,all_regi)                          "balance equation for captured carbon to CCU or CCS or valve"
@@ -563,6 +572,10 @@ q_shbiofe_lo(ttot,all_regi,all_enty,emi_sectors,all_emiMkt) "share of biomass pe
 q_capH2BI(ttot,all_regi)                                  "H2 infrastructure capacities of buildings and industry need to add up to the total infrastructure of the stationary sector"
 q_limitCapFeH2BI(ttot,all_regi,emi_sectors)               "capacity limit equation for H2 infrastructure capacities of buildings and industry"
 
+* revenue calculation for biochar 
+q_demSpecificGoodsCalculation(ttot,all_regi,all_enty,all_te)  "derivation for the demand of specific goods as they might come from different places"
+q_priceOfSpecificGoods(ttot, all_regi, all_enty,all_te)       "derivation of the price in in tril$/TWa for products modelled that are not yet demanded elsewhere in the model, currently only biochar"
+qm_revenueOfSpecificGoods(ttot,all_regi)                      "derivation of the revenue in tril$ from products modelled that are not yet demanded elsewhere in the model, e.g. biochar, carbon fibre products"
 
 $IFTHEN.sehe_upper not "%cm_sehe_upper%" == "off"
 q_heat_limit(ttot,all_regi)  "equation to limit maximum level of secondary energy district heating and heat pumps use"
@@ -615,6 +628,8 @@ sm_tgch4_2_pgc                                         "conversion factor 100-yr
 s_MtCO2_2_GtC                                         "conversion factor from MtCO2 to native REMIND emission unit GtC" /2.727e-04/
 
 s_MtCH4_2_TWa                                        "Energy content of methane. MtCH4 --> TWa: 1 MtCH4 = 1.23 * 10^6 toe * 42 GJ/toe * 10^-9 EJ/GJ * 1 TWa/31.536 EJ = 0.001638 TWa (BP statistical review)"  /0.001638/
+
+s_tBC_2_TWa                                           "t biochar to TWa biochar (29000 [MJ/tBC]*10^-12[EJ/MJ]/31.536[EJ/TWa])"    /9.101e-10/, 
 
 s_D2015_2_D2017                                         "Convert US$2015 to US$2017"      /1.0292/
 sm_D2005_2_D2017                                         "Convert US$2005 to US$2017"      /1.231/

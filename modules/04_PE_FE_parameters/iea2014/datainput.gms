@@ -302,6 +302,15 @@ p04_prodCoupleGlob("pebiolc","segabio","biogasc","seel")    = -0.07;
 p04_prodCoupleGlob("pebiolc","seliqbio","bioethl","seel")   = 0.153;
 p04_prodCoupleGlob("pegeo","sehe","geohe","seel")           = -0.3;
 p04_prodCoupleGlob("cco2","ico2","ccsinje","seel")          = -0.005;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrOnly","seel") = -0.04; 
+
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","seel") = -0.04;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrHeat","sehe") = 0.58;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.27; 
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","seel") = 0.10; 
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seel") = -0.08;
+p04_prodCoupleGlob("pebiolc","sebiochar","biopyrFuel","seliqbio") = 0.62; 
+
 *** self ownconsumption of electricity for power plants
 *** assign global values based on average 1990-2023 data for Germany
 *** data from AGEB, https://ag-energiebilanzen.de/wp-content/uploads/2024/04/STRERZ_Abg_02_2024_korr.xlsx

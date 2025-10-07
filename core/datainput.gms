@@ -177,6 +177,15 @@ if (cm_VRE_supply_assumptions eq 3,       !! "bleak" assumptions on VRE supply
     fm_dataglob("incolearn","spv") = 4960;
 );
 
+*TD* adjust learning factor for biochar technologies if biochar is learning or not
+$IFTHEN.cm_BCLearning %cm_BCLearning% == "0"
+fm_dataglob("learn", te)$(sameAs(te, "biopyrOnly") OR sameAs(te, "biopyrHeat") OR
+                          sameAs(te, "biopyrCHP")) = 0;
+fm_dataglob("incolearn", te)$(sameAs(te, "biopyrOnly") OR sameAs(te, "biopyrHeat") OR
+                          sameAs(te, "biopyrCHP") ) = 0;
+$ENDIF.cm_BCLearning
+
+
 *** New nuclear assumption for SSP5
 if (cm_nucscen eq 6,
   f_dataglob_SSP5("inco0","tnrs") = 6270; !! increased from 4000 to 6270 with the update of technology costs in REMIND 1.7 to keep the percentage increase between SSP2 and SSP5 constant
@@ -750,6 +759,12 @@ pm_cf(ttot,regi,"h2turbVRE")$(ttot.val ge 2025) = pm_cf(ttot,regi,"ngt");
 pm_cf(ttot,regi,"tdh2b") = pm_cf(ttot,regi,"tdh2s");
 pm_cf(ttot,regi,"tdh2i") = pm_cf(ttot,regi,"tdh2s");
 
+*TD* Set capacity factors for pyrolysis technologies.
+pm_cf(ttot,regi,"biopyrOnly" ) = 0.9;
+pm_cf(ttot,regi,"biopyrHeat" ) = 0.5;
+pm_cf(ttot,regi,"biopyrCHP") = 0.65;
+pm_cf(ttot,regi,"biopyrFuel") = 0.9;
+pm_cf(ttot,regi,"biochar4soil") = 1;
 
 *** Region- and tech-specific early retirement rates
 loop(ext_regi$pm_extRegiEarlyRetiRate(ext_regi),
@@ -1233,6 +1248,10 @@ $endif.cm_subsec_model_steel
   p_adj_coeff(ttot,regi,"gasftrec")        = 0.4;
   p_adj_coeff(ttot,regi,"coalftrec")       = 0.6;
   p_adj_coeff(ttot,regi,"bioftrec")        = 0.65;
+  p_adj_coeff(ttot,regi,"biopyrOnly")      = 0.55; !! like biochp and bioigcc;
+  p_adj_coeff(ttot,regi,"biopyrHeat")      = 0.55; !! like biochp and bioigcc;
+  p_adj_coeff(ttot,regi,"biopyrCHP")       = 0.55; !! like biochp and bioigcc;
+  p_adj_coeff(ttot,regi,"biopyrFuel")      = 0.65; !! like bioftrec;
   p_adj_coeff(ttot,regi,"gash2")           = 0.35;
   p_adj_coeff(ttot,regi,"coalh2")          = 0.55;
   p_adj_coeff(ttot,regi,"bioh2")           = 0.6;
@@ -1629,5 +1648,52 @@ p_prodAllReference(t,regi,te) =
 
 *' initialize vm_changeProdStartyearCost for tax calculation
 vm_changeProdStartyearCost.l(t,regi,te) = 0;
+
+*' biochar bounds information
+p_biocharBounds("2020",regi,"bcau") = 0;
+p_biocharBounds("2025",regi,"bcau") = 3.57e-6;
+
+p_biocharBounds("2020",regi,"bcal")$sameAS(regi,"EUR") = 1.72e-5;
+p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"EUR")  = 9.44e-5;
+p_biocharBounds("2025",regi,"bcau")$sameAS(regi,"EUR")  = p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"EUR") * (1.55/0.9);
+
+p_biocharBounds("2020",regi,"bcal")$sameAS(regi,"DEU") = 4.52e-6; !!(1/3) * 1.72e-5;
+p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"DEU") = 2.4e-5; !!1.12*(1/3)* 1.0e-5*1.2*14; !! lower bound: 1/3 of old EU limit (1/3) * 9.44e-5;!!
+p_biocharBounds("2025",regi,"bcau")$sameAS(regi,"DEU") = 1.2 * 2.4e-5; !! 1.12*5.7e-05; !! upper bound: actual DEU deployment (1/3) * 9.44e-5 * 1.7;!!
+
+p_biocharBounds("2020",regi,"bcal")$sameAS(regi,"NEN") = 1.55e-6;
+p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"NEN") = 8.66e-6;
+p_biocharBounds("2025",regi,"bcau")$sameAS(regi,"NEN") = p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"NEN") * (1.55/0.9);
+
+p_biocharBounds("2020","USA","bcal") = 6.9e-5;
+p_biocharBounds("2025","USA","bcal") = 2.06e-4;
+p_biocharBounds("2025","USA","bcau") = p_biocharBounds("2025","USA","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","CAZ","bcal") = 5.45e-6;
+p_biocharBounds("2025","CAZ","bcal") = 2.31e-5;
+p_biocharBounds("2025","CAZ","bcau") = p_biocharBounds("2025","CAZ","bcal") * (1.55/0.9);
+
+
+p_biocharBounds("2020","LAM","bcal") = 0;
+p_biocharBounds("2025","LAM","bcal") = 4.76e-5;
+p_biocharBounds("2025","LAM","bcau") = p_biocharBounds("2025","LAM","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","CHA","bcal") = 0;
+p_biocharBounds("2025","CHA", "bcal") = 6.43e-5;
+p_biocharBounds("2025","CHA","bcau") = p_biocharBounds("2025","CHA","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","OAS", "bcal") = 0;
+p_biocharBounds("2025","OAS", "bcal") = 3.57e-6;
+p_biocharBounds("2025","OAS","bcau") = p_biocharBounds("2025","OAS","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","IND", "bcal") = 0;
+p_biocharBounds("2025","IND", "bcal") = 3.57e-6;
+p_biocharBounds("2025","IND","bcau") = p_biocharBounds("2025","IND","bcal") * (1.55/0.9);
+
+p_biocharBounds("2020","SSA", "bcal") = 0;
+p_biocharBounds("2025","SSA","bcal") = 3.6e-5;
+p_biocharBounds("2025","SSA","bcau") = p_biocharBounds("2025","SSA","bcal") * (1.55/0.9);
+
+p_numberOfBCoptions = (cm_biopyrOnly + cm_biopyrHeat + cm_biopyrCHP);
 
 *** EOF ./core/datainput.gms
