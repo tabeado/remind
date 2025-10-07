@@ -202,7 +202,7 @@ if (cm_biopyrOnly eq 0,
     vm_cap.up("2020",regi,"biopyrOnly",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
     vm_cap.up("2025",regi,"biopyrOnly",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
     vm_cap.lo("2025",regi,"biopyrOnly",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions;
-    vm_cap.up("2030",regi,"biopyrOnly",rlf) = (1 + cm_BCshortTermLimit)**5  * vm_cap.up("2025",regi,"biopyrOnly",rlf);
+    vm_cap.up("2030",regi,"biopyrOnly",rlf) = (1.8)**5  * vm_cap.up("2025",regi,"biopyrOnly",rlf);
 );
 
 if (cm_biopyrHeat eq 0,
