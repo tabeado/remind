@@ -165,6 +165,12 @@ vm_emiTeDetail.up(t,regi,peFos,entySe,teFosCCS,"cco2")$((sameas(regi,"DEU")) AND
 *' Convert cm_deuCDRmax from MtCO2/yr to model unit of GtC/yr.
 vm_emiCdrAll.up(t,regi)$((cm_deuCDRmax ge 0) AND (sameas(regi,"DEU"))) = cm_deuCDRmax / 1000 / sm_c_2_co2;
 
+*' Bounds for CDRterra Scenario
+*' Limit CO2 underground injection up to 2030 in line with recent developments as of 2023 and in 2045 according to CDRterra agreement.
+vm_co2CCS.up(t,regi,"cco2","ico2",te,rlf)$((t.val le 2030) AND (sameas(regi,"DEU"))) = (5/1000)/3.67; !!5 MtCO2 / Mt/Gt / tCO2/tC
+if (cm_CCS2045limit gt 0 ,
+    vm_co2CCS.up(t,regi,"cco2","ico2",te,rlf)$((t.val le 2045) AND (t.val ge 2035) AND (sameas(regi,"DEU"))) = (cm_CCS2045limit / 1000) /3.67; !! Mt * GtCO2/MtCO2 / G
+);
 
 *' Bounds for German Energy Security Scenario (activated by switches)
 
