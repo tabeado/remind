@@ -42,6 +42,11 @@ if (te_used33("dac"),
     vm_cap.lo(t,regi,"dac",rlf)$(teNoTransform2rlf33("dac",rlf) AND (t.val ge 2030)) = sm_eps;
 );
 
+*** Set minimum DAC capacities for 2045 for Germany
+if (c33_DACminDeployment gt 0,
+        vm_emiCdrTeDetail.up(t,regi,"dac")$((t.val ge 2045) AND (sameas(regi,"DEU"))) = -1 * c33_DACminDeployment/ (1000*sm_c_2_co2);  !! Mt CO2 eq  * Gt/Mt / 3.67 
+);
+
 *** Bounds for enhanced weathering
 if(te_used33("weathering"),
     v33_EW_onfield_tot.up(t,regi,rlf_cz33,rlf) = s33_step;

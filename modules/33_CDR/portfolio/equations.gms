@@ -177,7 +177,7 @@ q33_EW_omcosts(t,regi)..
 q33_EW_potential(t,regi,rlf_cz33)..
     sum(rlf, v33_EW_onfield_tot(t,regi,rlf_cz33,rlf))
     =l=
-    f33_maxProdGradeRegiWeathering(regi,rlf_cz33)
+    cm_33_maxShareOfCropland * f33_maxProdGradeRegiWeathering(regi,rlf_cz33)
     ;
 
 ***---------------------------------------------------------------------------
@@ -200,15 +200,28 @@ q33_EW_ShortTermBound(t, regi)$(t.val eq 2030)..
     p33_EW_shortTermEW_Limit(regi) 
     ;
 
+*' Specific assumption for Germany
+q33_EW_DEU_lowerBound(t, regi)$((t.val eq 2030) AND (sameas(regi,"DEU")) AND (cm_33EW eq 1))..
+    sum((rlf_cz33, rlf), v33_EW_onfield(t,regi,rlf_cz33,rlf))
+    =e=
+    0.05 * 32 * 0.001
+    ;
+
 ***---------------------------------------------------------------------------
-*' Limits on the upscaling rate of mining and spreading of rocks. 
+*' Limits on the upscaling and downscaling rate of mining and spreading of rocks. 
 *' Current cost parameters do not include cost of additional mining being developed, 
 *' thus adjustment cost are not effective.
 ***---------------------------------------------------------------------------	
 q33_EW_upscaling_rate(ttot,regi)$(ord(ttot) lt card(ttot) AND pm_ttot_val(ttot) gt 2030)..
    sum((rlf_cz33, rlf), v33_EW_onfield(ttot,regi,rlf_cz33,rlf))
     =l=
-   (1+p33_EW_upScalingLimit(ttot))**pm_dt(ttot) * sum((rlf_cz33, rlf), v33_EW_onfield(ttot-1,regi,rlf_cz33,rlf))
+   (1+p33_EW_upScalingLimit(ttot))**pm_dt(ttot) * sum((rlf_cz33, rlf), v33_EW_onfield(ttot-1,regi,rlf_cz33,rlf)) + (0.05 * 32* 0.001)
+;
+
+q33_EW_downscaling_limit(ttot,regi)$(ord(ttot) lt card(ttot) AND pm_ttot_val(ttot) gt 2030)..
+    sum((rlf_cz33, rlf), v33_EW_onfield(ttot,regi,rlf_cz33,rlf))
+    =g=
+    cm_33_EW_downScalingLimit * sum((rlf_cz33, rlf), v33_EW_onfield(ttot-1,regi,rlf_cz33,rlf))
 ;
 
 ***---------------------------------------------------------------------------

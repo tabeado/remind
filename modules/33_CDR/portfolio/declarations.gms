@@ -59,6 +59,8 @@ q33_EW_emi(ttot,all_regi)  "calculates amount of carbon captured by EW"
 q33_EW_LimEmi(ttot,all_regi)  "limits EW to a maximal annual amount of ground rock of cm_LimRock"
 q33_EW_upscaling_rate(ttot, all_regi) "limits spreading of rock to a steep but credible upscaling rate"
 q33_EW_ShortTermBound(ttot,all_regi)   "Limits short term potential for enhanced weathering"
+q33_EW_DEU_lowerBound(ttot, all_regi)   "starting value for Germany in 2030"
+q33_EW_downscaling_limit(ttot,all_regi) "Limit on downscaling rate for rock deployment"
 
 q33_OAE_FEdemand(ttot,all_regi,all_enty,all_te) "calculates final energy demand for ocean alkalinity enhancement"
 q33_OAE_co2emi_non_atm_calcination(ttot,all_regi,all_te)   "calculates the CO2 that comes from calcination (limestone decomposition)"
