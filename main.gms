@@ -937,6 +937,54 @@ parameter
 ;
   cm_33_EW_shortTermLimit = 0.005; !! def = 0.5% !! regexp = is.nonnegative
 *'
+
+parameter
+  cm_33_EW_downScalingLimit          "Limit on downscaling rate of mining & spreading rocks, per time step"
+; 
+  cm_33_EW_downScalingLimit = 0.9; !! def = 90% , i.e. cannot decrease more than 10% 
+*'
+
+parameter
+  cm_33_maxShareOfCropland        "The share of current cropland that can be used for spreading rocks for EW"
+;
+  cm_33_maxShareOfCropland = 0.5; !! def = 50%
+*'
+parameter
+  c33_DACminDeployment            "Minimum deployment of DAC in Germany in 2045, in Mt CO2"
+;
+  c33_DACminDeployment = 0; !! def = 0
+*' 
+parameter
+  cm_biopyrOnly          "capacity factor of medium tech biochar production that optizes C in biochar and produces electricity. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrOnly = 0; !! def = 0
+*'
+parameter
+  cm_biopyrHeat           "capacity factor of medium tech biochar production that optizes C in biochar and produces heat.  Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrHeat = 1; !! def = 0
+*'
+parameter
+  cm_biopyrCHP          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrCHP = 1; !! def = 0
+*'
+parameter
+  cm_biopyrFuel          "capacity factor of high tech biochar production that optizes C in biochar and has no co-product. Set to 0 to turn off; e.g., 0.9 to turn on"
+;
+  cm_biopyrFuel = 0; !! def = 0
+*'
+parameter
+  cm_biocharpriceConstant        "Revenue assumed for sale of biochar4soils (constant); enter in REMIND native units, i.e. unit USD $[2005] / (TWa BC)"
+;
+  cm_biocharpriceConstant = 0; 
+
+parameter
+  cm_CCS2045limit           "limit for CCS in Germany for 2045, enter in Mt CO2"
+; 
+  cm_CCS2045limit = 0;    !! def = 0
+*'
+
 parameter
   cm_postTargetIncrease     "carbon price increase per year after regipol emission target is reached (euro per tCO2)"
 ;
@@ -1791,6 +1839,16 @@ $setglobal cm_wastelag NO   !! def = NO   !! regexp = YES|NO
 $setglobal cm_feedstockEmiUnknownFate  off      !! def = off
 *** cm_feShareLimits <-   "off"  # def <- "off", limit the electricity final energy share to be in line with the industry maximum electrification levels (60% by 2050 in the electric scenario), 10% lower (=50% in 2050) in an increased efficiency World, or 20% lower (40% in 2050) in an incumbents future (incumbents). The incumbents scenario also limits a minimal coverage of buildings heat provided by gas and liquids (25% by 2050).
 $setglobal cm_feShareLimits  off  !! def = off
+*** flag determining the form of biochar price-demand function assumed"
+*** exponential: exponential price-demand curve, determined by cm_biocharpriceMax and cm_biocharpriceCoefficient
+*** constant: constant price, determined by  cm_biocharpriceConstant
+*** linearTimeDependent_pess: decreasing price over time, independent of deployment
+*** linearTimeDependent_opt: decreasing price over time, independent of deployment, higher price path
+$setGLobal  cm_biocharPriceForm linearTimeDependent_pess !! def = linearTimeDependent_pess
+*** Biochar learning switch
+*** cm_BCLearning  1, biochar med and high tech technologies are learning
+*** cm_BCLearning  0, biochar med and high tech technologies are not learning
+$setglobal cm_BCLearning  1      !! def = 1
 *** VRE potential switches
 *** rescaling factor for sensitivity analysis on renewable potentials.
 *** This factor rescales all grades of a renewable technology which have not been used by 2020 (to avoid infeasiblities with existing capacities)
