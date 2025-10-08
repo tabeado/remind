@@ -202,7 +202,7 @@ if (cm_biopyrOnly eq 0,
     vm_cap.up("2020",regi,"biopyrOnly",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
     vm_cap.up("2025",regi,"biopyrOnly",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
     vm_cap.lo("2025",regi,"biopyrOnly",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions;
-    vm_cap.up("2030",regi,"biopyrOnly",rlf) = (1.8)**5  * vm_cap.up("2025",regi,"biopyrOnly",rlf);
+    vm_cap.up("2030",regi,"biopyrOnly",rlf) = (1.6)**5  * vm_cap.up("2025",regi,"biopyrOnly",rlf);
 );
 
 if (cm_biopyrHeat eq 0,
@@ -211,7 +211,7 @@ if (cm_biopyrHeat eq 0,
     vm_cap.up("2020",regi,"biopyrHeat",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
     vm_cap.up("2025",regi,"biopyrHeat",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
     vm_cap.lo("2025",regi,"biopyrHeat",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
-    vm_cap.up("2030",regi,"biopyrHeat",rlf) = (1.8)**5 * vm_cap.up("2025",regi,"biopyrHeat",rlf);
+    vm_cap.up("2030",regi,"biopyrHeat",rlf) = (1.6)**5 * vm_cap.up("2025",regi,"biopyrHeat",rlf);
 );
 
 if (cm_biopyrCHP eq 0,
@@ -220,7 +220,7 @@ if (cm_biopyrCHP eq 0,
     vm_cap.up("2020",regi,"biopyrCHP",rlf) = p_biocharBounds("2020",regi,"bcal") / p_numberOfBCoptions; 
     vm_cap.up("2025",regi,"biopyrCHP",rlf) = p_biocharBounds("2025",regi,"bcau") / p_numberOfBCoptions; 
     vm_cap.lo("2025",regi,"biopyrCHP",rlf) = p_biocharBounds("2025",regi,"bcal") / p_numberOfBCoptions; 
-    vm_cap.up("2030",regi,"biopyrCHP",rlf) = (1.8)**5 * vm_cap.up("2025",regi,"biopyrCHP",rlf);
+    vm_cap.up("2030",regi,"biopyrCHP",rlf) = (1.6)**5 * vm_cap.up("2025",regi,"biopyrCHP",rlf);
 );
 
 if (cm_biopyrFuel eq 0,
