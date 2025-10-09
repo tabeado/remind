@@ -984,6 +984,39 @@ parameter
 ; 
   cm_CCS2045limit = 0;    !! def = 0
 *'
+parameter
+  cm_BECCSdeu2035           "target for BECCS in Germany for 2035 enter in Mt CO2"
+;
+  cm_BECCSdeu2035 = 0;    !! def = 0
+*' 
+
+parameter
+  cm_BECCSdeu2040           "target for BECCS in Germany for 2040, enter in Mt CO2"
+;
+  cm_BECCSdeu2040 = 0;    !! def = 0
+*' 
+
+parameter
+  cm_BECCSdeu2045           "target for BECCS in Germany for 2045, enter in Mt CO2"
+;
+  cm_BECCSdeu2045 = 0;    !! def = 0
+*' 
+
+parameter
+  cm_BECCSdeu2050           "target for BECCS in Germany for 2050, enter in Mt CO2"
+;
+  cm_BECCSdeu2050 = 0;    !! def = 0
+*' 
+parameter
+  cm_BECCSdeu2055           "target for BECCS in Germany for 2055, enter in Mt CO2"
+;
+  cm_BECCSdeu2055 = 0;    !! def = 0
+*'
+parameter
+  cm_BECCSdeu2060           "target for BECCS in Germany for 2060, enter in Mt CO2"
+;
+  cm_BECCSdeu2060 = 0;    !! def = 0
+*' 
 
 parameter
   cm_postTargetIncrease     "carbon price increase per year after regipol emission target is reached (euro per tCO2)"

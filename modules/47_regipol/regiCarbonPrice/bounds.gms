@@ -172,6 +172,35 @@ if (cm_CCS2045limit gt 0 ,
     vm_co2CCS.up(t,regi,"cco2","ico2",te,rlf)$((t.val le 2045) AND (t.val ge 2035) AND (sameas(regi,"DEU"))) = (cm_CCS2045limit / 1000) /3.67; !! Mt * GtCO2/MtCO2 / G
 );
 
+*' Limit BECCS according to the CDRterra agreement.
+if (cm_BECCSdeu2035 gt 0, 
+    vm_emiBECCS.up(t,regi)$(t.val eq 2035 AND (sameas(regi,"DEU"))) = 1.02 * cm_BECCSdeu2035 * s_MtCO2_2_GtC; 
+);
+
+if (cm_BECCSdeu2040 gt 0, 
+    vm_emiBECCS.up(t,regi)$(t.val eq 2040 AND (sameas(regi,"DEU"))) = 1.02 * cm_BECCSdeu2040 * s_MtCO2_2_GtC; 
+);
+
+if (cm_BECCSdeu2045 gt 0, 
+    vm_emiBECCS.up(t,regi)$(t.val eq 2045 AND (sameas(regi,"DEU"))) = 1.02 * cm_BECCSdeu2045 * s_MtCO2_2_GtC; 
+    vm_emiBECCS.lo(t,regi)$(t.val eq 2045 AND (sameas(regi,"DEU"))) = 0.98 * cm_BECCSdeu2045 * s_MtCO2_2_GtC; 
+);
+
+if (cm_BECCSdeu2060 gt 0, 
+    vm_emiBECCS.up(t,regi)$(t.val gt 2045 AND t.val le 2060 AND (sameas(regi,"DEU"))) = 1.02 * cm_BECCSdeu2060 * s_MtCO2_2_GtC; 
+    vm_emiBECCS.lo(t,regi)$(t.val gt 2045 AND t.val le 2060 AND (sameas(regi,"DEU"))) = 0.98 * cm_BECCSdeu2060 * s_MtCO2_2_GtC; 
+);
+
+if (cm_BECCSdeu2050 gt 0, 
+    vm_emiBECCS.lo(t,regi)$(t.val eq 2050  AND (sameas(regi,"DEU"))) =  0; 
+    vm_emiBECCS.up(t,regi)$(t.val eq 2050  AND (sameas(regi,"DEU"))) =  cm_BECCSdeu2050 * s_MtCO2_2_GtC; 
+);
+
+if (cm_BECCSdeu2055 gt 0, 
+    vm_emiBECCS.lo(t,regi)$(t.val eq 2055  AND (sameas(regi,"DEU"))) = 0; 
+    vm_emiBECCS.up(t,regi)$(t.val eq 2055  AND (sameas(regi,"DEU"))) = cm_BECCSdeu2055 * s_MtCO2_2_GtC; 
+);
+
 *' Bounds for German Energy Security Scenario (activated by switches)
 
 *' Background: The energy security scenario used for the Ariadne Report on energy sovereignity in 2022 assumes that there is a continued gas crisis after 2022/23 in Germany
