@@ -1657,9 +1657,9 @@ p_biocharBounds("2020",regi,"bcal")$sameAS(regi,"EUR") = 1.72e-5;
 p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"EUR")  = 9.44e-5;
 p_biocharBounds("2025",regi,"bcau")$sameAS(regi,"EUR")  = p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"EUR") * (1.55/0.9);
 
-p_biocharBounds("2020",regi,"bcal")$sameAS(regi,"DEU") = 4.52e-6; !!(1/3) * 1.72e-5;
-p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"DEU") = 2.4e-5; !!1.12*(1/3)* 1.0e-5*1.2*14; !! lower bound: 1/3 of old EU limit (1/3) * 9.44e-5;!!
-p_biocharBounds("2025",regi,"bcau")$sameAS(regi,"DEU") = 1.5 * 2.4e-5; !! 1.12*5.7e-05; !! upper bound: actual DEU deployment (1/3) * 9.44e-5 * 1.7;!!
+p_biocharBounds("2020",regi,"bcal")$sameAS(regi,"DEU") = 4.52e-6; 
+p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"DEU") = 1.2 * 2.4e-5; !! value is from 2024, thus give a slightly higher range for 2025
+p_biocharBounds("2025",regi,"bcau")$sameAS(regi,"DEU") = 1.4 * 2.4e-5; 
 
 p_biocharBounds("2020",regi,"bcal")$sameAS(regi,"NEN") = 1.55e-6;
 p_biocharBounds("2025",regi,"bcal")$sameAS(regi,"NEN") = 8.66e-6;
