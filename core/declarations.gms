@@ -32,6 +32,9 @@ pm_taxCO2eq_iter(iteration,ttot,all_regi)            "CO2 tax path (pm_taxCO2eq)
 pm_taxCO2eq_anchor_iterationdiff(ttot)               "difference in global anchor carbon price to the last iteration [T$/GtC]"
 pm_taxCO2eqRegi(tall,all_regi)                       "additional regional CO2 tax path in T$/GtC = $/kgC. To get $/tCO2, multiply with 272 [T$/GtC]"
 pm_taxCO2eqSum(tall,all_regi)                        "sum of pm_taxCO2eq, pm_taxCO2eqRegi, pm_taxCO2eqSCC in T$/GtC = $/kgC. To get $/tCO2, multiply with 272 [T$/GtC]"
+pm_taxCDR(ttot,all_regi)                             "CDR tax path in T$/GtC = $/kgC. To get $/tCO2, multiply with 272 [T$/GtC] (is always zero, except if cm_iterative_target_adj ge 10)"
+pm_taxCDR_iter(iteration,ttot,all_regi)              "CO2 tax path (pm_taxCO2eq) tracked over iterations [T$/GtC]"
+pm_taxCDR_anchor_iterationdiff(ttot)                 "difference in global anchor carbon price to the last iteration [T$/GtC]"
 pm_taxemiMkt(ttot,all_regi,all_emiMkt)                "CO2 or CO2eq region and emission market specific emission tax"
 pm_taxemiMkt_iteration(iteration,ttot,all_regi,all_emiMkt) "CO2 or CO2eq region and emission market specific emission tax per iteration"
 pm_emissionsForeign(tall,all_regi,all_enty)          "total emissions of other regions (nash relevant)"
@@ -112,6 +115,13 @@ pm_budgetCO2eq(all_regi)                             "budget for regional energy
 
 pm_actualbudgetco2(ttot)                             "actual level of cumulated emissions starting from 2020 [GtCO2]"
 p_actualbudgetco2_iter(iteration,ttot)               "track actual level of cumulated emissions starting from 2020 over iterations [GtCO2]"
+pm_actualbudgetco2_noNetNegLU(ttot)
+pm_actualbudgetco2_noNetNegLU_iter(iteration,ttot)
+pm_actualbudgetco2_noLULUCF(ttot)
+pm_actualbudgetco2_noLULUCF_iter(iteration,ttot)
+pm_CO2LUC_cum(ttot) 
+pm_CO2NetNegLUC_cum(ttot) 
+
 
 pm_dataccs(all_regi,char,rlf)                               "maximum CO2 storage capacity using CCS technology. [GtC]"
 pm_ccsinjecrate(all_regi)                                   "Regional CCS injection rate factor. 1/a."
@@ -344,6 +354,8 @@ vm_costInvTeDir(tall,all_regi,all_te)                 "annual direct investments
 vm_costInvTeAdj(tall,all_regi,all_te)                 "annual investments into a technology due to adjustment costs"
 vm_usableSe(ttot,all_regi,entySe)                    "usable se before se2se and MP/XP (pe2se, +positive oc from pe2se, -storage losses). [TWa]"
 vm_usableSeTe(ttot,all_regi,entySe,all_te)           "usable se produced by one te (pe2se, +positive oc from pe2se, -storage losses). [TWa]"
+
+v_costFu(ttot,all_regi)                              "fuel costs"
 vm_costFuBio(ttot,all_regi)                          "fuel costs from bio energy [tril$US]"
 vm_omcosts_cdr(tall,all_regi)                        "O&M costs for spreading grinded rocks on fields"
 vm_costpollution(tall,all_regi)                      "costs for air pollution policies"
@@ -352,6 +364,7 @@ vm_emiTeDetailMkt(tall,all_regi,all_enty,all_enty,all_te,all_enty,all_emiMkt) "e
 vm_emiTeMkt(tall,all_regi,all_enty,all_emiMkt)       "total energy-emissions of each region and emission market. [GtC, Mt CH4, Mt N]"
 v_emiEnFuelEx(ttot,all_regi,all_enty)                 "energy emissions from fuel extraction [GtC, Mt CH4, Mt N]"
 vm_emiAllMkt(tall,all_regi,all_enty,all_emiMkt)      "total regional emissions for each emission market. [GtC, Mt CH4, Mt N]"
+vm_emiAllMkt_noLUC(tall,all_regi,all_enty,all_emiMkt)      "total regional emissions for each emission market, excluding LUC. [GtC, Mt CH4, Mt N]"
 vm_flexAdj(tall,all_regi,all_te)                     "flexibility adjustment used for flexibility subsidy (tax) to emulate price changes of technologies which see lower-than-average (higher-than-average) elec. prices [trUSD/TWa]"
 vm_costCESMkup(ttot,all_regi,all_in)                  "CES markup cost to represent demand-side technology cost of end-use transformation [trUSD/TWa]"
 vm_taxrevimplicitQttyTargetTax(ttot,all_regi)        "quantity target bound implemented through implict tax"
@@ -389,7 +402,6 @@ vm_prodFe(ttot,all_regi,all_enty,all_enty,all_te)    "fe production. [TWa]"
 vm_demFeNonEnergySector(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "energy flows of non-energy feedstocks [TWa]"
 vm_demFeSector(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt)          "fe demand per sector and emission market. Taxes should be applied to this variable or variables closer to the supply side whenever possible so the marginal prices include the tax effects. [TWa]"
 vm_demFeSector_afterTax(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "fe demand per sector and emission market after tax. Demand sectors should use this variable in their fe balance equations so demand side marginals include taxes effects. [TWa]"
-v_costFu(ttot,all_regi)                              "fuel costs"
 vm_costFuEx(ttot,all_regi,all_enty)                  "fuel costs from exhaustible energy [tril$US]"
 vm_pebiolc_price(ttot,all_regi)                      "Bioenergy price according to MAgPIE supply curves [T$US/TWa]"
 
@@ -420,6 +432,8 @@ v_shSeFeSector(ttot,all_regi,all_enty,all_enty,emi_sectors,all_emiMkt) "share of
 v_shGasLiq_fe(ttot,all_regi,emi_sectors)             "share of gases and liquids in sector final energy [0..1]"
 
 vm_emiCdrAll(ttot,all_regi)                          "all CDR emissions; net for LUC gross for all other"
+vm_emiCdrNovel(ttot, all_regi)                       "all gross novel CDR emissions; excluding LUC"
+vm_emiCdrNovel_NoInd(ttot, all_regi)                 "all gross novel CDR emissions; excluding LUC and industry-based CDR (e.g. plastics)"
 
 v_changeProdStartyearAdj(ttot,all_regi,all_te)       "Absolute effect size of changing output with respect to the reference run for each te"
 vm_changeProdStartyearCost(ttot,all_regi,all_te)     "Costs for changing output with respect to the reference run for each te"
@@ -504,6 +518,7 @@ q_emiTeDetailMkt(ttot,all_regi,all_enty,all_enty,all_te,all_enty,all_emiMkt) "de
 q_emiTeMkt(ttot,all_regi,all_enty,all_emiMkt)        "total energy-emissions per region and market"
 q_emiEnFuelEx(ttot,all_regi,all_enty)                "energy emissions from fuel extraction"
 q_emiAllMkt(ttot,all_regi,all_enty,all_emiMkt)       "total regional emissions for each emission market"
+q_emiAllMkt_noLUC(ttot,all_regi,all_enty,all_emiMkt)       "total regional emissions for each emission market, excluding LUC"
 
 
 q_transCCS(ttot,all_regi,all_enty,all_enty,all_te,all_enty,all_enty,all_te,rlf)        "transformation equation for ccs"
@@ -511,6 +526,8 @@ q_limitCapCCS(ttot,all_regi,all_enty,all_enty,all_te,rlf)                       
 q_limitCCS(all_regi,all_enty,all_enty,all_te,rlf)                                      "ccs constraint for sequestration alternatives"
 
 q_emiCdrAll(ttot,all_regi)                           "summing over all CDR emissions"
+q_emiCdrNovel(ttot,all_regi)                         "summing over all CDR emissions"
+q_emiCdrNovel_NoInd(ttot,all_regi)                   "summing over all CDR emissions"
 
 q_balcapture(ttot,all_regi,all_enty,all_enty,all_te)  "balance equation for carbon capture"
 q_balCCUvsCCS(ttot,all_regi)                          "balance equation for captured carbon to CCU or CCS or valve"
@@ -639,6 +656,7 @@ sm_budgetCO2eqGlob           "budget for global energy-emissions in period 1"
 p_emi_budget1_gdx            "budget for global energy-emissions in period 1 from gdx, may overwrite default values"
 
 sm_globalBudget_absDev       "absolute deviation of global cumulated CO2 emissions budget from target budget"
+sm_globalBudget2100_absDev   "absolute deviation of global cumulated 2100 CO2 emissions budget from 2100 target budget"
 
 sm_eps                       "small number: 1e-9 "  /1e-9/
 

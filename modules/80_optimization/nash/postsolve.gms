@@ -387,6 +387,15 @@ if (abs(p80_globalBudget_absDev_iter(iteration)) gt cm_budgetCO2_absDevTol,
   p80_messageShow("target") = YES;
 );
 
+*** check global 2100 budget target, must be within 2 Gt of target value
+if(cm_iterative_target_adj ge 10 OR (cm_iterative_target_adj eq 9 AND (cm_postPeakCpAdj gt 0)),
+  p80_global2100Budget_absDev_iter(iteration) = sm_globalBudget2100_absDev;
+  if (abs(p80_global2100Budget_absDev_iter(iteration)) gt cm_budget2100CO2_absDevTol,
+    s80_bool = 0;
+    p80_messageShow("add2100target") = YES;
+  );
+);
+
 *** additional criterion: if damage internalization is on, is damage iteration converged?
 p80_sccConvergenceMaxDeviation_iter(iteration) = pm_sccConvergenceMaxDeviation;
 p80_gmt_conv_iter(iteration) = pm_gmt_conv;
@@ -451,6 +460,15 @@ display "Reasons for non-convergence in this iteration (if not yet converged)";
           display "#### pm_taxCO2eq_iter (regional CO2 tax path tracked over iterations [T$/GtC]) and"; 
           display "#### pm_taxCO2eq_anchor_iterationdiff (difference in global anchor carbon price to the last iteration [T$/GtC]) in diagnostics section below."; 
           display sm_globalBudget_absDev;
+	      );
+        if(sameas(convMessage80, "add2100target"),
+		      display "#### 7.) An additional 2100 global climate target has not been reached yet.";
+          display "#### check sm_globalBudget2100_absDev for the deviation from the global 2100 target CO2 budget (convergence";
+          display "#### criterion defined via cm_budget2100CO2_absDevTol [default = 2 Gt CO2]), as well as";
+          display "#### pm_taxCO2eq_iter and pm_taxCDR_iter (regional CO2 and CDR tax paths tracked over iterations [T$/GtC]) and"; 
+          display "#### pm_taxCO2eq_anchor_iterationdiff and pm_taxCDR_anchor_iterationdiff (difference in global anchor carbon";
+          display "#### and CDR prices to the last iteration [T$/GtC]) in diagnostics section below."; 
+          display sm_globalBudget2100_absDev;
 	      );
         if(sameas(convMessage80, "IterationNumber"),
           display "#### 0.) REMIND did not run sufficient iterations (currently set at 18, to allow for at least 4 iterations with EDGE-T)";
@@ -565,16 +583,25 @@ if( (s80_bool eq 0) and (iteration.val eq cm_iteration_max),     !! reached max 
       if(sameas(convMessage80, "anticip"),
 		      display "#### 5.) The fadeout price anticipation terms are not sufficiently small.";
 	     );
-        if(sameas(convMessage80, "target"),
+      if(sameas(convMessage80, "target"),
 		      display "#### 6.) A global climate target has not been reached yet.";
           display "#### check sm_globalBudget_absDev for the deviation from the global target CO2 budget (convergence criterion defined via cm_budgetCO2_absDevTol [default = 2 Gt CO2]), as well as";
           display "#### pm_taxCO2eq_iter (regional CO2 tax path tracked over iterations [T$/GtC]) and"; 
           display "#### pm_taxCO2eq_anchor_iterationdiff (difference in global anchor carbon price to the last iteration [T$/GtC]) in diagnostics section below."; 
           display sm_globalBudget_absDev;
+        );
+      if(sameas(convMessage80, "add2100target"),
+		      display "#### 7.) An additional 2100 global climate target has not been reached yet.";
+          display "#### check sm_globalBudget2100_absDev for the deviation from the global 2100 target CO2 budget (convergence";
+          display "#### criterion defined via cm_budget2100CO2_absDevTol [default = 2 Gt CO2]), as well as";
+          display "#### pm_taxCO2eq_iter and pm_taxCDR_iter (regional CO2 and CDR tax paths tracked over iterations [T$/GtC]) and"; 
+          display "#### pm_taxCO2eq_anchor_iterationdiff and pm_taxCDR_anchor_iterationdiff (difference in global anchor carbon";
+          display "#### and CDR prices to the last iteration [T$/GtC]) in diagnostics section below."; 
+          display sm_globalBudget2100_absDev;
 	      );
 $ifthen.emiMkt not "%cm_emiMktTarget%" == "off"       
         if(sameas(convMessage80, "regiTarget"),
-		      display "#### 7) A regional climate target has not been reached yet.";
+		      display "#### 8) A regional climate target has not been reached yet.";
           display "#### Check out the pm_emiMktTarget_dev parameter of 47_regipol module.";
           display "#### For budget targets, the parameter gives the percentage deviation of current emissions in relation to the target value.";
           display "#### For yearly targets, the parameter gives the current emissions minus the target value in relative terms to the 2005 emissions.";

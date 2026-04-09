@@ -26,6 +26,8 @@ p45_taxCO2eq_anchor(ttot)                   "global anchor trajectory for region
 p45_taxCO2eq_anchor_until2150(ttot)         "global anchor trajectory continued until 2150 - as if there was no change in trajectory after cm_peakBudgYr. Needed if cm_peakBudgYr was shifted right"
 p45_taxCO2eq_regiDiff(ttot,all_regi)        "regional differentiated CO2 price trajectories in T$/GtC = $/kgC, used as intermediate step in deriving pm_taxCO2eq from p45_taxCO2eq_anchor"
 p45_taxCO2eq_path_gdx_ref(ttot,all_regi)    "CO2 tax trajectories from path_gdx_ref"
+p45_taxCDR_anchor(ttot)                     "global anchor trajectory for regional CDR price trajectories in T$/GtC = $/kgC"
+p45_taxCDR_regiDiff(ttot,all_regi)          "regional differentiated CDR price trajectories in T$/GtC = $/kgC, used as intermediate step in deriving pm_taxCO2eq from p45_taxCO2eq_anchor"
 
 p45_gdppcap_PPP(ttot,all_regi)              "GDP per capita (1e3 $ PPP 2017)"
 p45_regiDiff_ratio(ttot,all_regi)           "ratio between global anchor and regional differentiated CO2 price trajectories"
@@ -53,17 +55,91 @@ $endIf.taxCO2regiDiffStartyearValue1
 scalars
 s45_actualbudgetco2                                     "actual level of 2020-2100 cumulated emissions, including all CO2 for last iteration"
 s45_actualbudgetco2_last                                "actual level of 2020-2100 cumulated emissions for previous iteration" /0/
+s45_actualbudgetco2_2100                                "actual level of 2020 to 2100 cumulated emissions"
+s45_actualbudgetco2_2100_last                           "actual level of 2020 to 2100 cumulated emissions for previous iteration" /0/
+
+s45_taxCO2_IncAfterPeakBudgYr                           "CO2 tax increase after the peak (slope)"
+s45_taxCO2_IncAfterPeakBudgYr_current                   "Helper paramter that saves CO2 tax increase after the peak (slope) from the iteration that was just finished"
+s45_taxCDR_IncAfterPeakBudgYr                           "CDR tax increase after the peak (slope)"
+s45_ratio_emi_IterDiff_taxCDR_IterDiff_last_good        "Ratio between cumulative CO2 emissions in 2100 and CDR tax increase after the peak (slope) (only used as a helper)" / 0 /
+
 s45_factorRescale_taxCO2_exponent_before10              "exponent determining sensitivity    before iteration 10"
 s45_factorRescale_taxCO2_exponent_from10                "exponent determining sensitivity of CO2 price adjustment to CO2 budget deviation from iteration 10"
+
+s45_taxCdrChange
+s45_EOCbudgetChange
+s45_TaxBudget_ChangeSlope
+s45_TaxBudget_ChangeSlopeBest
+s45_factorRescale_CDRtax
+s45_neededCDRtaxChange2100
+s45_factorRescale_CDRtax
+s45_absoluteCDRtaxChange2100
+s45_taxCDR_slope
+s45_maxCDRtax
+sm_effectiveNNEtax
+
+s45_message01                                           "if (ord(iteration) eq 15, TRUE" / 1 /
+s45_message02                                           "elseif (ord(iteration)<cm_iteration_max AND ord(iteration) gt 15), TRUE" / 1 /
+s45_message03                                           "if ((o_modelstat eq 2) OR (o_modelstat eq 7), TRUE" / 1 /
+s45_message04                                           "if (abs(p45_globalBudget2100_absDev_iter(iteration)) le cm_budget2100CO2_absDevTol, TRUE" / 1 /
+s45_message05                                           "if (s45_ratio_emi_IterDiff_taxCDR_IterDiff_last_good eq 0, TRUE" / 1 /
+s45_message06                                           "if (abs(p45_globalBudget2100_absDev_iter(iteration)) le cm_budget2100CO2_absDevTol, FALSE" / 1 /
+s45_message07                                           "if (s45_ratio_emi_IterDiff_taxCDR_IterDiff_last_good eq 0, TRUE" / 1 /
+s45_message08                                           "if (s45_ratio_emi_IterDiff_taxCDR_IterDiff_last_good eq 0, FALSE" / 1 /
+s45_message09                                           "if ((o_modelstat eq 2) OR (o_modelstat eq 7), FALSE" / 1 /
+s45_message10                                           "if (s45_ratio_emi_IterDiff_taxCDR_IterDiff_last_good eq 0, TRUE" / 1 /
+s45_message11                                           "if (ord(iteration) eq 16, TRUE" / 1 /
+s45_message12                                           "if (ord(iteration) eq 16, FALSE" / 1 /
+s45_message13                                           "if (s45_ratio_emi_IterDiff_taxCDR_IterDiff_last_good eq 0, FALSE" / 1 /
+s45_message14                                           "if (ord(iteration) eq 15, FALSE; elseif (ord(iteration)<cm_iteration_max AND ord(iteration) gt 15), FALSE" / 1 /
+
+s45_messageX                                            "XXXXX" / 1 /
+s45_messageY                                            "YYYYY" / 1 /
+
+s45_postPeakRescalingFactor
 ;
 
 *** Parameters only used in functionForm/postsolve.gms
 parameters 
+p45_ord_iteration(iteration)                            "Helper to display iterations"
+
 p45_taxCO2eq_anchor_iter(iteration,ttot)                "save p45_taxCO2eq_anchor in each iteration (before entering functionalForm/postsolve.gms) for debugging"
 o45_taxCO2eq_anchor_iterDiff_Itr(iteration)             "track pm_taxCO2eq_anchor_iterationdiff in 2100 over iterations"
 p45_taxCO2eq_anchor_iterationdiff_tmp(ttot)             "help parameter for iterative adjustment of taxes"
+p45_taxCDR_anchor_iter(iteration,ttot)                  "save p45_taxCDR_anchor in each iteration (before entering functionalForm/postsolve.gms) for debugging"
+
+
+p45_maxCDRtax_iter(iteration)
+
+p45_taxCdrChange_iter(iteration)
+p45_taxCDR_anchor(ttot)
+p45_taxCdrChange_iter(iteration)
+p45_EOCbudgetChange_iter(iteration)
+p45_TaxBudget_ChangeSlope_iter(iteration)
+p45_TaxBudgetSlopeBest_iter(iteration)
+p45_factorRescale_CDRtax_iter(iteration)
+p45_factorRescale_CDRtax_Funneled(iteration)
+p45_neededCDRtaxChange2100_iter(iteration)
+p45_newtaxCDR_anchor2100(iteration)
+p45_globalBudget2100_absDev_iter(iteration)
+
+p45_neweffectiveNNEtax(iteration) 
+pm_effectiveNNEtax_iter(iteration)
+pm_frac_NetNegEmi(iteration)
+
+p45_postPeakRescalingFactor_iter(iteration)
+p45_postPeakRescalingFactor_Funneled(iteration)
 
 o45_diff_to_Budg(iteration)                             "Difference between actual CO2 budget and target CO2 budget"
+p45_globalBudget2100_absDev_iter(iteration)             "Difference between actual 2100 CO2 budget and target 2100 CO2 budget"
+o45_taxCDR_IncAfterPeakBudgYr_iter(iteration)           "CDR tax increase after the peak (slope) over iterations"
+o45_taxCO2_IncAfterPeakBudgYr_iter(iteration)           "CO2 tax increase after the peak (slope) over iterations"
+o45_taxCDR_IncAfterPeakBudgYr_iterDiff(iteration)       "Difference of CDR tax increase after the peak (slope) between iterations"
+o45_taxCO2_IncAfterPeakBudgYr_iterDiff(iteration)       "Difference of CO2 tax increase after the peak (slope) between iterations"
+
+p45_taxCO2_IncAfterPeakBudgYr_iter(iteration) 
+p45_new2100Value(iteration)
+
 o45_totCO2emi_peakBudgYr(iteration)                     "Total CO2 emissions in the peakBudgYr"
 o45_peakBudgYr_Itr(iteration)                           "Year in which the CO2 budget is supposed to peak. Is changed in iterative_target_adjust = 9"
 o45_factorRescale_taxCO2_afterPeakBudgYr(iteration)     "Multiplicative factor for rescaling the CO2 price in the year after peakBudgYr - only needed if flip-flopping of peakBudgYr occurs"

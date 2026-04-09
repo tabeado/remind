@@ -5,7 +5,10 @@
 # |  REMIND License Exception, version 1.0 (see LICENSE file).
 # |  Contact: remind@pik-potsdam.de
 
-library(remind2)
+#library(remind2)
+
+devtools::load_all("/p/tmp/tabeado/Equity/PostPeak_markets_2509/remind2")
+#devtools::load_all("/p/tmp/tabeado/Equity/EOC_2511/remind2_Equity")
 library(quitte)
 library(piamutils)
 library(lucode2)

@@ -26,7 +26,7 @@ solvestat, modelstat, resusd, objval
 
 convMessage80   "contains all convergence criteria"
 /
-infes,surplus,nonopt,taxconv,anticip,target,regiTarget,implicitEnergyTarget,cm_implicitPriceTarget,cm_implicitPePriceTarget,damage,DevPriceAnticip, IterationNumber
+infes,surplus,nonopt,taxconv,anticip,target,add2100target,regiTarget,implicitEnergyTarget,cm_implicitPriceTarget,cm_implicitPePriceTarget,damage,DevPriceAnticip, IterationNumber
 /
 
 activeConvMessage80(convMessage80)   "all active convergence criterias" / /
@@ -48,6 +48,8 @@ $if not "%cm_implicitQttyTarget%" == "off" activeConvMessage80("implicitEnergyTa
 $if not "%cm_implicitPriceTarget%" == "off" activeConvMessage80("cm_implicitPriceTarget") = YES;
 $if not "%cm_implicitPePriceTarget%" == "off" activeConvMessage80("cm_implicitPePriceTarget") = YES;
 $if not "%internalizeDamages%" == "off" activeConvMessage80("damage") = YES;
+if (cm_iterative_target_adj ge 10 OR (cm_iterative_target_adj eq 9 AND (cm_postPeakCpAdj gt 0)),
+                 activeConvMessage80("add2100target") = YES;);
 
 display teLearn;
 *** EOF ./modules/80_optimization/nash/sets.gms

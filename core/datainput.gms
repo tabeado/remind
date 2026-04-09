@@ -27,6 +27,9 @@ vm_demFeForEs.L(t,regi,fe2es(entyFe,esty,teEs)) = 0.1;
 
 *** -------- initial declaration of parameters for iterative target adjustment
 pm_taxCO2eq_anchor_iterationdiff(t) = 0;
+if (cm_iterative_target_adj eq 10, 
+  pm_taxCDR_anchor_iterationdiff(t) = 0;
+  );
 
 *------------------------------------------------------------------------------------
 ***                        calculations based on sets
@@ -1428,6 +1431,13 @@ $offdelim
 /;
 pm_taxCO2eq(ttot,regi)$(ttot.val le 2020) = fm_taxCO2eqHist(ttot,regi) * sm_DptCO2_2_TDpGtC;
 
+*** Initialize CDR tax 
+pm_taxCDR(ttot,regi) = 0;
+if(cm_iterative_target_adj ge 10,
+  pm_taxCDR(ttot,regi) = pm_taxCO2eq(ttot,regi);
+);
+
+
 *DK* LU emissions are abated in MAgPIE in coupling mode
 *** An alternative to the approach below could be to introduce a new value for c_macswitch that only deactivates the LU MACs
 $if %cm_MAgPIE_coupling% == "on"  pm_macSwitch(ttot,regi,enty)$emiMacMagpie(enty) = 0;
@@ -1510,6 +1520,8 @@ $if %cm_MAgPIE_coupling% == "on"  pm_macBaseMagpie(ttot,regi,emiMacMagpie(enty))
 
 $if %cm_MAgPIE_coupling% == "off" p_co2lucSub(ttot,regi,emiMacMagpieCO2Sub(all_enty))$(ttot.val ge 2005) = f_macBaseMagpie(ttot,regi,emiMacMagpieCO2Sub,"%cm_LU_emi_scen%","%cm_rcp_scen%");
 $if %cm_MAgPIE_coupling% == "on"  p_co2lucSub(ttot,regi,emiMacMagpieCO2Sub(all_enty))$(ttot.val ge 2005) = f_macBaseMagpie_coupling(ttot,regi,emiMacMagpieCO2Sub);
+
+
 
 *** p_macPolCO2luc defines the lower limit for abatement of CO2 landuse change emissions in REMIND
 *** The values are derived from MAgPIE runs with very strong mitigation
@@ -1654,6 +1666,9 @@ $endif.scaleDemand
 
 *** initialize absolute deviation of global cumulated CO2 emissions budget from target budget
 sm_globalBudget_absDev = 0;
+if (cm_iterative_target_adj ge 10 OR (cm_iterative_target_adj eq 9 and (cm_postPeakCpAdj gt 0)), 
+  sm_globalBudget2100_absDev = 0;
+);
 
 
 if (cm_startyear gt 2005,

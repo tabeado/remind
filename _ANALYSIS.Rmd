@@ -1,0 +1,278 @@
+--- 
+title: Analysis of Peak and EOC combinations
+output: pdf_document
+classoption: landscape
+#editor_options: 
+#  chunk_output_type: console
+---
+```{r Setup, include = FALSE}
+# include packages
+library(tidyverse)
+library(dplyr)
+#library(httpgd)
+library(readxl)
+library(quitte)
+library(mip)
+library(ggplot2)
+#library(patchwork)
+library(httpgd)
+
+# interactive plotting 
+hgd()
+options(device = httpgd::hgd)
+httpgd::hgd_browse()
+
+options(mip.mainReg = "World")
+options(mip.yearsBarPlot=c(2025,2050,2070,2100))
+options(mip.yearsScen = c(seq(2005, 2060, 5), seq(2070, 2100, 10))) #, seq(2070, 2100, 10)))
+```
+
+```{r REMIND Data,include =FALSE}
+## DEFINE SCENARIOS ----
+#### PB 650 - global uniform carbon price ----
+runs650gloU <- c(
+  "PB650-gloU_2025-09-22_14.48.11",
+  #"PB650-gloU-noNNT_2025-09-22_14.48.50",
+  "PB650-EOC400-gloU_2026-03-05_12.05.26",
+  "PB650-EOC400-incCP-st200_2026-03-06_08.52.13",
+  "PB650-EOC300-gloU_2025-09-22_14.51.07",
+  "PB650-EOC300-incCP-allCDR-gloU-start350_2025-09-23_16.01.05",
+   NULL)
+
+runs650gloU_mp <- c(
+  "PB650-gloU" = "PB650-50pcNNT",
+  #"PB650-gloU-noNNT" = "PB650-noNNT",
+  "PB650-EOC400-gloU" = "PB650-EOC400-A",
+  "PB650-EOC400-incCP-st200" = "PB650-EOC400-B",
+  "PB650-EOC300-gloU" = "PB650-EOC300-A",
+  "PB650-EOC300-incCP-allCDR-gloU-start350" = "PB650-EOC300-B",
+   NULL)
+
+#### PB 650 - regionally differentiated carbon price ----
+# runs650reg <- c(
+#   "PB650-rg-def_2025-11-20_15.54.58",
+#   "PB650-rg-noNNT_2025-11-20_15.55.43",
+#   "PB650-EOC300-rg_2026-03-05_10.32.35",
+#   "PB650-EOC300-rg-incCS-st350_2025-11-20_15.57.03",
+# )
+# runs650reg_mp <- c(
+#   "PB650-rg-def" = "PB650-rg-50pcNNT",
+#   "PB650-rg-noNNT" = "PB650-rg-noNNT",
+#   "PB650-EOC300-rg" = "PB650-EOC300-rg-A",
+#   "PB650-EOC300-rg-incCS-st350" = "PB650-EOC300-rg-B",
+#   NULL)
+
+# #### PB 650 - regionally differentiated carbon price ----
+# runs750gloU <- c(
+#   "PB750-gu-def_2025-11-20_12.11.54",
+#   "PB750-gu-noNNT_2025-11-20_12.13.09",
+#   "PB750-EC500-gu_2025-11-20_12.16.18",
+#   "PB750-EC650-gu_2025-11-20_18.25.06",
+#   "PB750-EC650-gu-incCP-st350_2025-11-20_18.25.51",
+#   NULL)
+
+# runs750gloU_mp <- c(
+#   "PB750-gu-def" = "PB750-50pcNNT",
+#   "PB750-gu-noNNT" = "PB750-noNNT",
+#   "PB750-EC500-gu" = "PB750-EC500-A",
+#   "PB750-EC650-gu" = "PB750-EC650-A",
+#   "PB750-EC650-gu-incCP-st350" = "PB750-EC650-B",
+#   NULL)
+
+# #### PB 650 - regionally differentiated carbon price ----
+# runs750reg <- c(
+#   "PB750-rg-def_2025-11-20_12.09.14",
+#   "PB750-rg-noNNT_2025-11-20_18.37.26", # not converged
+#   "PB750-EC500-rg_2025-11-20_12.17.03",
+#   "PB750-EC500-rg-incCP-st350_2025-11-20_15.20.27",
+#   NULL)
+
+# runs750reg_mp <- c(
+#   "PB750-rg-def" = "PB750-rg-50pcNNT",
+#   "PB750-rg-noNNT" = "PB750-rg-noNNT", # not converged
+#   "PB750-EC500-rg" = "PB750-EC500-rg-A",
+#   "PB750-EC500-rg-incCP-st350" = "PB750-EC500-rg-B",
+#   NULL)
+
+# sets of same scenarios for adjustments
+# pc50NNT <- c("PB650-50pcNNT", "PB650-rg-50pcNNT", "PB750-50pcNNT", "PB750-rg-50pcNNT")
+# noNNT <- c("PB650-noNNT", "PB650-rg-noNNT", "PB750-noNNT", "PB750-rg-noNNT")
+
+### Assign set of scenarios to be loaded and analyzed
+runs <- runs650gloU # runs750reg # runs750gloU
+runs_mp <- runs650gloU_mp #runs750reg_mp # runs750gloU_mp
+runs_all <- c("PB650-50pcNNT",
+              "PB650-EOC300-A",
+              "PB650-EOC300-B",
+              "PB650-EOC400-A",
+              "PB650-EOC400-B")
+runs_300 <- c("PB650-50pcNNT",
+              "PB650-EOC300-A",
+              "PB650-EOC300-B")
+runs_400 <- c("PB650-50pcNNT",
+              "PB650-EOC400-A",
+              "PB650-EOC400-B")
+
+dir <- "/p/tmp/tabeado/Equity/PostPeak_markets_2509/remind/output/"
+dataPaths <- paste0(dir,runs,"/REMIND_generic_", str_sub(runs, end = -21),"_withoutPlus.mif")
+data <- read.quitte(dataPaths, check.duplicates = F) %>% filter(period <= 2100)
+
+# Rename scenario column entries according to runs_mp
+data <- data %>%
+  mutate(scenario = recode(scenario, !!!runs_mp),
+           scenario = factor(scenario, levels = runs_all))
+```
+
+# CO2 PRICES ------------------------------------------------------------------------------
+```{r CO2 Prices}
+# Calculation of net negative carbon price ---- 
+dataNN <- data %>% filter(variable %in% c("Price|Carbon CDR","Price|Carbon"))
+dataNN <- dataNN %>% pivot_wider(names_from = variable, values_from = value)
+
+# Add new column "Price|Carbon Net Negative or CDR" 
+dataNN$`Price|Carbon Net Negative or CDR` <- 
+                ifelse(dataNN$scenario == "PB650-noNNT", dataNN$`Price|Carbon`, 
+                  ifelse(dataNN$scenario  == "PB650-50pcNNT", dataNN$`Price|Carbon`*0.5,
+                dataNN$`Price|Carbon CDR`))
+
+dataNN <- dataNN %>% select(-c("Price|Carbon CDR", "Price|Carbon")) %>% 
+  pivot_longer(cols = c(`Price|Carbon Net Negative or CDR`), names_to = "variable") %>% as.quitte()
+
+data <- data %>% filter(variable != "Price|Carbon Net Negative or CDR") %>% rbind(dataNN)
+
+# Ensure scenario is a factor with correct ordering
+data <- data %>% mutate(scenario = factor(scenario, levels = runs_all))
+
+# Plots ----
+showLinePlots(data, "Price|Carbon")
+showLinePlots(data %>% filter(scenario %in% runs_300), "Price|Carbon")
+showLinePlots(data %>% filter(scenario %in% runs_400), "Price|Carbon")
+
+#showRegiLinePlots(data, "Price|Carbon")
+showLinePlots(data, "Price|Carbon Net Negative or CDR")
+showLinePlots(data %>% filter(scenario %in% runs_300), "Price|Carbon Net Negative or CDR")
+showLinePlots(data %>% filter(scenario %in% runs_400), "Price|Carbon Net Negative or CDR")
+
+#showRegiLinePlots(data, "Price|Carbon CDR")
+
+# data %>% filter(variable == "Price|Carbon CDR",  
+#                     period == 2100, region == "World")
+```
+
+# Policy Cost  ------------------------------------------------------------------------------
+```{r Policy Costs }
+#showLinePlots(data, "Policy Cost|Consumption Loss")
+showLinePlots(data %>% filter(scenario %in% runs_300), "Policy Cost|Consumption Loss|Relative to Reference Consumption")
+#showLinePlots(data, "Policy Cost|GDP Loss")
+showLinePlots(data, "Policy Cost|GDP Loss|Relative to Reference GDP")
+```
+
+# Emissions
+## Net emissions
+```{r Net emissions}
+emissionVars <- c("Emi|GHG", "Emi|CO2")
+walk(emissionVars, showLinePlots, data = data %>% filter(scenario %in% runs_300))
+```
+
+## Cumulated Emissions
+```{r prep calculation of cumulative emissions}
+# calculate cumulated CO2 and GHG emissions relative to 2020 
+dCumul <- data %>%  filter(grepl("^Emi.*Cumulated", variable))
+dCumul <- dCumul %>%
+  left_join(
+    dCumul %>% filter(period == 2020),
+    by = c("model", "scenario", "region", "variable", "unit"),
+    suffix = c("", "2020")) %>%
+    mutate(value = (value - value2020) / 1000,
+         unit = "Gt CO2")
+
+# define lines for usual CO2 budgets of standard REMIND runs
+pkBudg <- tribble(
+      ~region, ~period, ~value, ~variable,                      
+      "World", 2020,    500,    "|target|500 Gt from",
+      "World", 2020,    650,    "|target|650 Gt from",
+      #"World", 2020,    1000,   "|target|1000 Gt from",
+  )
+
+# Cumulated GHG
+tot <-  "Emi|GHG|Cumulated"
+dSpecies <- dCumul %>% filter(variable == tot) %>% 
+                        mutate(unit = "Gt CO2eq")
+showLinePlots(dSpecies, tot)
+
+# Cumulated CO2 plot with targets
+tot <- "Emi|CO2|Cumulated"
+dSpecies <- dCumul %>% filter(variable == tot)
+pkBudgSpecies <- pkBudg %>% mutate(variable = paste0(tot, variable))
+showLinePlotsWithTarget(bind_rows(dSpecies, pkBudgSpecies), tot)
+showLinePlots(dSpecies %>% filter(scenario %in% runs_300), tot)
+```
+
+### CDR 
+```{r CDR cumulated}
+tot <- "Emi|CO2|Cumulated|CDR"
+dSpecies <- dCumul %>% filter(variable == tot)
+showLinePlots(dSpecies %>% filter(scenario %in% runs_300), tot)
+```
+
+# CDR 
+## CDR compared to other CO2 emissions
+```{r CDR (total) and Gross emissions Lines}
+grossVars <- c("Emi|CO2|Gross",
+            "Emi|CO2|CDR")
+walk(grossVars, showLinePlots, data = data %>% filter(scenario %in% runs_300))
+```
+```{r CDR compared to other CO2 emissions}
+tot <- "Emi|CO2"
+items <- c(
+  "Emi|CO2|Gross|Energy and Industrial Processes",
+  "Emi|CO2|Gross|Waste",
+  "Emi|CO2|Land-Use Change",
+  "Emi|CO2|CDR|BECCS",
+  "Emi|CO2|CDR|Biochar",
+  "Emi|CO2|CDR|Synthetic Fuels CCS",
+  "Emi|CO2|CDR|Materials",
+  "Emi|CO2|CDR|DACCS",
+  "Emi|CO2|CDR|OAE",
+  "Emi|CO2|CDR|EW"
+)
+showAreaAndBarPlots(data, items, tot, scales = "fixed")
+```
+
+## Only CDR options
+```{r Only Novel CDR options}
+tot <- "Emi|CO2|CDR"
+items <- c(
+  "Emi|CO2|CDR|BECCS",
+  "Emi|CO2|CDR|Biochar",
+  "Emi|CO2|CDR|Synthetic Fuels CCS",
+  "Emi|CO2|CDR|Materials",
+  "Emi|CO2|CDR|DACCS",
+  "Emi|CO2|CDR|OAE",
+  "Emi|CO2|CDR|EW"
+)
+showAreaAndBarPlots(data, items, scales = "fixed")
+```
+
+
+## Distribution of CDR around the world
+```{r REMIND Data2,include =FALSE}
+data_remind <- data %>% filter(variable == "Emi|CO2", region != "World", period >= 2030) 
+mipArea(data_remind, stack_priority = "region")
+
+data_remind <- data %>% filter(variable == "Emi|CO2|CDR", region != "World") 
+mipArea(data_remind, stack_priority = "region")
+s
+```
+
+
+# Primary Energy
+```{r Biomass}
+showLinePlots(data, "PE|Biomass")
+showLinePlots(data %>% filter(scenario %in% runs_300), "PE|Production|Biomass")
+```
+
+# GCS Use
+```{r GCS Use}
+showLinePlots(data %>% filter(scenario %in% runs_300), "Carbon Management|Storage")
+```

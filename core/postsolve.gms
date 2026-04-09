@@ -18,11 +18,38 @@ pm_actualbudgetco2(ttot)$( 2020 lt ttot.val )
         )
     )
   * sm_c_2_co2;
+
+pm_actualbudgetco2_noLULUCF(ttot)$( 2020 lt ttot.val )
+  = sum((regi,ttot2)$( 2020 le ttot2.val AND ttot2.val le ttot.val ),
+      (vm_emiAll.l(ttot2,regi,"co2") - pm_macBaseMagpie(ttot2,regi,"co2luc")) !! only account those emissions with LULUCF cumulated emissions
+      * ( (0.5 + pm_ts(ttot2) / 2)$( ttot2.val eq 2020 ) !! second half of the 2020 period (mid 2020 - end 2022) plus 0.5 to account fo beginning 2020 - mid 2020  
+        + (pm_ts(ttot2))$( 2020 lt ttot2.val AND ttot2.val lt ttot.val ) !! entire middle periods
+        + ((pm_ttot_val(ttot) - pm_ttot_val(ttot-1)) / 2 + 0.5)$(ttot2.val eq ttot.val ) !! first half of the final period plus 0.5 to account fo mid - end of final year
+        )
+    )
+  * sm_c_2_co2;
+
+pm_actualbudgetco2_noNetNegLU(ttot)$( 2020 lt ttot.val )
+  = sum((regi,ttot2)$( 2020 le ttot2.val AND ttot2.val le ttot.val ),
+      (vm_emiAll.l(ttot2,regi,"co2") - p_macBaseMagpieNegCo2(ttot2,regi)) !! only account those emissions with LULUCF cumulated emissions
+      * ( (0.5 + pm_ts(ttot2) / 2)$( ttot2.val eq 2020 ) !! second half of the 2020 period (mid 2020 - end 2022) plus 0.5 to account fo beginning 2020 - mid 2020  
+        + (pm_ts(ttot2))$( 2020 lt ttot2.val AND ttot2.val lt ttot.val ) !! entire middle periods
+        + ((pm_ttot_val(ttot) - pm_ttot_val(ttot-1)) / 2 + 0.5)$(ttot2.val eq ttot.val ) !! first half of the final period plus 0.5 to account fo mid - end of final year
+        )
+    )
+  * sm_c_2_co2;
+
 *** track `pm_actualbudgetco2(ttot)` over iterations
 p_actualbudgetco2_iter(iteration,ttot)$( 2020 lt ttot.val) = pm_actualbudgetco2(ttot);
+pm_actualbudgetco2_noLULUCF_iter(iteration,ttot)$( 2020 lt ttot.val) = pm_actualbudgetco2_noLULUCF(ttot);
+pm_actualbudgetco2_noNetNegLU_iter(iteration,ttot)$( 2020 lt ttot.val) = pm_actualbudgetco2_noNetNegLU(ttot);
 
-*** track pm_taxCO2eq over iterations - pm_taxCO2eq is adjusted in 45_carbonprice/functionalForm/postsolve.gms and consequently pm_taxCO2eq_iter gets overwritten there
+*** track pm_taxCO2eq and pm_taxCDR over iterations - pm_taxCO2eq and pm_taxCDR are adjusted in 45_carbonprice/functionalForm/postsolve.gms and consequently pm_taxCO2eq_iter and pm_taxCDR_iter get overwritten there
 pm_taxCO2eq_iter(iteration,t,regi) = pm_taxCO2eq(t,regi);
+if(cm_iterative_target_adj ge 10,
+  pm_taxCDR_iter(iteration,t,regi) = pm_taxCDR(t,regi);
+);
+
 
 *-------------------------------calculate regional permit prices-----------------------------------
 

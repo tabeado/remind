@@ -377,7 +377,7 @@ $setglobal emicapregi  none           !! def = none
 *' * Four main design choices:
 *' *    [Global anchor trajectory]: The realization uses a global anchor trajectory based on which the regional carbon price trajectories are defined.
 *' *                                The functional form (linear/exponential) of the global anchor trajectory is chosen via cm_taxCO2_functionalForm [default = linear].
-*' *                                The (initial) carbon price in cm_startyear is chosen via cm_taxCO2_startyear. This value is endogenously adjusted to meet CO2 budget targets if cm_iterative_target_adj is set to 5, 7, or 9.
+*' *                                The (initial) carbon price in cm_startyear is chosen via cm_taxCO2_startyear. This value is endogenously adjusted to meet CO2 budget targets if cm_iterative_target_adj is set to 5, 7, 9, or 10.
 *' *                                (linear):      The linear curve is determined by the two points (cm_taxCO2_historicalYr, cm_taxCO2_historical) and either (cm_startyear, cm_taxCO2_startyear) or (cm_peakBudgYr, cm_taxCO2_peakBudgYr) - see describtions of switches for more details. 
 *' *                                               By default, cm_taxCO2_historicalYr is the last timestep before cm_startyear, and cm_taxCO2_historical is the carbon price in that timestep in the reference run (path_gdx_ref) - computed as the maximum of pm_taxCO2eq over all regions.
 *' *                                (exponential): The exponential curve is determined by exponential growth rate (cm_taxCO2_expGrowth).
@@ -523,7 +523,7 @@ parameter
   cm_taxCO2_startyear = -1;     !! def = -1  !! regexp = -1|is.nonnegative
 *' * (-1): default setting equivalent to no carbon tax, or cm_taxCO2_peakBudgYr being used to specify carbon tax instead of cm_taxCO2_startyear
 *' * (any number >= 0): CO2 tax in start year [if cm_iterative_target_adj eq 0];
-*' *                    initialization of CO2 tax in start year [if cm_iterative_target_adj eq 5, 7, 8 or 9]
+*' *                    initialization of CO2 tax in start year [if cm_iterative_target_adj eq 5, 7, 8, 9 or 10]
 parameter
   cm_taxCO2_peakBudgYr    "level of co2 tax in peak budget year (cm_peakBudgYr) in $ per t CO2eq"
 ;
@@ -548,13 +548,29 @@ parameter
 ;
   cm_budgetCO2_absDevTol      = 2;   !! def = 2 !! regexp = is.nonnegative
 *' 
-
+parameter
+  cm_addbudgetCO2from2020to2100   "CO2 budget for all economic sectors starting from 2020 (GtCO2) until 2100, set additionally to a peak budget"
+;
+  cm_addbudgetCO2from2020to2100      = 0;   !! def = 0
+*'  This additional constraint is only active with iterative_target_adj eq 10.
+*'
+parameter
+  cm_budget2100CO2_absDevTol  "convergence criterion for global 2100 CO2 budget set via cm_budget2100CO2_absDevTol. It is formulated as an absolute deviation from the target budget [GtCO2]"
+;
+  cm_budget2100CO2_absDevTol   = 2;   !! def = 2 !! regexp = is.nonnegative
+*'  Only active with iterative_target_adj eq 10.
+*'
+parameter
+  cm_minimumCDRtaxAfterPeak  "minimum level of CDR tax after the peak in $ per tCO2"
+;
+  cm_minimumCDRtaxAfterPeak    = 50;   !! def = 50 !! regexp = is.nonnegative
+*'  Only active with iterative_target_adj eq 10.
 parameter
   cm_peakBudgYr       "time of global net-zero CO2 emissions (peak budget)"
 ;
   cm_peakBudgYr            = 2050;   !! def = 2050
 *' time of global net-zero CO2 emissions (peak budget)
-*' endogenous adjustment by algorithms in 45_carbonprice/functionalForm/postsolve.gms [requires emiscen = 9 and cm_iterative_target_adj = 7 or 9]
+*' endogenous adjustment by algorithms in 45_carbonprice/functionalForm/postsolve.gms [requires emiscen = 9 and cm_iterative_target_adj = 7, 9 or 10]
 parameter
   cm_taxCO2_IncAfterPeakBudgYr "annual increase of CO2 tax after cm_peakBudgYr in $ per tCO2"
 ;
@@ -889,14 +905,81 @@ parameter
 parameter
   cm_iterative_target_adj   "settings on iterative adjustment for CO2 tax based on in-iteration emission or forcing level. Allow iteratively generated endogenous global CO2 tax under peak budget constraint or end-of-century budget constraint."
 ;
-  cm_iterative_target_adj = 0;      !! def = 0  !! regexp = 0|2|3|5|7|9
+  cm_iterative_target_adj = 0;      !! def = 0  !! regexp = 0|2|3|5|7|9|10|11
 *' * (0): no iterative adjustment of CO2 tax (terminology: CO2 price and CO2 tax in REMIND is used interchangeably)
 *' * (2): iterative adjustment of CO2 tax or cumulative emission based on climate forcing calculated by climate model magicc, for runs with budget or CO2 tax constraints. See ./modules/45_carbonprice/NDC/postsolve.gms for direct algorithm
 *' * (3): [requires 45_carbonprice = NDC and emiscen = 9] iterative adjustment of CO2 tax based on 2025 or 2030 regionally differentiated emissions, for runs with emission budget or CO2 tax constraints. See ./modules/45_carbonprice/NDC/postsolve.gms for direct algorithm
 *' * (5): [requires 45_carbonprice = functionalForm and emiscen = 9] iterative adjustment of CO2 tax based on economy-wide CO2 cumulative emission budget(2020-2100), for runs with emission budget or CO2 tax constraints. [see 45_carbonprice/functionalForm/postsolve.gms for direct algorithm]
 *' * (7): [requires 45_carbonprice = functionalForm and emiscen = 9] iterative adjustment of CO2 tax based on economy-wide CO2 cumulative emission peak budget, for runs with emission budget or CO2 tax constraints. Features: results in a peak budget with zero net CO2 emissions after peak budget is reached. See core/postsolve.gms for direct algorithms [see 45_carbonprice/functionalForm/postsolve.gms for direct algorithm]
 *' * (9): [requires 45_carbonprice = functionalForm and emiscen = 9] iterative adjustment of CO2 tax based on economy-wide CO2 cumulative emission peak budget, for runs with emission budget or CO2 tax constraints. Features: 1) after the year when budget peaks, CO2 tax has an annual increase by cm_taxCO2_IncAfterPeakBudgYr, 2) automatically shifts cm_peakBudgYr to find the correct year of budget peaking for a given budget. [see 45_carbonprice/functionalForm/postsolve.gms for direct algorithm]
+*' * (10): [requires 45_carbonprice = functionalForm and emiscen = 9] iterative
+*'         adjustment of CO2 tax based on economy-wide CO2 cumulative emission
+*'         peak budget, for runs with emission budget or CO2 tax constraints.
+*'         Features: 1) after the year when budget peaks, CO2/CDR tax has an
+*'         annual increase of s45_taxCO2_IncAfterPeakBudgYr / 
+*'         s45_taxCDR_IncAfterPeakBudgYr to meet an additional 2100 co2 budget,
+*'         2) automatically shifts cm_peakBudgYr to find the correct year of
+*'         budget peaking for a given peak budget. [see 
+*'         45_carbonprice/functionalForm/postsolve.gms for direct algorithm]
+*' * (11): Separate price for CDR throughout for all years. Shape is set through cm_CDRpriceShape, the types of CDR considered through cm_CDRtypesSeparate.
+*' 
+parameter 
+  cm_CDRtypesSeparate         "test"
+; 
+  cm_CDRtypesSeparate = 1;   !! def = 1
+*' * (1): all types of CDR (vm_emiCdrAll)
+*' * (2): all novel CDR, i.e. excl. LULUCF (vm_emiCdrNovel)
+*' * (3): novel CDR outside the industry sector (vm_emiCdrNovel_NoInd)
 *'
+parameter
+  cm_CDRtypesInTarget         "test"
+; 
+  cm_CDRtypesInTarget = 1;   !! def = 1
+*' * (1): all types of CDR (vm_emiCdrAll, pm_actualbudgetco2)
+*' * (2): all novel CDR, excl. LULUCF already for peak (vm_emiCdrNovel, pm_actualbudgetco2_noLULUCF)
+*' * (3): all novel CDR, excl. LULUCF only for net negative (vm_emiCdrNovel, pm_actualbudgetco2_noNetNegLU)
+*'
+parameter
+  cm_CDRpriceShape        "setting the price shape applied to the CDR tax when separating prices throughout the century"
+;
+  cm_CDRpriceShape = 3; !! def = 3
+*' * (1): constant price
+*' * (2): linearly falling to minimum value set via cm_minimumCDRtaxAfterPeak
+*' * (3): increase with carbon price until maximum 
+*' * (4): linearly falling to 0; 2030 price is being adjusted. 
+parameter
+  cm_postPeakCpAdj      "Adjustment mechanism applied to uniform carbon market post-peak to reach an EOC target"
+; 
+  cm_postPeakCpAdj = 0; !! 0
+*' * (0): No endogenous adjustment
+*' * (1): Endogenous scaling of the carbon price slope post peak
+*' * (2): Endogenous scaling of the net negative emissions tax
+*'
+parameter
+  cm_CDRstartYearTax      "CDR tax in cm_StartYr in the case of a linearly decreasing CDR tax"
+; 
+  cm_CDRstartYearTax = 200; 
+*'
+parameter
+  cm_CDREndYearTax      "CDR tax in cm_StartYr in the case of a linearly decreasing CDR tax"
+; 
+  cm_CDREndYearTax = 100; 
+*'
+parameter 
+  cm_funnelFactor
+;
+  cm_funnelFactor = 2; !! def = 2
+*' 
+parameter 
+  cm_funnelExponent
+;
+  cm_funnelExponent = 0.15; !! def = 0.15
+*' 
+parameter 
+  cm_funnelLower 
+;
+  cm_funnelLower = 0.005; !! def = 0.005 !! regexp. is.nonnegative
+*' 
 parameter
   cm_NDC_divergentScenario  "choose scenario about convergence of CO2eq prices [45_carbonprice = NDC]"
 ;

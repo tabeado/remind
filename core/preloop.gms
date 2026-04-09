@@ -129,6 +129,29 @@ $ENDIF.scaleEmiHist
 !! all net negative co2luc
 p_macBaseMagpieNegCo2(t,regi) = pm_macBaseMagpie(t,regi,"co2luc")$(pm_macBaseMagpie(t,regi,"co2luc") < 0);
 
+***  cumulative LUC CO2 emissions from 2020 as a check. Should move elsewhere if ever used for coupled runs
+pm_CO2LUC_cum(ttot) 
+  = sum((regi,ttot2)$( 2020 le ttot2.val AND ttot2.val le ttot.val ),
+      pm_macBaseMagpie(ttot2,regi,"co2luc") !! all land-use change emissions
+      * ( (0.5 + pm_ts(ttot2) / 2)$( ttot2.val eq 2020 ) !! second half of the 2020 period (mid 2020 - end 2022) plus 0.5 to account fo beginning 2020 - mid 2020  
+        + (pm_ts(ttot2))$( 2020 lt ttot2.val AND ttot2.val lt ttot.val ) !! entire middle periods
+        + ((pm_ttot_val(ttot) - pm_ttot_val(ttot-1)) / 2 + 0.5)$(ttot2.val eq ttot.val ) !! first half of the final period plus 0.5 to account fo mid - end of final year
+        )
+    )
+  * sm_c_2_co2;
+
+pm_CO2NetNegLUC_cum(ttot) 
+  = sum((regi,ttot2)$( 2020 le ttot2.val AND ttot2.val le ttot.val ),
+      p_macBaseMagpieNegCo2(ttot2,regi) !! only net negative land use change emissions
+      * ( (0.5 + pm_ts(ttot2) / 2)$( ttot2.val eq 2020 ) !! second half of the 2020 period (mid 2020 - end 2022) plus 0.5 to account fo beginning 2020 - mid 2020  
+        + (pm_ts(ttot2))$( 2020 lt ttot2.val AND ttot2.val lt ttot.val ) !! entire middle periods
+        + ((pm_ttot_val(ttot) - pm_ttot_val(ttot-1)) / 2 + 0.5)$(ttot2.val eq ttot.val ) !! first half of the final period plus 0.5 to account fo mid - end of final year
+        )
+    )
+  * sm_c_2_co2;  
+
+
+
 *** Rescale agricultural emissions baseline if c_agricult_base_shift switch is activated
 $IFTHEN.agricult_base_shift not "%c_agricult_base_shift%" == "off"
 

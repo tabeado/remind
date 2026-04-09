@@ -696,6 +696,26 @@ q_emiAllMkt(t,regi,emi,emiMkt) ..
   + vm_emiFeedstockNoEnergy(t,regi,emi,emiMkt)
 ;
 
+q_emiAllMkt_noLUC(t,regi,emi,emiMkt)$(sameAs(emi, "co2")) ..
+  vm_emiAllMkt_noLUC(t,regi,emi,emiMkt)
+  =e=
+    vm_emiTeMkt(t,regi,emi,emiMkt)
+    !! Non-energy sector emissions. Note: These are emissions from all MAC
+    !! curves.  So, this includes fugitive emissions, which are sometimes also
+    !! subsumed under the term energy emissions.
+  + sum((emiMacSector2emiMac(emiMacSector,emiMac(emi)), !! Excluding LUC CO2 emissions
+         macSector2emiMkt(emiMacSector,emiMkt)),
+      vm_emiMacSector(t,regi,emiMacSector)$(not sameas(emiMacSector, "co2luc")))
+    !! negative emissions from CDR module before re-release from CCU
+  + vm_emiCdr(t,regi,emi)$( sameas(emi,"co2") AND sameas(emiMkt,"ETS") )
+    !! Exogenous emissions
+  + pm_emiExog(t,regi,emi)$( sameas(emiMkt,"other") )
+    !! emissions of carbon feedstocks contained in chemicals that are not energy-related,
+    !! can be positive (fossil, emitted) or negative (non-fossil, stored in products)
+  + vm_emiFeedstockNoEnergy(t,regi,emi,emiMkt)
+;
+
+
 
 ***--------------------------------------------------
 *' Sectoral energy-emissions used for taxation markup with cm_CO2TaxSectorMarkup
@@ -827,6 +847,76 @@ q_emiCdrAll(t,regi)..
   + vm_nonFosNonPlasticNonEmitted(t,regi) !! positive value
 ;
 
+q_emiCdrNovel(t,regi)..
+  vm_emiCdrNovel(t,regi) !! positive value
+  =e=
+  !! ---- gross non-industry CDR
+  !! 1. directly geologically stored gross atmospheric removal from pe2se-BECCS + DACCS
+  + ( !! pe2se-BECC 
+      sum(emiBECCS2te(enty,enty2,te,enty3),vm_emiTeDetail(t,regi,enty,enty2,te,enty3)) !! positive value
+        !! + gross DACC 
+      - sum(teCCS2rlf(te,rlf), vm_emiCdrTeDetail(t, regi, "dac"))) !! negative value
+      !! scaled by the fraction that gets stored geologically
+     *  v_ccsShare(t,regi) 
+  !! 2. gross CDR from Enhanced Weathering
+  - vm_emiCdrTeDetail(t, regi, "weathering") !! negative value
+  !! 3. gross ocean uptake from OAE (also excluding non-avoidable emi from calcination)
+  - vm_emiCdrTeDetail(t, regi, "oae_ng")  !! negative value
+  - vm_emiCdrTeDetail(t, regi, "oae_el")  !! negative value
+  !! 4. energy-related CDR from CDR sector (from burning biogenic or synfuel + capture + storage)
+  +  pm_emifac(t,regi,"segafos","fegas","tdfosgas","co2") * sm_capture_rate_cdrmodule
+      * (vm_demFeSector_afterTax(t,regi,"segabio","fegas","cdr","ETS") !! FE biogas
+          + vm_demFeSector_afterTax(t,regi,"segasyn","fegas","cdr","ETS")) !! FE syngas
+      !! multiply with ccs share 
+      * v_ccsShare(t,regi) 
+  !! 5. biochar CDR 
+  -  sum(emiBiochar2te(enty,enty2,te,enty3),vm_emiTeDetail(t,regi,enty,enty2,te,enty3)) !! negative value
+
+  !! ---- gross industry CDR
+  !! 1. gross industry CCS-CDR  (from burning biogenic or synfuel + capturing + storing the co2)
+  + sum(emiInd37$(not sameas(emiInd37,"co2cement_process")), 
+      vm_emiIndCCS(t,regi,emiInd37) !! positive value
+    !! multiply with bio/syn share from previous iteration (computationally too expensive to incl. in optimization)
+    * pm_NonFos_IndCC_fraction0(t,regi, emiInd37))
+    !! multiply with ccs share 
+    * v_ccsShare(t,regi) 
+  !! 2. Feedstocks
+  !! 2a) plastics CDR -- incinerated  waste that is captured + stored from  non-fossil feedstocks
+  + sum(emiMkt, 
+      vm_nonFosPlastic_incinCC(t,regi,emiMkt)  * v_ccsShare(t,regi)) !! positive value
+  !! 2b) plastics CDR -- landfilled waste from non-fossil feedstocks
+  - sum((emi,emiMkt), 
+      vm_emiNonFosNonIncineratedPlastics(t,regi,emi,emiMkt)) !! negative value
+  !! 2c) non-plastics materials CDR -- bound carbon from non-fossil feedstocks 
+  + vm_nonFosNonPlasticNonEmitted(t,regi) !! positive value
+;
+
+q_emiCdrNovel_NoInd(t,regi)..
+  vm_emiCdrNovel_NoInd(t,regi) !! positive value
+  =e=
+  !! ---- gross non-industry CDR
+  !! 1. directly geologically stored gross atmospheric removal from pe2se-BECCS + DACCS
+  + ( !! pe2se-BECC 
+      sum(emiBECCS2te(enty,enty2,te,enty3),vm_emiTeDetail(t,regi,enty,enty2,te,enty3)) !! positive value
+        !! + gross DACC 
+      - sum(teCCS2rlf(te,rlf), vm_emiCdrTeDetail(t, regi, "dac"))) !! negative value
+      !! scaled by the fraction that gets stored geologically
+     *  v_ccsShare(t,regi) 
+  !! 2. gross CDR from Enhanced Weathering
+  - vm_emiCdrTeDetail(t, regi, "weathering") !! negative value
+  !! 3. gross ocean uptake from OAE (also excluding non-avoidable emi from calcination)
+  - vm_emiCdrTeDetail(t, regi, "oae_ng")  !! negative value
+  - vm_emiCdrTeDetail(t, regi, "oae_el")  !! negative value
+  !! 4. energy-related CDR from CDR sector (from burning biogenic or synfuel + capture + storage)
+  +  pm_emifac(t,regi,"segafos","fegas","tdfosgas","co2") * sm_capture_rate_cdrmodule
+      * (vm_demFeSector_afterTax(t,regi,"segabio","fegas","cdr","ETS") !! FE biogas
+          + vm_demFeSector_afterTax(t,regi,"segasyn","fegas","cdr","ETS")) !! FE syngas
+      !! multiply with ccs share 
+      * v_ccsShare(t,regi) 
+  !! 5. biochar CDR 
+  -  sum(emiBiochar2te(enty,enty2,te,enty3),vm_emiTeDetail(t,regi,enty,enty2,te,enty3)) !! negative value
+; 
+
 
 ***------------------------------------------------------
 *' Total regional emissions are computed as the sum of total emissions over all emission markets.
@@ -836,6 +926,22 @@ q_emiAll(t,regi,emi)..
   =e=
   sum(emiMkt, vm_emiAllMkt(t,regi,emi,emiMkt))
 ;
+
+!!q_emiAll_noLUC(t,regi,emi)$(sameas(emi, "co2"))..
+!!  vm_emiAll_noLUC(t,regi,emi)
+!!  =e=
+!!  sum(emiMkt, vm_emiAllMkt_noLUC(t,regi,emi,emiMkt))
+!!;
+!!q_emiAll_noLUC(t,regi,emi)$(sameas(emi, "co2"))..
+!! vm_emiAll_noLUC(t,regi,emi)
+!!  =e=
+!!  vm_emiAll(t,regi,emi) - 
+!!  sum((emiMacSector2emiMac(emiMacSector,emiMac(emi))$(sameas(emiMacSector, "co2luc")), 
+!!         macSector2emiMkt(emiMacSector,emiMkt)),
+!!      vm_emiMacSector(t,regi,emiMacSector)
+!!    )
+!!;
+
 
 ***------------------------------------------------------
 *' Total regional emissions in CO2 equivalents that are part of the climate policy  are computed based on regional GHG

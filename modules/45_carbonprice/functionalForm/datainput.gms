@@ -7,8 +7,12 @@
 *** SOF ./modules/45_carbonprice/functionalForm/datainput.gms
 
 *** Check that cm_iterative_target_adj is equal to 0, 5, 7, or 9
-if( not ((cm_iterative_target_adj = 0) or (cm_iterative_target_adj eq 5) or (cm_iterative_target_adj eq 7) or (cm_iterative_target_adj eq 9) ),
+if( not ((cm_iterative_target_adj = 0) or (cm_iterative_target_adj eq 5) or (cm_iterative_target_adj eq 7) or (cm_iterative_target_adj eq 9)  or (cm_iterative_target_adj eq 10) or (cm_iterative_target_adj eq 11) ),
   abort "The realization 45_carbonprice/functionalForm is only compatible with cm_iterative_target_adj = 0, 5, 7 or 9. Please adjust config file accordingly"
+);
+
+if((cm_iterative_target_adj ne 9) AND (cm_postPeakCpAdj gt 0),
+  abort "cm_iterative_target_adj eq 9 must be chosen with cm_postPeakCpAdj 1 or 2"
 );
 
 *** Read pm_taxCO2eq from path_gdx_ref
@@ -22,7 +26,7 @@ o45_reached_until2150pricepath(iteration) = 0;
 ***-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *** Part I (Global anchor trajectory): The functional form (linear/exponential) of the global anchor trajectory is chosen via cm_taxCO2_functionalForm. 
 ***                                    The (initial) global anchor carbon price in cm_startyear is chosen via cm_taxCO2_startyear. Alternatively, the (initial) global anchor carbon price in cm_peakBudgYr is chosen via cm_taxCO2_peakBudgYr.
-***                                    This value is endogenously adjusted to meet CO2 budget targets if cm_iterative_target_adj is set to 5, 7 or 9.
+***                                    This value is endogenously adjusted to meet CO2 budget targets if cm_iterative_target_adj is set to 5, 7, 9 or 10.
 ***                                    (linear):      The linear curve is determined by the two points (cm_taxCO2_historicalYr, cm_taxCO2_historical) and (cm_startyear, cm_taxCO2_startyear). 
 ***                                                   By default, cm_taxCO2_historicalYr is the last timestep before cm_startyear, and cm_taxCO2_historical is the carbon price in that timestep in the reference run (path_gdx_ref) - computed as the maximum of pm_taxCO2eq over all regions.
 ***                                    (exponential): The exponential curve is determined by exponential growth rate (cm_taxCO2_expGrowth).
@@ -110,26 +114,45 @@ $endIf.taxCO2globalAnchor
 
 ***-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *** Part II (Post-peak behaviour): The global anchor trajectory can be adjusted after reaching the peak of global CO2 emissions in cm_peakBudgYr.
-***                                The (initial) choice of cm_peakBudgYr is endogenously adjusted if cm_iterative_target_adj is set to 7 or 9.
+***                                The (initial) choice of cm_peakBudgYr is endogenously adjusted if cm_iterative_target_adj is set to 7, 9 or 10.
 ***                                    (with iterative_target_adj = 0): after cm_peakBudgYr, the global anchor trajectory increases linearly with fixed annual increase given by cm_taxCO2_IncAfterPeakBudgYr (default = 0, i.e. constant),
 ***                                                                     set cm_peakBudgYr = 2100 to avoid adjustment
 ***                                    (with iterative_target_adj = 5): no adjustment to the functional form after cm_peakBudgYr
 ***                                    (with iterative_target_adj = 7): after cm_peakBudgYr, the global anchor trajectory is adjusted so that global net CO2 emissions stay close to zero
 ***                                    (with iterative_target_adj = 9): after cm_peakBudgYr, the global anchor trajectory increases linearly with fixed annual increase given by cm_taxCO2_IncAfterPeakBudgYr (default = 0, i.e. constant)
+***                                    (with iterative_target_adj = 10): after cm_peakBudgYr, the global anchor trajectory will be split between CDR and CO2 taxes and adjusted between iterations to endogenously find a post-peak target.
 ***-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 *** Save the original form of the global anchor trajectory so that it can be accessed if cm_peakBudgYr is shifted to the right
 p45_taxCO2eq_anchor_until2150(ttot) = p45_taxCO2eq_anchor(ttot);
 
+*** Initialize annual increase of global anchor CO2 and CDR price trajectory
+*** after the peak setting them to zero. Compared to the fixed paramter defined
+*** above, these values will only be adjusted in between NASH iterations if
+*** cm_iterative_target_adj = 10.
+if (cm_iterative_target_adj eq 10,
+  !! Set the switch that usually determines the post-peak slope to zero. This
+  !! is required, to not interfere with the post-peak slope adjustment
+  !! mechanism.
+  cm_taxCO2_IncAfterPeakBudgYr = 0;
+  s45_taxCO2_IncAfterPeakBudgYr = cm_taxCO2_IncAfterPeakBudgYr;
+  s45_taxCDR_IncAfterPeakBudgYr = cm_taxCO2_IncAfterPeakBudgYr;
+  loop(iteration$(iteration.val eq 1),
+    o45_taxCO2_IncAfterPeakBudgYr_iter(iteration) = s45_taxCO2_IncAfterPeakBudgYr;
+    o45_taxCDR_IncAfterPeakBudgYr_iter(iteration) = s45_taxCDR_IncAfterPeakBudgYr;
+  );
+);
+
 *** Adjust global anchor trajectory so that after cm_peakBudgYr, it increases linearly with fixed annual increase given by cm_taxCO2_IncAfterPeakBudgYr
-if((cm_iterative_target_adj = 0) or (cm_iterative_target_adj = 9),
+if((cm_iterative_target_adj = 0) or (cm_iterative_target_adj = 9) or (cm_iterative_target_adj = 10) or  (cm_iterative_target_adj = 11),
   p45_taxCO2eq_anchor(t)$(t.val gt cm_peakBudgYr) = sum(t2$(t2.val eq cm_peakBudgYr), p45_taxCO2eq_anchor_until2150(t2)) !! CO2 tax in peak budget year
-                                                  + (t.val - cm_peakBudgYr) * cm_taxCO2_IncAfterPeakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by cm_taxCO2inc_after_peakBudgYr per year 
+                                                  + (t.val - cm_peakBudgYr) * cm_taxCO2_IncAfterPeakBudgYr * sm_DptCO2_2_TDpGtC;  !! increase by cm_taxCO2_IncAfterPeakBudgYr per year 
 );
 
 *** Always set carbon price constant after 2100 to prevent huge taxes after 2100 and the resulting convergence problems
 p45_taxCO2eq_anchor(t)$(t.val gt 2100) = p45_taxCO2eq_anchor("2100");
 display p45_taxCO2eq_anchor_until2150, p45_taxCO2eq_anchor;
+
 
 ***-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 *'  Part III (Regional differentiation): Regional carbon price differentiation relative to global anchor trajectory is chosen via cm_taxCO2_regiDiff.
@@ -355,5 +378,46 @@ if(cm_taxCO2_lowerBound_path_gdx_ref = 1,
   display pm_taxCO2eq;
 );
 
+*** Initialize CDR price anchor trajectory to CO2 price anchor trajectory
+if (cm_iterative_target_adj eq 10, 
+    p45_taxCDR_anchor(t) = p45_taxCO2eq_anchor(t););
+
+!! (1) constant CDR price
+if ((cm_iterative_target_adj eq 11) and (cm_CDRpriceShape eq 1), 
+  p45_taxCDR_anchor(ttot) = cm_CDRstartYearTax * sm_DptCO2_2_TDpGtC;
+
+  pm_taxCDR(ttot,regi)$(ttot.val ge cm_startYear) = p45_taxCDR_anchor(ttot);
+  ); !! constant price
+
+!! (2 & 4) linearly falling CDR price from an (arbitrary) starting point or down towards a 2100 value (e.g. 0)
+if ((cm_iterative_target_adj eq 11) and ((cm_CDRpriceShape eq 2) OR (cm_CDRpriceShape eq 4)),
+  p45_taxCDR_anchor(ttot)$(ttot.val eq cm_startYear) = cm_CDRstartYearTax * sm_DptCO2_2_TDpGtC;
+  p45_taxCDR_anchor(ttot)$(ttot.val ge 2100) = cm_CDREndYearTax * sm_DptCO2_2_TDpGtC;
+
+  loop(ttot$((ttot.val gt cm_startYear) AND (ttot.val lt 2100)),
+    p45_taxCDR_anchor(ttot) = (cm_CDRstartYearTax * sm_DptCO2_2_TDpGtC) + !! CDR tax in cm_startYear
+                              !! years from startYear
+                              (ttot.val -  cm_startYear) * 
+                                !! Carbon Price change per year
+                                ((cm_CDREndYearTax - cm_CDRstartYearTax) * sm_DptCO2_2_TDpGtC / 
+                                (2100 - cm_startYear)) ;
+
+    pm_taxCDR(ttot,regi)$(ttot.val ge cm_startYear) = p45_taxCDR_anchor(ttot);
+    pm_taxCDR(ttot,regi)$(ttot.val gt 2100) =  pm_taxCDR("2100", regi);
+  ); !! loop interpolation
+); !! linear falling price
+
+!! (3) Increase with Carbon Price until max price is reached
+if ((cm_iterative_target_adj eq 11) and (cm_CDRpriceShape eq 3), 
+  !! set equal to the reference carbon price increase, but has to be below max value of cm_CDRstartYearTax
+ loop(ttot$((ttot.val ge cm_startYear) AND (ttot.val le 2100)),
+    p45_taxCDR_anchor(ttot) = min(p45_taxCO2eq_anchor(ttot),  
+                                  cm_CDRstartYearTax * sm_DptCO2_2_TDpGtC) ;
+  ); !! loop interpolation
+  p45_taxCDR_anchor(ttot)$(ttot.val gt 2100) =  p45_taxCDR_anchor("2100");
+  
+  pm_taxCDR(ttot,regi)$(ttot.val ge cm_startYear) = p45_taxCDR_anchor(ttot);
+  pm_taxCDR(ttot,regi)$(ttot.val gt 2100) =  pm_taxCDR("2100", regi);
+);
 
 *** EOF ./modules/45_carbonprice/functionalForm/datainput.gms

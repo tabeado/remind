@@ -323,7 +323,10 @@ q33_shfeSector_share(t,regi,entyFe,sector)$(p33_shfetot_up(t,regi,entyFe,sector)
 q33_CDRspending(t,regi)$(t.val ge max(2035,cm_startyear))..
   v33_NetNegEmi_expenses(t,regi)
   =e=
-  (1-cm_frac_NetNegEmi) * pm_taxCO2eqSum(t,regi) * vm_emiAllco2neg(t,regi)
+  (1-cm_frac_NetNegEmi) * 
+  (pm_taxCO2eqSum(t,regi)$(cm_iterative_target_adj lt 10)
+      + pm_taxCDR(t,regi)$(cm_iterative_target_adj ge 10))
+  * vm_emiAllco2neg(t,regi)
 ;
 
 *' @stop
