@@ -256,7 +256,24 @@ $ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_pess"
 v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val le 2025) = 300 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
 v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2030) = 200 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
 v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2035) = 150 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val ge 2040) = 100 / s_tBC_2_TWa / sm_trillion_2_non *  s_D2015_2_D2017;
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2040) = 100 / s_tBC_2_TWa / sm_trillion_2_non *  s_D2015_2_D2017;
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val ge 2045) = 70 / s_tBC_2_TWa / sm_trillion_2_non *  s_D2015_2_D2017;
+$endIf.priceBCformLin
+
+$ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_OneThird"
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val le 2025) = 1/3 * 300 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2030) = 1/3 * 200 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2035) = 1/3 * 150 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2040) = 1/3 * 100 / s_tBC_2_TWa / sm_trillion_2_non *  s_D2015_2_D2017;
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val ge 2045) = 1/3 * 70 / s_tBC_2_TWa / sm_trillion_2_non *  s_D2015_2_D2017;
+$endIf.priceBCformLin
+
+$ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_TwoThirds"
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val le 2025) = 2/3 * 300 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2030) = 2/3 * 200 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2035) = 2/3 * 150 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2040) = 2/3 * 100 / s_tBC_2_TWa / sm_trillion_2_non *  s_D2015_2_D2017;
+v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val ge 2045) = 2/3 * 70 / s_tBC_2_TWa / sm_trillion_2_non *  s_D2015_2_D2017;
 $endIf.priceBCformLin
 
 $ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_main"
@@ -267,16 +284,6 @@ v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2040) = 150 / s_t
 v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2045) = 100 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017;
 v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val ge 2050) = 70 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
 $endIf.priceBCformLin
-
-$ifthen.priceBCformLin "%cm_biocharPriceForm%" == "linearTimeDependent_opt"
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val le 2030) = 300 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2035) = 250 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2040) = 200 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2045) = 150 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val eq 2050) = 100 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017; 
-v_priceOfSpecificGoods.fx(t,regi, teSpecificRevenue)$(t.val gt 2050) =  70 / s_tBC_2_TWa / sm_trillion_2_non * s_D2015_2_D2017;
-$endIf.priceBCformLin
-
 
 *' @stop
 

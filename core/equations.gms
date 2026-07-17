@@ -136,7 +136,7 @@ q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teS
     ;
 $endIf.priceBCformExponential
 
-$ifthen.priceBCformLin1 "%cm_biocharPriceForm%" == "linearTimeDependent_opt"
+$ifthen.priceBCformLin1 "%cm_biocharPriceForm%" == "linearTimeDependent_OneThird"
 q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
         v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
         =e=
@@ -162,7 +162,7 @@ q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teS
     ;
 $endIf.priceBCformLin
 
-$ifthen.priceBCformLin2 "%cm_biocharPriceForm%" == "linearTimeDependent_vOpt"
+$ifthen.priceBCformLin2 "%cm_biocharPriceForm%" == "linearTimeDependent_TwoThirds"
 q_priceOfSpecificGoods(t, regi, SpecificRevenueEntyandTe(entySpecificRevenue,teSpecificRevenue))..
         v_priceOfSpecificGoods(t, regi, teSpecificRevenue)
         =e=

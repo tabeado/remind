@@ -290,7 +290,7 @@ if(cm_coupleProdHeat gt 0,
 
 p04_prodCoupleGlob("pebiolc","sebiochar","biopyrElec","seel") = 0.13;
 if(cm_coupleProdElec gt 0,
-  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrElec","sehe") = cm_coupleProdElec;
+  p04_prodCoupleGlob("pebiolc","sebiochar","biopyrElec","seel") = cm_coupleProdElec;
 );
 
 p04_prodCoupleGlob("pebiolc","sebiochar","biopyrCHP","sehe") = 0.27; 

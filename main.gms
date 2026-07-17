@@ -1944,7 +1944,6 @@ $setGLobal cm_biocharRevenue 1 !! Def on
 *** constant: constant price, determined by  cm_biocharpriceConstant
 *** linearTimeDependent_pess: decreasing price over time, independent of deployment
 *** linearTimeDependent_main
-*** linearTimeDependent_opt
 $setGLobal  cm_biocharPriceForm linearTimeDependent_main !! Def linearTimeDependent
 *** Biochar learning switch
 *** cm_BCLearning  1, biochar med and high tech technologies are learning
